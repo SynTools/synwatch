@@ -1,0 +1,23 @@
+# docker-compose.yml
+services:
+  db:
+    image: postgres:16
+    container_name: synwatch_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: synwatch_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d synwatch_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  db_data:
