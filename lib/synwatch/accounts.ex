@@ -5,10 +5,9 @@ defmodule Synwatch.Accounts do
   alias Synwatch.Accounts.User
   alias Ueberauth.Auth
 
-  def upsert_github_user(%Auth{} = auth) do
-    # TODO: Receive "provider" as second parameter and set dynamically
+  def upsert_github_user(%Auth{} = auth, provider) do
     attrs = %{
-      provider: "github",
+      provider: provider,
       uid: to_string(auth.uid),
       email: auth.info.email,
       name: auth.info.name || auth.info.nickname,
@@ -19,7 +18,7 @@ defmodule Synwatch.Accounts do
         (auth.credentials.expires_at && DateTime.from_unix!(auth.credentials.expires_at)) || nil
     }
 
-    case Repo.get_by(User, provider: "github", uid: attrs.uid) do
+    case Repo.get_by(User, provider: provider, uid: attrs.uid) do
       nil ->
         %User{}
         |> User.changeset(attrs)

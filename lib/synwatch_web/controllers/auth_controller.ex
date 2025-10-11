@@ -4,8 +4,6 @@ defmodule SynwatchWeb.AuthController do
   alias Ueberauth.Auth
   alias Synwatch.Accounts
 
-  plug Ueberauth when action in [:request, :callback]
-
   def login(%{assigns: %{current_user: %_{} = _user}} = conn, _params) do
     redirect(conn, to: ~p"/")
   end
@@ -23,8 +21,9 @@ defmodule SynwatchWeb.AuthController do
   def request(conn, _params), do: redirect(conn, to: ~p"/auth/login")
 
   def callback(%{assigns: %{ueberauth_auth: %Auth{} = auth}} = conn, _params) do
-    # TODO: Check provider in "params" and add as parameter to upsert_github_user
-    case Accounts.upsert_github_user(auth) do
+    provider = auth.provider |> to_string()
+
+    case Accounts.upsert_github_user(auth, provider) do
       {:ok, user} ->
         conn
         |> put_session(:user_id, user.id)
