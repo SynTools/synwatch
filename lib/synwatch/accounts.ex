@@ -1,5 +1,6 @@
 defmodule Synwatch.Accounts do
   import Ecto.Query, warn: false
+
   alias Synwatch.Repo
   alias Synwatch.Accounts.User
   alias Ueberauth.Auth
@@ -30,4 +31,6 @@ defmodule Synwatch.Accounts do
         |> Repo.update()
     end
   end
+
+  def get_user(id), do: Repo.get(User, id)
 end

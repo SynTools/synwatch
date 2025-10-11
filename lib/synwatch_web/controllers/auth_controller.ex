@@ -6,7 +6,13 @@ defmodule SynwatchWeb.AuthController do
 
   plug Ueberauth when action in [:request, :callback]
 
-  def login(conn, _params), do: render(conn, :login)
+  def login(%{assigns: %{current_user: %_{} = _user}} = conn, _params) do
+    redirect(conn, to: ~p"/")
+  end
+
+  def login(conn, _params) do
+    render(conn, :login)
+  end
 
   def request(conn, _params), do: redirect(conn, to: ~p"/auth/login")
 

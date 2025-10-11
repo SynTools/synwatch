@@ -1,6 +1,8 @@
 defmodule SynwatchWeb.Router do
   use SynwatchWeb, :router
 
+  alias SynwatchWeb.Plugs.FetchCurrentUser
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule SynwatchWeb.Router do
     plug :put_root_layout, html: {SynwatchWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug FetchCurrentUser
   end
 
   pipeline :api do
