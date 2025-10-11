@@ -14,10 +14,23 @@ defmodule SynwatchWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug Ueberauth
+  end
+
   scope "/", SynwatchWeb do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    get "/auth/login", AuthController, :login
+  end
+
+  scope "/auth", SynwatchWeb do
+    pipe_through [:browser, :auth]
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.
