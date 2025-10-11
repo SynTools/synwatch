@@ -14,6 +14,12 @@ defmodule SynwatchWeb.AuthController do
     render(conn, :login)
   end
 
+  def logout(conn, _params) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: ~p"/auth/login")
+  end
+
   def request(conn, _params), do: redirect(conn, to: ~p"/auth/login")
 
   def callback(%{assigns: %{ueberauth_auth: %Auth{} = auth}} = conn, _params) do

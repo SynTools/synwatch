@@ -27,6 +27,7 @@ defmodule SynwatchWeb.Router do
     get "/", PageController, :home
 
     get "/auth/login", AuthController, :login
+    delete "/auth/logout", AuthController, :logout
   end
 
   scope "/auth", SynwatchWeb do
