@@ -65,7 +65,11 @@ defmodule Synwatch.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:ueberauth, "~> 0.10"},
+      {:ueberauth_github, "~> 0.8"},
+      {:oauth2, "~> 2.1"},
+      {:dotenvy, "~> 0.8.0", only: [:dev, :test]}
     ]
   end
 

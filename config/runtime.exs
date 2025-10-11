@@ -1,4 +1,5 @@
 import Config
+import Dotenvy
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -19,6 +20,19 @@ import Config
 if System.get_env("PHX_SERVER") do
   config :synwatch, SynwatchWeb.Endpoint, server: true
 end
+
+# Environment sources
+source!([Path.expand("./.env"), System.get_env()])
+
+# Configure ueberauth for Github OAuth
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, [default_scope: "read:user,user:email"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: env!("GITHUB_CLIENT_ID"),
+  client_secret: env!("GITHUB_CLIENT_SECRET")
 
 if config_env() == :prod do
   database_url =
