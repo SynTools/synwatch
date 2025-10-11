@@ -4,12 +4,12 @@ defmodule SynwatchWeb.AuthController do
   alias Ueberauth.Auth
   alias Synwatch.Accounts
 
-  def login(%{assigns: %{current_user: %_{} = _user}} = conn, _params) do
-    redirect(conn, to: ~p"/")
-  end
-
-  def login(conn, _params) do
-    render(conn, :login)
+  def login(%{assigns: %{current_user: current_user}} = conn, _params) do
+    if current_user do
+      redirect(conn, to: ~p"/")
+    else
+      render(conn, :login)
+    end
   end
 
   def logout(conn, _params) do
