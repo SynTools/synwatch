@@ -2,6 +2,7 @@ defmodule SynwatchWeb.Router do
   use SynwatchWeb, :router
 
   alias SynwatchWeb.Plugs.FetchCurrentUser
+  alias SynwatchWeb.Plugs.RequireAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -26,17 +27,26 @@ defmodule SynwatchWeb.Router do
     plug :use_main_layout
   end
 
+  pipeline :require_auth do
+    plug RequireAuth
+  end
+
+  # Public routes
   scope "/", SynwatchWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through [:browser]
+
+    get "/auth/login", AuthController, :login
+  end
+
+  # Protected routes
+  scope "/", SynwatchWeb do
+    pipe_through [:browser, :require_auth, :main_layout]
 
     get "/", PageController, :home
     get "/dashboard", PageController, :dashboard
     get "/projects", PageController, :projects
     get "/runs", PageController, :runs
     get "/settings", PageController, :settings
-
-    get "/auth/login", AuthController, :login
-    delete "/auth/logout", AuthController, :logout
   end
 
   scope "/auth", SynwatchWeb do
@@ -44,6 +54,7 @@ defmodule SynwatchWeb.Router do
 
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :logout
   end
 
   # TODO: Convert to real plug

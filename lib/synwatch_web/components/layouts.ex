@@ -155,7 +155,7 @@ defmodule SynwatchWeb.Layouts do
   @doc """
   Defines the css classes for an active sidebar link.
   """
-  defp sidebar_link_classes(conn, path) do
+  def sidebar_link_classes(conn, path) do
     base =
       "sidebar-link flex items-center gap-2 rounded-lg px-3 py-2 text-lg transition-all duration-150 hover:bg-primary/10 hover:text-primary"
 
