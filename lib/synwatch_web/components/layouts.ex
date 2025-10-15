@@ -165,4 +165,17 @@ defmodule SynwatchWeb.Layouts do
       base
     end
   end
+
+  @doc """
+  Reads the user's name from conn and returns the first letter in uppercase
+  """
+  def user_initials(nil), do: "?"
+
+  def user_initials(%{name: name}) when is_binary(name) do
+    name
+    |> String.first()
+    |> String.upcase()
+  end
+
+  def user_initials(_), do: "?"
 end
