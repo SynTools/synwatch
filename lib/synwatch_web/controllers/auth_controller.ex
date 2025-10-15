@@ -8,7 +8,7 @@ defmodule SynwatchWeb.AuthController do
     if current_user do
       redirect(conn, to: ~p"/")
     else
-      render(conn, :login)
+      render(conn, :login, page_title: "Login")
     end
   end
 

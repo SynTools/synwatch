@@ -3,11 +3,11 @@ defmodule SynwatchWeb.PageController do
 
   def home(conn, _params), do: redirect(conn, to: ~p"/dashboard")
 
-  def dashboard(conn, _params), do: render(conn, :home)
+  def dashboard(conn, _params), do: render(conn, :home, page_title: "Dashboard")
 
-  def projects(conn, _params), do: render(conn, :projects)
+  def projects(conn, _params), do: render(conn, :projects, page_title: "Projects")
 
-  def runs(conn, _params), do: render(conn, :runs)
+  def runs(conn, _params), do: render(conn, :runs, page_title: "All Runs")
 
-  def settings(conn, _params), do: render(conn, :settings)
+  def settings(conn, _params), do: render(conn, :settings, page_title: "Settings")
 end
