@@ -4,9 +4,12 @@ defmodule SynwatchWeb.AuthController do
   alias Ueberauth.Auth
   alias Synwatch.Accounts
 
+  @login_page "/auth/login"
+  @home_page "/"
+
   def login(%{assigns: %{current_user: current_user}} = conn, _params) do
     if current_user do
-      redirect(conn, to: ~p"/")
+      redirect(conn, to: @home_page)
     else
       render(conn, :login, page_title: "Login")
     end
@@ -15,10 +18,10 @@ defmodule SynwatchWeb.AuthController do
   def logout(conn, _params) do
     conn
     |> configure_session(drop: true)
-    |> redirect(to: ~p"/auth/login")
+    |> redirect(to: @login_page)
   end
 
-  def request(conn, _params), do: redirect(conn, to: ~p"/auth/login")
+  def request(conn, _params), do: redirect(conn, to: @login_page)
 
   def callback(%{assigns: %{ueberauth_auth: %Auth{} = auth}} = conn, _params) do
     provider = auth.provider |> to_string()
@@ -29,14 +32,14 @@ defmodule SynwatchWeb.AuthController do
         |> put_session(:user_id, user.id)
         |> configure_session(renew: true)
         |> put_flash(:info, "Welcome, #{user.name || user.email || "User"}!")
-        |> redirect(to: ~p"/")
+        |> redirect(to: @home_page)
 
       {:error, reason} ->
         IO.inspect(reason)
 
         conn
         |> put_flash(:error, "Github login failed")
-        |> redirect(to: ~p"/auth/login")
+        |> redirect(to: @login_page)
     end
   end
 
@@ -45,6 +48,6 @@ defmodule SynwatchWeb.AuthController do
 
     conn
     |> put_flash(:error, "Github login canceled")
-    |> redirect(to: ~p"/auth/login")
+    |> redirect(to: @login_page)
   end
 end
