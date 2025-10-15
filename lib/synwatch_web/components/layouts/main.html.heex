@@ -6,22 +6,22 @@
 
       <!-- TODO: Add Logo -->
 
-      <.link navigate={~p"/dashboard"} class="sidebar-link">
+      <.link navigate={~p"/dashboard"}  class={sidebar_link_classes(@conn, "/dashboard")}>
         <.icon name="hero-home" class="h-6 w-6" />
         <span class="text-lg">Dashboard</span>
       </.link>
 
-      <.link navigate={~p"/projects"} class="sidebar-link">
+      <.link navigate={~p"/projects"} class={sidebar_link_classes(@conn, "/projects")}>
         <.icon name="hero-folder" class="h-6 w-6" />
         <span class="text-lg">Projects</span>
       </.link>
 
-      <.link navigate={~p"/runs"} class="sidebar-link">
+      <.link navigate={~p"/runs"} class={sidebar_link_classes(@conn, "/runs")}>
         <.icon name="hero-bolt" class="h-6 w-6" />
         <span class="text-lg">All Runs</span>
       </.link>
 
-      <.link navigate={~p"/settings"} class="sidebar-link">
+      <.link navigate={~p"/settings"} class={sidebar_link_classes(@conn, "/settings")}>
         <.icon name="hero-cog-6-tooth" class="h-6 w-6" />
         <span class="text-lg">Settings</span>
       </.link>
