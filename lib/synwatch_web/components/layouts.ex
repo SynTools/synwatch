@@ -169,13 +169,18 @@ defmodule SynwatchWeb.Layouts do
   @doc """
   Reads the user's name from conn and returns the first letter in uppercase
   """
-  def user_initials(nil), do: "?"
+  def user_avatar(nil), do: {:text, "?"}
 
-  def user_initials(%{name: name}) when is_binary(name) do
-    name
-    |> String.first()
-    |> String.upcase()
+  def user_avatar(%{avatar_url: url}) when is_binary(url) and url != "", do: {:image, url}
+
+  def user_avatar(%{name: name}) do
+    first_letter =
+      name
+      |> String.first()
+      |> String.upcase()
+
+    {:text, first_letter}
   end
 
-  def user_initials(_), do: "?"
+  def user_avatar(_), do: {:text, "?"}
 end
