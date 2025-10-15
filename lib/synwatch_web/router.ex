@@ -3,6 +3,8 @@ defmodule SynwatchWeb.Router do
 
   alias SynwatchWeb.Plugs.FetchCurrentUser
   alias SynwatchWeb.Plugs.RequireAuth
+  alias SynwatchWeb.Plugs.CurrentPath
+  alias SynwatchWeb.Plugs.MainLayout
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,7 +14,7 @@ defmodule SynwatchWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug FetchCurrentUser
-    plug :put_current_path
+    plug CurrentPath
   end
 
   pipeline :api do
@@ -24,7 +26,7 @@ defmodule SynwatchWeb.Router do
   end
 
   pipeline :main_layout do
-    plug :use_main_layout
+    plug MainLayout
   end
 
   pipeline :require_auth do
@@ -55,16 +57,6 @@ defmodule SynwatchWeb.Router do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
     delete "/logout", AuthController, :logout
-  end
-
-  # TODO: Convert to real plug
-  defp use_main_layout(conn, _opts) do
-    put_layout(conn, html: {SynwatchWeb.Layouts, :main})
-  end
-
-  # TODO: Convert to real plug
-  defp put_current_path(conn, _opts) do
-    assign(conn, :current_path, Phoenix.Controller.current_path(conn))
   end
 
   # Other scopes may use custom stacks.
