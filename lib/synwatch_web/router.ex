@@ -21,10 +21,18 @@ defmodule SynwatchWeb.Router do
     plug Ueberauth
   end
 
+  pipeline :main_layout do
+    plug :use_main_layout
+  end
+
   scope "/", SynwatchWeb do
-    pipe_through :browser
+    pipe_through [:browser, :main_layout]
 
     get "/", PageController, :home
+    get "/dashboard", PageController, :dashboard
+    get "/projects", PageController, :projects
+    get "/runs", PageController, :runs
+    get "/settings", PageController, :settings
 
     get "/auth/login", AuthController, :login
     delete "/auth/logout", AuthController, :logout
@@ -35,6 +43,10 @@ defmodule SynwatchWeb.Router do
 
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
+  end
+
+  defp use_main_layout(conn, _opts) do
+    put_layout(conn, html: {SynwatchWeb.Layouts, :main})
   end
 
   # Other scopes may use custom stacks.
