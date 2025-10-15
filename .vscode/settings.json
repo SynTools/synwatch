@@ -1,0 +1,9 @@
+{
+  "editor.tabSize": 2,
+  "elixirLS.suggestSpecs": false,
+  "files.associations": {
+    ".mjml.eex": "mjml",
+    "*.heex": "phoenix-heex"
+  },
+  "files.insertFinalNewline": true,
+}
