@@ -46,7 +46,7 @@ defmodule SynwatchWeb.Router do
 
     get "/", PageController, :home
     get "/dashboard", PageController, :dashboard
-    get "/projects", ProjectController, :overview
+    get "/projects", ProjectController, :index
     get "/runs", PageController, :runs
     get "/settings", PageController, :settings
   end
