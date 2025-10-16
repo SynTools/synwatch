@@ -12,6 +12,7 @@ defmodule Synwatch.Projects.Project do
   schema "projects" do
     field :name, :string
     belongs_to :user, User
+
     timestamps(type: :utc_datetime)
   end
 
