@@ -64,6 +64,7 @@ defmodule SynwatchWeb.Router do
     get "/", ProjectController, :index
     get "/new", ProjectController, :create
     get "/:id", ProjectController, :show
+    patch "/:id", ProjectController, :update
   end
 
   # Other scopes may use custom stacks.

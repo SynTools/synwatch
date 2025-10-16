@@ -35,4 +35,15 @@ defmodule SynwatchWeb.ProjectController do
         )
     end
   end
+
+  def update(
+        %{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "project" => updates} = _params
+      ) do
+    stored_project = Projects.get_by_id_and_user_id!(id, user.id)
+
+    with {:ok, %Project{} = project} <- Projects.update(stored_project, updates) do
+      render(conn, :show, page_title: "Projects", project: project)
+    end
+  end
 end

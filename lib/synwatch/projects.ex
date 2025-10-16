@@ -7,4 +7,12 @@ defmodule Synwatch.Projects do
   def get_all_by_user_id(user_id), do: Repo.all_by(Project, user_id: user_id)
 
   def get_by_id_and_user_id(id, user_id), do: Repo.get_by(Project, id: id, user_id: user_id)
+
+  def get_by_id_and_user_id!(id, user_id), do: Repo.get_by!(Project, id: id, user_id: user_id)
+
+  def update(%Project{} = project, attrs) do
+    project
+    |> Project.changeset(attrs)
+    |> Repo.update()
+  end
 end

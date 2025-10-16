@@ -31,12 +31,14 @@
   <.form
     for={Ecto.Changeset.change(@project)}
     action={~p"/projects/#{@project.id}"}
-    method="put"
+    method="patch"
     class="space-y-4"
   >
     <.input name="project[name]" value={@project.name} label="Name" />
     <div class="flex items-center gap-2 mt-4">
-      <.button class="bg-primary text-white px-4 py-2 rounded-lg">Update</.button>
+      <.button class="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer">
+        Update
+      </.button>
     </div>
   </.form>
 </div>
