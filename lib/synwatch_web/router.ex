@@ -46,7 +46,6 @@ defmodule SynwatchWeb.Router do
 
     get "/", PageController, :home
     get "/dashboard", PageController, :dashboard
-    get "/projects", ProjectController, :index
     get "/runs", PageController, :runs
     get "/settings", PageController, :settings
   end
@@ -57,6 +56,14 @@ defmodule SynwatchWeb.Router do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
     delete "/logout", AuthController, :logout
+  end
+
+  scope "/projects", SynwatchWeb do
+    pipe_through [:browser, :require_auth, :main_layout]
+
+    get "/", ProjectController, :index
+    get "/new", ProjectController, :create
+    get "/:id", ProjectController, :detail
   end
 
   # Other scopes may use custom stacks.
