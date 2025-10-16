@@ -62,7 +62,8 @@ defmodule SynwatchWeb.Router do
     pipe_through [:browser, :require_auth, :main_layout]
 
     get "/", ProjectController, :index
-    get "/new", ProjectController, :create
+    post "/", ProjectController, :create
+    get "/new", ProjectController, :new
     get "/:id", ProjectController, :show
     patch "/:id", ProjectController, :update
   end

@@ -11,8 +11,8 @@ defmodule SynwatchWeb.ProjectController do
     render(conn, :index, page_title: "Projects", projects: projects)
   end
 
-  def create(conn, _params) do
-    render(conn, :create, page_title: "Create Project")
+  def new(conn, _params) do
+    render(conn, :new, page_title: "Create Project")
   end
 
   def show(%{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = params) do
@@ -38,12 +38,41 @@ defmodule SynwatchWeb.ProjectController do
 
   def update(
         %{assigns: %{current_user: %User{} = user}} = conn,
-        %{"id" => id, "project" => updates} = _params
+        %{"id" => id, "project" => updates}
       ) do
     stored_project = Projects.get_by_id_and_user_id!(id, user.id)
 
     with {:ok, %Project{} = project} <- Projects.update(stored_project, updates) do
-      render(conn, :show, page_title: "Projects", project: project)
+      conn
+      |> put_flash(:info, "Project successfully updated")
+      |> redirect(to: ~p"/projects/#{project.id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong updating the project")
+        |> render(:show,
+          page_title: stored_project.name,
+          project: stored_project,
+          changeset: changeset,
+          tab: "endpoints"
+        )
+    end
+  end
+
+  def create(%{assigns: %{current_user: %User{} = user}} = conn, %{"project" => attrs}) do
+    new_project = Map.put(attrs, "user_id", user.id)
+
+    with {:ok, %Project{} = project} <- Projects.create(new_project) do
+      conn
+      |> put_flash(:info, "Project successfully created")
+      |> redirect(to: ~p"/projects/#{project.id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = cs} ->
+        conn
+        |> put_flash(:error, "Something went wrong creating the project")
+        |> render(:new, page_title: "Create Project", changeset: cs)
     end
   end
 end

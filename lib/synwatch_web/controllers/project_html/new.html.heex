@@ -1,0 +1,36 @@
+<!-- Header / Breadcrumb -->
+<div class="mb-6 flex items-center justify-between">
+  <div class="flex items-center gap-2 text-sm text-gray-500">
+    <.link href={~p"/projects"} class="hover:underline">Projects</.link>
+    <span>›</span>
+    <span class="text-gray-700 font-medium truncate">New Project</span>
+  </div>
+</div>
+
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">Create Project</h1>
+  <div class="flex items-center gap-2">
+    <.link
+      href={~p"/projects"}
+      class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+    >
+      Back
+    </.link>
+  </div>
+</div>
+
+<div class="mb-8 rounded-xl border border-base-300 bg-white p-5 max-w-md">
+  <.form
+    for={Ecto.Changeset.change(%Synwatch.Projects.Project{})}
+    action={~p"/projects"}
+    method="post"
+    class="space-y-4"
+  >
+    <.input name="project[name]" value="" label="Name" />
+    <div class="flex items-center gap-2 mt-4">
+      <.button class="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer">
+        Create
+      </.button>
+    </div>
+  </.form>
+</div>

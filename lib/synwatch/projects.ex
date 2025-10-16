@@ -15,4 +15,10 @@ defmodule Synwatch.Projects do
     |> Project.changeset(attrs)
     |> Repo.update()
   end
+
+  def create(attrs \\ %{}) do
+    %Project{}
+    |> Project.changeset(attrs)
+    |> Repo.insert()
+  end
 end
