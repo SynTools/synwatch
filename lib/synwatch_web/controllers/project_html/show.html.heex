@@ -19,6 +19,7 @@
   </div>
 </div>
 
+<%!-- TODO: Create sw_card.ex --%>
 <%!-- Project Card --%>
 <div class="mb-8 rounded-xl border border-base-300 bg-white p-5 max-w-md">
   <.form
@@ -70,6 +71,7 @@
           <th class="py-4 pr-3">Path</th>
           <th class="py-4 pr-3 hidden md:table-cell">Base URL</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Description</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Last Tested At</th>
         </tr>
       </thead>
       <tbody>
@@ -90,6 +92,9 @@
             </td>
             <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[30ch]">
               {ep.description}
+            </td>
+            <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[30ch]">
+              {format_dt(ep.last_tested_at)}
             </td>
             <td class="py-4 pr-4 text-right">
               <.sw_button
