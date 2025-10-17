@@ -21,4 +21,6 @@ defmodule Synwatch.Projects do
     |> Project.changeset(attrs)
     |> Repo.insert()
   end
+
+  def delete(%Project{} = project), do: Repo.delete(project)
 end

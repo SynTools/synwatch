@@ -16,14 +16,13 @@
     >
       Back
     </.link>
-    <.link
-      href={~p"/projects/#{@project.id}"}
-      method="delete"
-      data-confirm="Delete this project?"
-      class="px-3 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
+    <button
+      type="button"
+      phx-click={open_delete()}
+      class="px-3 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 cursor-pointer"
     >
       Delete
-    </.link>
+    </button>
   </div>
 </div>
 
@@ -41,4 +40,45 @@
       </.button>
     </div>
   </.form>
+</div>
+
+<div
+  id="confirm-delete"
+  class="fixed inset-0 z-50 hidden opacity-0"
+  phx-window-keydown={close_delete()}
+  phx-key="escape"
+  phx-click={close_delete()}
+>
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div class="absolute left-1/2 top-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl">
+    <div class="flex items-start justify-between">
+      <h3 class="text-base font-semibold">Delete project?</h3>
+      <button type="button" phx-click={close_delete()} aria-label="Close">
+        <.icon name="hero-x-mark" class="h-5 w-5 text-gray-500 cursor-pointer" />
+      </button>
+    </div>
+
+    <p class="mt-2 text-sm text-gray-600">
+      This action cannot be undone. All related data may be removed.
+    </p>
+
+    <div class="mt-5 flex justify-end gap-2">
+      <button
+        type="button"
+        class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
+        phx-click={close_delete()}
+      >
+        Cancel
+      </button>
+
+      <.link
+        href={~p"/projects/#{@project.id}"}
+        method="delete"
+        class="px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:opacity-90"
+      >
+        Delete
+      </.link>
+    </div>
+  </div>
 </div>

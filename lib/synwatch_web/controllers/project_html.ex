@@ -26,4 +26,22 @@ defmodule SynwatchWeb.ProjectHTML do
       true -> "#{div(diff, 86_400)} d ago"
     end
   end
+
+  alias Phoenix.LiveView.JS
+
+  defp open_delete(js \\ %JS{}),
+    do:
+      js
+      |> JS.show(
+        to: "#confirm-delete",
+        transition: {"transition-opacity duration-150", "opacity-0", "opacity-100"}
+      )
+
+  defp close_delete(js \\ %JS{}),
+    do:
+      js
+      |> JS.hide(
+        to: "#confirm-delete",
+        transition: {"transition-opacity duration-150", "opacity-100", "opacity-0"}
+      )
 end
