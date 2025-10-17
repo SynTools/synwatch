@@ -19,8 +19,21 @@ defmodule Synwatch.Projects.Project do
   def changeset(project, attrs) do
     project
     |> cast(attrs, [:name, :user_id])
+    |> update_change(:name, &blank_to_nil/1)
     |> validate_required([:name, :user_id])
     |> validate_length(:name, min: 1, max: 160)
+    |> unique_constraint([:user_id, :name],
+      name: :projects_user_id_name_index,
+      message: "can only have one project with the same name"
+    )
     |> foreign_key_constraint(:user_id)
   end
+
+  defp blank_to_nil(value) when is_binary(value) do
+    value = String.trim(value)
+
+    if value == "", do: nil, else: value
+  end
+
+  defp blank_to_nil(value), do: value
 end

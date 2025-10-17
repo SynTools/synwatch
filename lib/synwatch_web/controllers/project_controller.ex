@@ -1,6 +1,8 @@
 defmodule SynwatchWeb.ProjectController do
   use SynwatchWeb, :controller
 
+  import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
+
   alias Synwatch.Projects
   alias Synwatch.Projects.Project
   alias Synwatch.Accounts.User
@@ -49,12 +51,11 @@ defmodule SynwatchWeb.ProjectController do
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Something went wrong updating the project")
+        |> flash_changeset_errors(changeset)
         |> render(:show,
           page_title: stored_project.name,
           project: stored_project,
-          changeset: changeset,
-          tab: "endpoints"
+          changeset: changeset
         )
     end
   end
@@ -68,10 +69,10 @@ defmodule SynwatchWeb.ProjectController do
       |> redirect(to: ~p"/projects/#{project.id}")
       |> halt()
     else
-      {:error, %Ecto.Changeset{} = cs} ->
+      {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Something went wrong creating the project")
-        |> render(:new, page_title: "Create Project", changeset: cs)
+        |> flash_changeset_errors(changeset)
+        |> render(:new, page_title: "Create Project", changeset: changeset)
     end
   end
 
