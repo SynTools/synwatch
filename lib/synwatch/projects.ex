@@ -6,7 +6,14 @@ defmodule Synwatch.Projects do
 
   def get_all_by_user_id(user_id), do: Repo.all_by(Project, user_id: user_id)
 
-  def get_by_id_and_user_id(id, user_id), do: Repo.get_by(Project, id: id, user_id: user_id)
+  import Ecto.Query
+
+  def get_by_id_and_user_id(id, user_id) do
+    Project
+    |> where([p], p.id == ^id and p.user_id == ^user_id)
+    |> preload(:endpoints)
+    |> Repo.one()
+  end
 
   def get_by_id_and_user_id!(id, user_id), do: Repo.get_by!(Project, id: id, user_id: user_id)
 

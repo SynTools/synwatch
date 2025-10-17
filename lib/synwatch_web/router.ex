@@ -69,6 +69,13 @@ defmodule SynwatchWeb.Router do
     delete "/:id", ProjectController, :delete
   end
 
+  scope "/endpoints", SynwatchWeb do
+    pipe_through [:browser, :require_auth, :main_layout]
+
+    get "/new", EndpointController, :new
+    get "/:id", EndpointController, :show
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", SynwatchWeb do
   #   pipe_through :api

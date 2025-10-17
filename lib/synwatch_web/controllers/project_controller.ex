@@ -13,7 +13,7 @@ defmodule SynwatchWeb.ProjectController do
     render(conn, :index, page_title: "Projects", projects: projects)
   end
 
-  def new(conn, _params) do
+  def new(%Plug.Conn{} = conn, _params) do
     changeset = Ecto.Changeset.change(%Project{})
 
     render(conn, :new, page_title: "Create Project", changeset: changeset)
@@ -32,6 +32,7 @@ defmodule SynwatchWeb.ProjectController do
         render(conn, :show,
           page_title: project.name,
           project: project,
+          endpoints: project.endpoints,
           changeset: changeset
         )
     end
