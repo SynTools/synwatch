@@ -1,4 +1,4 @@
-defmodule SynwatchWeb.Breadcrumbs do
+defmodule SynwatchWeb.Components.SWBreadcrumbs do
   use SynwatchWeb, :html
 
   @doc """
@@ -8,9 +8,9 @@ defmodule SynwatchWeb.Breadcrumbs do
   attr :items, :list, required: true
   attr :separator, :string, default: "›"
 
-  def breadcrumbs(assigns) do
+  def sw_breadcrumbs(assigns) do
     ~H"""
-    <nav aria-label="Breadcrumb" class="text-sm text-gray-500">
+    <nav aria-label="Breadcrumb" class="text-sm text-gray-500 mb-4">
       <ol class="flex items-center gap-2">
         <%= for {item, idx} <- Enum.with_index(@items) do %>
           <li class="flex items-center gap-2">

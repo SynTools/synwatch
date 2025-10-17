@@ -1,7 +1,7 @@
 defmodule SynwatchWeb.ProjectHTML do
   use SynwatchWeb, :html
 
-  import SynwatchWeb.Breadcrumbs
+  import SynwatchWeb.Components.SWBreadcrumbs
   import SynwatchWeb.Components.SWButton
 
   embed_templates "project_html/*"
