@@ -5,21 +5,19 @@ defmodule SynwatchWeb.ProjectController do
   alias Synwatch.Projects.Project
   alias Synwatch.Accounts.User
 
-  # TODO: Add %Plug.Conn{} for safe pattern matching of "conn"
-
-  def index(%{assigns: %{current_user: %User{} = user}} = conn, _params) do
+  def index(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
     projects = Projects.get_all_by_user_id(user.id)
 
     render(conn, :index, page_title: "Projects", projects: projects)
   end
 
   def new(conn, _params) do
-    render(conn, :new, page_title: "Create Project")
+    changeset = Ecto.Changeset.change(%Project{})
+
+    render(conn, :new, page_title: "Create Project", changeset: changeset)
   end
 
-  def show(%{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = params) do
-    tab = Map.get(params, "tab", "endpoints")
-
+  def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
     case Projects.get_by_id_and_user_id(id, user.id) do
       nil ->
         conn
@@ -32,14 +30,13 @@ defmodule SynwatchWeb.ProjectController do
         render(conn, :show,
           page_title: project.name,
           project: project,
-          changeset: changeset,
-          tab: tab
+          changeset: changeset
         )
     end
   end
 
   def update(
-        %{assigns: %{current_user: %User{} = user}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"id" => id, "project" => updates}
       ) do
     stored_project = Projects.get_by_id_and_user_id!(id, user.id)
@@ -62,7 +59,7 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def create(%{assigns: %{current_user: %User{} = user}} = conn, %{"project" => attrs}) do
+  def create(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"project" => attrs}) do
     new_project = Map.put(attrs, "user_id", user.id)
 
     with {:ok, %Project{} = project} <- Projects.create(new_project) do
@@ -78,7 +75,7 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def delete(%{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
+  def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
     stored_project = Projects.get_by_id_and_user_id!(id, user.id)
 
     with {:ok, %Project{} = project} <- Projects.delete(stored_project) do
