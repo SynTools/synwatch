@@ -10,12 +10,9 @@
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">Create Project</h1>
   <div class="flex items-center gap-2">
-    <.link
-      href={~p"/projects"}
-      class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
-    >
+    <.sw_button color="gray" style="outlined" href={~p"/projects"}>
       Back
-    </.link>
+    </.sw_button>
   </div>
 </div>
 
@@ -28,9 +25,9 @@
   >
     <.input name="project[name]" value="" label="Name" />
     <div class="flex items-center gap-2 mt-4">
-      <.button class="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer">
+      <.sw_button>
         Create
-      </.button>
+      </.sw_button>
     </div>
   </.form>
 </div>

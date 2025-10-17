@@ -6,19 +6,12 @@
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">{@project.name}</h1>
   <div class="flex items-center gap-2">
-    <.link
-      href={~p"/projects"}
-      class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
-    >
+    <.sw_button href={~p"/projects"} color="gray" style="outlined">
       Back
-    </.link>
-    <button
-      type="button"
-      phx-click={open_delete()}
-      class="px-3 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 cursor-pointer"
-    >
+    </.sw_button>
+    <.sw_button color="red" style="outlined" phx-click={open_delete()}>
       Delete
-    </button>
+    </.sw_button>
   </div>
 </div>
 
@@ -31,9 +24,7 @@
   >
     <.input name="project[name]" value={@project.name} label="Name" />
     <div class="flex items-center gap-2 mt-4">
-      <.button class="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer">
-        Update
-      </.button>
+      <.sw_button>Save</.sw_button>
     </div>
   </.form>
 </div>
@@ -50,9 +41,6 @@
   <div class="absolute left-1/2 top-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl">
     <div class="flex items-start justify-between">
       <h3 class="text-base font-semibold">Delete project?</h3>
-      <button type="button" phx-click={close_delete()} aria-label="Close">
-        <.icon name="hero-x-mark" class="h-5 w-5 text-gray-500 cursor-pointer" />
-      </button>
     </div>
 
     <p class="mt-2 text-sm text-gray-600">
@@ -60,21 +48,13 @@
     </p>
 
     <div class="mt-5 flex justify-end gap-2">
-      <button
-        type="button"
-        class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
-        phx-click={close_delete()}
-      >
+      <.sw_button color="gray" style="outlined" phx-click={close_delete()}>
         Cancel
-      </button>
+      </.sw_button>
 
-      <.link
-        href={~p"/projects/#{@project.id}"}
-        method="delete"
-        class="px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:opacity-90"
-      >
+      <.sw_button href={~p"/projects/#{@project.id}"} method="delete" color="red">
         Delete
-      </.link>
+      </.sw_button>
     </div>
   </div>
 </div>
