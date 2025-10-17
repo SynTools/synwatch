@@ -1,11 +1,7 @@
-<!-- Header / Breadcrumb -->
-<div class="mb-6 flex items-center justify-between">
-  <div class="flex items-center gap-2 text-sm text-gray-500">
-    <.link href={~p"/projects"} class="hover:underline">Projects</.link>
-    <span>›</span>
-    <span class="text-gray-700 font-medium truncate">{@project.name}</span>
-  </div>
-</div>
+<.breadcrumbs items={[
+  %{label: "Projects", to: ~p"/projects"},
+  %{label: @project.name, to: nil}
+]} />
 
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">{@project.name}</h1>

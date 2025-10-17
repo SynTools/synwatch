@@ -1,6 +1,8 @@
 defmodule SynwatchWeb.ProjectHTML do
   use SynwatchWeb, :html
 
+  import SynwatchWeb.Breadcrumbs
+
   embed_templates "project_html/*"
 
   defp format_dt(nil), do: "-"
