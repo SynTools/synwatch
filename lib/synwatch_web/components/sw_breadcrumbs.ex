@@ -1,5 +1,5 @@
 defmodule SynwatchWeb.Components.SWBreadcrumbs do
-  use SynwatchWeb, :html
+  use Phoenix.Component
 
   @doc """
   items: list of %{label: String.t(), to: String.t() | nil}

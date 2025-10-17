@@ -1,5 +1,5 @@
 defmodule SynwatchWeb.Components.SWButton do
-  use SynwatchWeb, :html
+  use Phoenix.Component
 
   # API
   attr :style, :string, default: "filled", values: ~w(filled outlined ghost)

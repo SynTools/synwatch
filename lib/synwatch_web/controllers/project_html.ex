@@ -1,9 +1,6 @@
 defmodule SynwatchWeb.ProjectHTML do
   use SynwatchWeb, :html
 
-  import SynwatchWeb.Components.SWBreadcrumbs
-  import SynwatchWeb.Components.SWButton
-
   embed_templates "project_html/*"
 
   defp format_dt(nil), do: "-"
