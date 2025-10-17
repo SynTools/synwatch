@@ -4,6 +4,7 @@ defmodule Synwatch.Projects.Project do
   import Ecto.Changeset
 
   alias Synwatch.Accounts.User
+  alias Synwatch.Projects.Endpoint
 
   @type t :: %__MODULE__{}
 
@@ -12,6 +13,8 @@ defmodule Synwatch.Projects.Project do
   schema "projects" do
     field :name, :string
     belongs_to :user, User
+
+    has_many :endpoints, Endpoint, on_delete: :delete_all, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
