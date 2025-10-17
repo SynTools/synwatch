@@ -1,7 +1,6 @@
 defmodule SynwatchWeb.Components.SWButton do
   use Phoenix.Component
 
-  # API
   attr :style, :string, default: "filled", values: ~w(filled outlined ghost)
   attr :color, :string, default: "primary", values: ~w(primary gray red green amber)
   attr :size, :string, default: "md", values: ~w(sm md lg)
@@ -9,13 +8,11 @@ defmodule SynwatchWeb.Components.SWButton do
   attr :loading, :boolean, default: false
   attr :disabled, :boolean, default: false
 
-  # Link-Unterstützung (wenn eines davon gesetzt ist, rendern wir <.link/>)
   attr :href, :string, default: nil
   attr :navigate, :any, default: nil
   attr :patch, :any, default: nil
   attr :method, :string, default: nil
 
-  # Alle restlichen globalen attrs (type, name, value, etc.)
   attr :rest, :global,
     include:
       ~w(type name value download rel target form formaction formenctype formmethod formnovalidate formtarget)
@@ -76,8 +73,6 @@ defmodule SynwatchWeb.Components.SWButton do
     <% end %>
     """
   end
-
-  # --- Helpers ---
 
   defp btn_classes(style, color, size, loading, disabled, extra) do
     base =

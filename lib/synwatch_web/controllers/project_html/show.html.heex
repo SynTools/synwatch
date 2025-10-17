@@ -9,7 +9,11 @@
     <.sw_button href={~p"/projects"} color="gray" style="outlined">
       Back
     </.sw_button>
-    <.sw_button color="red" style="outlined" phx-click={open_delete()}>
+    <.sw_button
+      color="red"
+      style="outlined"
+      phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete")}
+    >
       Delete
     </.sw_button>
   </div>
@@ -29,32 +33,20 @@
   </.form>
 </div>
 
-<div
-  id="confirm-delete"
-  class="fixed inset-0 z-50 hidden opacity-0"
-  phx-window-keydown={close_delete()}
-  phx-key="escape"
-  phx-click={close_delete()}
->
-  <div class="absolute inset-0 bg-black/40"></div>
+<.sw_modal id="confirm-delete" size="md">
+  <:title>Delete project?</:title>
+  This action cannot be undone. All related data may be removed.
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete")}
+    >
+      Cancel
+    </.sw_button>
 
-  <div class="absolute left-1/2 top-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl">
-    <div class="flex items-start justify-between">
-      <h3 class="text-base font-semibold">Delete project?</h3>
-    </div>
-
-    <p class="mt-2 text-sm text-gray-600">
-      This action cannot be undone. All related data may be removed.
-    </p>
-
-    <div class="mt-5 flex justify-end gap-2">
-      <.sw_button color="gray" style="outlined" phx-click={close_delete()}>
-        Cancel
-      </.sw_button>
-
-      <.sw_button href={~p"/projects/#{@project.id}"} method="delete" color="red">
-        Delete
-      </.sw_button>
-    </div>
-  </div>
-</div>
+    <.sw_button color="red" method="delete" href={~p"/projects/#{@project.id}"}>
+      Delete
+    </.sw_button>
+  </:actions>
+</.sw_modal>
