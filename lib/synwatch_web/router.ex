@@ -33,6 +33,15 @@ defmodule SynwatchWeb.Router do
     plug RequireAuth
   end
 
+  # Auth routes
+  scope "/auth", SynwatchWeb do
+    pipe_through [:browser, :auth]
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :logout
+  end
+
   # Public routes
   scope "/", SynwatchWeb do
     pipe_through [:browser]
@@ -50,14 +59,6 @@ defmodule SynwatchWeb.Router do
     get "/settings", PageController, :settings
   end
 
-  scope "/auth", SynwatchWeb do
-    pipe_through [:browser, :auth]
-
-    get "/:provider", AuthController, :request
-    get "/:provider/callback", AuthController, :callback
-    delete "/logout", AuthController, :logout
-  end
-
   scope "/projects", SynwatchWeb do
     pipe_through [:browser, :require_auth, :main_layout]
 
@@ -67,19 +68,12 @@ defmodule SynwatchWeb.Router do
     get "/:id", ProjectController, :show
     patch "/:id", ProjectController, :update
     delete "/:id", ProjectController, :delete
+
+    scope "/:project_id" do
+      get "/endpoints/new", EndpointController, :new
+      get "/endpoints/:id", EndpointController, :show
+    end
   end
-
-  scope "/endpoints", SynwatchWeb do
-    pipe_through [:browser, :require_auth, :main_layout]
-
-    get "/new", EndpointController, :new
-    get "/:id", EndpointController, :show
-  end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", SynwatchWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:synwatch, :dev_routes) do

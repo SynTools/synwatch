@@ -62,7 +62,10 @@
   <:header>
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">Endpoints</h2>
-      <.sw_button :if={!Enum.empty?(@endpoints)} navigate={~p"/endpoints/new"}>
+      <.sw_button
+        :if={!Enum.empty?(@endpoints)}
+        navigate={~p"/projects/#{@project.id}/endpoints/new"}
+      >
         <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
         New Endpoint
       </.sw_button>
@@ -84,16 +87,14 @@
 
       <tbody>
         <%= for ep <- @endpoints do %>
-          <tr class="border-t border-gray-200 even:bg-gray-50 hover:bg-gray-100 transition">
+          <tr class="border-t border-gray-200 even:bg-gray-50">
             <td class="py-4 pl-4 pr-3">
               <span class={"rounded px-2 py-0.5 text-xs font-semibold " <> method_chip_class(ep.method)}>
                 {ep.method}
               </span>
             </td>
             <td class="py-4 pr-3 font-mono">
-              <a href={~p"/endpoints/#{ep.id}"} class="text-primary hover:underline">
-                {ep.path}
-              </a>
+              {ep.path}
             </td>
             <td class="py-4 pr-3 hidden md:table-cell truncate max-w-[24ch]">
               {ep.base_url}
@@ -109,7 +110,7 @@
                 style="outlined"
                 color="gray"
                 size="sm"
-                navigate={~p"/endpoints/#{ep.id}"}
+                navigate={~p"/projects/#{@project.id}/endpoints/#{ep.id}"}
               >
                 <:icon><.icon name="hero-eye" class="h-4 w-4" /></:icon>
                 View
@@ -122,7 +123,7 @@
           <td colspan="6" class="py-10 text-center text-gray-600">
             <.icon name="hero-squares-2x2" class="h-8 w-8 mx-auto text-gray-400" />
             <p class="mt-2">No endpoints yet.</p>
-            <.sw_button class="mt-3" navigate={~p"/endpoints/new"}>
+            <.sw_button class="mt-3" navigate={~p"/projects/#{@project.id}/endpoints/new"}>
               <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
               Create your first endpoint
             </.sw_button>
