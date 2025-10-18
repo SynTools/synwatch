@@ -33,6 +33,9 @@
   >
     <.input name="project[name]" value={@project.name} label="Name" />
     <div class="flex items-center gap-2 mt-4">
+      <.sw_button style="ghost" color="gray" href={~p"/projects/#{@project.id}"}>
+        Cancel
+      </.sw_button>
       <.sw_button>Save</.sw_button>
     </div>
   </.form>
@@ -76,10 +79,10 @@
     <table class="min-w-full text-sm">
       <thead>
         <tr class="text-left text-gray-500 border-b border-gray-200">
-          <th class="py-4 pl-4 pr-3">Method</th>
+          <th class="py-4 pl-4 pr-3">Name</th>
+          <th class="py-4 pr-3">Method</th>
+          <th class="py-4 pr-3">Base URL</th>
           <th class="py-4 pr-3">Path</th>
-          <th class="py-4 pr-3 hidden md:table-cell">Base URL</th>
-          <th class="py-4 pr-3 hidden lg:table-cell">Description</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Last Tested At</th>
           <th class="py-4 pr-3"></th>
         </tr>
@@ -88,19 +91,19 @@
       <tbody>
         <%= for ep <- @endpoints do %>
           <tr class="border-t border-gray-200 even:bg-gray-50">
-            <td class="py-4 pl-4 pr-3">
+            <td class="py-4 pr-3 pl-4">
+              {ep.name}
+            </td>
+            <td class="py-4 pr-3">
               <span class={"rounded px-2 py-0.5 text-xs font-semibold " <> method_chip_class(ep.method)}>
                 {ep.method}
               </span>
             </td>
-            <td class="py-4 pr-3 font-mono">
-              {ep.path}
-            </td>
             <td class="py-4 pr-3 hidden md:table-cell truncate max-w-[24ch]">
               {ep.base_url}
             </td>
-            <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[30ch]">
-              {ep.description}
+            <td class="py-4 pr-3 font-mono">
+              {ep.path}
             </td>
             <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[30ch]">
               {format_dt(ep.last_tested_at)}
