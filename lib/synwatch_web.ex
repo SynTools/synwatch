@@ -94,6 +94,7 @@ defmodule SynwatchWeb do
       # Custom SynWatch Components
       import SynwatchWeb.Components.SWButton
       import SynwatchWeb.Components.SWBreadcrumbs
+      import SynwatchWeb.Components.SWCard
       import SynwatchWeb.Components.SWModal
 
       # Routes generation with the ~p sigil

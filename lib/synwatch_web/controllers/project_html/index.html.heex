@@ -1,14 +1,14 @@
 <%= if Enum.empty?(@projects) do %>
-  <div class="rounded-xl border border-base-300 bg-white p-10 text-center">
+  <.sw_card class="text-center p-10">
     <.icon name="hero-folder" class="mx-auto h-10 w-10 text-gray-400" />
     <p class="mt-3 text-gray-600">No projects yet.</p>
-    <.sw_button href={~p"/projects/new"}>
+    <.sw_button class="mt-4" href={~p"/projects/new"}>
       <:icon>
         <.icon name="hero-plus" class="h-5 w-5" />
       </:icon>
       Create new project
     </.sw_button>
-  </div>
+  </.sw_card>
 <% else %>
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-semibold">Projects</h1>
@@ -23,30 +23,29 @@
   <ul class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
     <%= for p <- @projects do %>
       <li>
-        <.link
-          href={~p"/projects/#{p.id}"}
-          class="block rounded-xl border border-base-300 bg-white p-4 shadow-sm hover:shadow-md hover:scale-[1.02] transition-transform duration-200 ease-out"
-        >
-          <div class="flex items-start justify-between">
-            <h3 class="text-base font-semibold leading-tight truncate">
-              {p.name}
-            </h3>
-            <span class="ml-3 whitespace-nowrap text-xs text-gray-500">
-              {format_relative(p.updated_at || p.inserted_at)}
-            </span>
-          </div>
+        <.sw_card class="shadow-sm hover:shadow-md hover:scale-[1.02] transition-transform duration-200 ease-out cursor-pointer">
+          <.link href={~p"/projects/#{p.id}"}>
+            <div class="flex items-start justify-between">
+              <h3 class="text-base font-semibold leading-tight truncate">
+                {p.name}
+              </h3>
+              <span class="ml-3 whitespace-nowrap text-xs text-gray-500">
+                {format_relative(p.updated_at || p.inserted_at)}
+              </span>
+            </div>
 
-          <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">
-            <div class="rounded-lg bg-gray-50 p-2">
-              <dt class="text-xs text-gray-500">Created</dt>
-              <dd class="font-medium">{format_dt(p.inserted_at)}</dd>
-            </div>
-            <div class="rounded-lg bg-gray-50 p-2">
-              <dt class="text-xs text-gray-500">Updated</dt>
-              <dd class="font-medium">{format_dt(p.updated_at)}</dd>
-            </div>
-          </dl>
-        </.link>
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div class="rounded-lg bg-gray-50 p-2">
+                <dt class="text-xs text-gray-500">Created</dt>
+                <dd class="font-medium">{format_dt(p.inserted_at)}</dd>
+              </div>
+              <div class="rounded-lg bg-gray-50 p-2">
+                <dt class="text-xs text-gray-500">Updated</dt>
+                <dd class="font-medium">{format_dt(p.updated_at)}</dd>
+              </div>
+            </dl>
+          </.link>
+        </.sw_card>
       </li>
     <% end %>
   </ul>

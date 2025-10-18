@@ -8,9 +8,9 @@ defmodule SynwatchWeb.Components.SWModal do
   ## Attrs
     * `id` – eindeutige ID (required)
     * `size` – "sm" | "md" | "lg" (default: "md")
-    * `on_close` – optional JS (z.B. `JS.push("closed")`)
+    * `on_close` – optional JS (e.g. `JS.push("closed")`)
   ## Slots
-    * `:title` – Kopfbereich (Text/Nodes)
+    * `:title` – Main Title (Text/Nodes)
     * `:inner_block` – Body
     * `:actions` – Footer-Buttons (rechtsbündig)
   """
