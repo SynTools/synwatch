@@ -19,9 +19,6 @@ defmodule Synwatch.Projects.Endpoint do
     field :path, :string
     field :base_url, :string
     field :description, :string
-    field :headers, :map, default: %{}
-    field :params, :map, default: %{}
-    field :request_body, :map, default: %{}
     field :last_tested_at, :utc_datetime
 
     belongs_to :project, Project, type: :binary_id
@@ -38,9 +35,6 @@ defmodule Synwatch.Projects.Endpoint do
       :path,
       :base_url,
       :description,
-      :headers,
-      :params,
-      :request_body,
       :last_tested_at,
       :project_id
     ])

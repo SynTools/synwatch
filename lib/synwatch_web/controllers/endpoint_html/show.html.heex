@@ -63,42 +63,9 @@
         name="endpoint[description]"
         value={@endpoint.description}
         label="Description"
-        placeholder="Retrieves a user by it's id"
+        placeholder="Fetches a user by it's id"
       />
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <.input
-        name="endpoint[headers]"
-        type="textarea"
-        label="Headers (JSON)"
-        value={Jason.encode!(@endpoint.headers)}
-        class="font-mono min-h-[120px]"
-        placeholder='{"Authorization":"Bearer ...","Content-Type":"application/json"}'
-      />
-
-      <.input
-        name="endpoint[params]"
-        type="textarea"
-        label="Params (JSON)"
-        value={Jason.encode!(@endpoint.params)}
-        class="font-mono min-h-[120px]"
-        placeholder='{"limit":50,"offset":0}'
-      />
-
-      <.input
-        name="endpoint[request_body]"
-        type="textarea"
-        label="Request Body (JSON)"
-        value={Jason.encode!(@endpoint.request_body)}
-        class="font-mono min-h-[120px]"
-        placeholder='{"email":"jane@example.com","name":"Jane"}'
-      />
-    </div>
-
-    <p class="text-xs text-gray-500">
-      Tip: JSON-Felder müssen gültiges JSON sein (Strings in Anführungszeichen, Kommas korrekt).
-    </p>
 
     <div class="flex items-center gap-2">
       <.sw_button>Save</.sw_button>

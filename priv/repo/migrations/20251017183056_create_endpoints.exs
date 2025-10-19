@@ -13,10 +13,6 @@ defmodule Synwatch.Repo.Migrations.CreateEndpoints do
       add :base_url, :string, null: false
       add :description, :text
 
-      add :headers, :map, null: false, default: %{}
-      add :params, :map, null: false, default: %{}
-      add :request_body, :map, null: false, default: %{}
-
       add :last_tested_at, :utc_datetime
 
       add :project_id,
