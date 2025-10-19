@@ -91,11 +91,14 @@ defmodule SynwatchWeb do
       alias Phoenix.LiveView.JS
       alias SynwatchWeb.Layouts
 
-      # Custom SynWatch Components
+      # Custom Common Components
       import SynwatchWeb.Components.SWButton
       import SynwatchWeb.Components.SWBreadcrumbs
       import SynwatchWeb.Components.SWCard
       import SynwatchWeb.Components.SWModal
+
+      # Custom Endpoint Components
+      import SynwatchWeb.Components.Endpoint.SwEndpointForm
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
