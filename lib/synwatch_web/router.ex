@@ -73,6 +73,7 @@ defmodule SynwatchWeb.Router do
       get "/endpoints/new", EndpointController, :new
       get "/endpoints/:id", EndpointController, :show
       patch "/endpoints/:id", EndpointController, :update
+      delete "/endpoints/:id", EndpointController, :delete
     end
   end
 

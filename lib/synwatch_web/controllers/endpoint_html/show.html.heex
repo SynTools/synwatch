@@ -85,3 +85,26 @@
     </div>
   </.form>
 </.sw_card>
+
+<%!-- Delete Endpoint Modal --%>
+<.sw_modal id="confirm-delete" size="md">
+  <:title>Delete endpoint?</:title>
+  This action cannot be undone. All related data may be removed.
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete")}
+    >
+      Cancel
+    </.sw_button>
+
+    <.sw_button
+      color="red"
+      method="delete"
+      href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"}
+    >
+      Delete
+    </.sw_button>
+  </:actions>
+</.sw_modal>

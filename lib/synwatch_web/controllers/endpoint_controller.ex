@@ -50,4 +50,27 @@ defmodule SynwatchWeb.EndpointController do
         )
     end
   end
+
+  def delete(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "project_id" => project_id} = _params
+      ) do
+    stored_endpoint = Endpoints.get_one!(id, project_id, user.id)
+
+    with {:ok, %Endpoint{} = _endpoint} <- Endpoints.delete(stored_endpoint) do
+      conn
+      |> put_flash(:info, "Endpoint successfully deleted")
+      |> redirect(to: ~p"/projects/#{project_id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the endpoint")
+        |> render(:show,
+          page_title: stored_endpoint.name,
+          endpoint: stored_endpoint,
+          project: stored_endpoint.project
+        )
+    end
+  end
 end

@@ -80,20 +80,18 @@ defmodule SynwatchWeb.ProjectController do
   def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
     stored_project = Projects.get_by_id_and_user_id!(id, user.id)
 
-    with {:ok, %Project{} = project} <- Projects.delete(stored_project) do
+    with {:ok, %Project{} = _project} <- Projects.delete(stored_project) do
       conn
-      |> put_flash(:info, "Project #{project.name} successfully deleted")
+      |> put_flash(:info, "Project successfully deleted")
       |> redirect(to: ~p"/projects")
       |> halt()
     else
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Something went wrong deleting the project")
         |> render(:show,
           page_title: stored_project.name,
-          project: stored_project,
-          changeset: changeset,
-          tab: "endpoints"
+          project: stored_project
         )
     end
   end
