@@ -71,6 +71,7 @@ defmodule SynwatchWeb.Router do
 
     scope "/:project_id" do
       get "/endpoints/new", EndpointController, :new
+      post "/endpoints", EndpointController, :create
       get "/endpoints/:id", EndpointController, :show
       patch "/endpoints/:id", EndpointController, :update
       delete "/endpoints/:id", EndpointController, :delete

@@ -42,10 +42,10 @@ defmodule Synwatch.Projects.Endpoint do
     |> update_change(:base_url, &String.trim/1)
     |> validate_required([:name, :method, :path, :base_url])
     |> validate_length(:name, min: 1, max: 160)
-    |> foreign_key_constraint(:project_id)
     |> unique_constraint([:project_id, :name],
       name: :endpoints_project_id_name_index,
       message: "can only have one endpoint with the same name"
     )
+    |> foreign_key_constraint(:project_id)
   end
 end

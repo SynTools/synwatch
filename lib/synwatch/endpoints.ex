@@ -37,4 +37,10 @@ defmodule Synwatch.Endpoints do
   end
 
   def delete(%Endpoint{} = endpoint), do: Repo.delete(endpoint)
+
+  def create(attrs \\ %{}) do
+    %Endpoint{}
+    |> Endpoint.changeset(attrs)
+    |> Repo.insert()
+  end
 end

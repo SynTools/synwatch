@@ -1,1 +1,24 @@
-NEW ENDPOINT
+<%!-- Breadcrumbs Nav --%>
+<.sw_breadcrumbs items={[
+  %{label: "Projects", to: ~p"/projects"},
+  %{label: @project.name, to: ~p"/projects/#{@project.id}"},
+  %{label: "New Endpoint", to: nil}
+]} />
+
+<%!-- Header Row --%>
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">Create Endpoint</h1>
+  <div class="flex items-center gap-2">
+    <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
+      Back
+    </.sw_button>
+  </div>
+</div>
+
+<%!-- Form Card --%>
+<.sw_endpoint_form
+  changeset={@changeset}
+  action={~p"/projects/#{@project.id}/endpoints"}
+  method="post"
+  cancel_href={~p"/projects/#{@project.id}/endpoints/new"}
+/>

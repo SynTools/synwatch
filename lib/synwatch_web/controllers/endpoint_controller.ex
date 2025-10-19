@@ -6,8 +6,17 @@ defmodule SynwatchWeb.EndpointController do
   alias Synwatch.Accounts.User
   alias Synwatch.Endpoints
   alias Synwatch.Projects.Endpoint
+  alias Synwatch.Projects
 
-  def new(%Plug.Conn{} = conn, _params), do: render(conn, :new, page_title: "Create Endpoint")
+  def new(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id} = _params
+      ) do
+    project = Projects.get_by_id_and_user_id!(project_id, user.id)
+    changeset = Ecto.Changeset.change(%Endpoint{project_id: project_id})
+
+    render(conn, :new, page_title: "Create Endpoint", changeset: changeset, project: project)
+  end
 
   def show(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
@@ -70,6 +79,30 @@ defmodule SynwatchWeb.EndpointController do
           page_title: stored_endpoint.name,
           endpoint: stored_endpoint,
           project: stored_endpoint.project
+        )
+    end
+  end
+
+  def create(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "endpoint" => attrs}
+      ) do
+    project = Projects.get_by_id_and_user_id!(project_id, user.id)
+    attrs = Map.put(attrs, "project_id", project.id)
+
+    with {:ok, %Endpoint{} = endpoint} <- Endpoints.create(attrs) do
+      conn
+      |> put_flash(:info, "Endpoint successfully created")
+      |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> flash_changeset_errors(changeset)
+        |> render(:new,
+          page_title: "Create Endpoint",
+          project: project,
+          changeset: changeset
         )
     end
   end
