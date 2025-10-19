@@ -100,6 +100,9 @@ defmodule SynwatchWeb do
       # Custom Endpoint Components
       import SynwatchWeb.Components.Endpoint.SwEndpointForm
 
+      # Custom Project Components
+      import SynwatchWeb.Components.Project.SwProjectForm
+
       # Routes generation with the ~p sigil
       unquote(verified_routes())
     end

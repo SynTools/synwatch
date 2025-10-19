@@ -1,8 +1,10 @@
+<%!-- Breadcrumb Nav --%>
 <.sw_breadcrumbs items={[
   %{label: "Projects", to: ~p"/projects"},
   %{label: @project.name, to: nil}
 ]} />
 
+<%!-- Header Row --%>
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">{@project.name}</h1>
   <div class="flex items-center gap-2">
@@ -19,27 +21,13 @@
   </div>
 </div>
 
-<%!-- Project Card --%>
-<.sw_card class="mb-8 max-w-md">
-  <:header>
-    <h2 class="text-xl font-semibold">Project Settings</h2>
-  </:header>
-
-  <.form
-    for={Ecto.Changeset.change(@project)}
-    action={~p"/projects/#{@project.id}"}
-    method="patch"
-    class="space-y-4"
-  >
-    <.input name="project[name]" value={@project.name} label="Name" />
-    <div class="flex items-center gap-2 mt-4">
-      <.sw_button>Save</.sw_button>
-      <.sw_button style="ghost" color="gray" href={~p"/projects/#{@project.id}"}>
-        Cancel
-      </.sw_button>
-    </div>
-  </.form>
-</.sw_card>
+<%!-- Form Card --%>
+<.sw_project_form
+  changeset={Ecto.Changeset.change(@project)}
+  action={~p"/projects/#{@project.id}"}
+  method="patch"
+  cancel_href={~p"/projects/#{@project.id}"}
+/>
 
 <%!-- Delete Project Modal --%>
 <.sw_modal id="confirm-delete" size="md">

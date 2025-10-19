@@ -1,8 +1,10 @@
+<%!-- Breadcrumb Nav --%>
 <.sw_breadcrumbs items={[
   %{label: "Projects", to: ~p"/projects"},
   %{label: "Create Project", to: nil}
 ]} />
 
+<%!-- Header Row --%>
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">Create Project</h1>
   <div class="flex items-center gap-2">
@@ -12,18 +14,10 @@
   </div>
 </div>
 
-<div class="mb-8 rounded-xl border border-base-300 bg-white p-5 max-w-md">
-  <.form
-    for={Ecto.Changeset.change(@changeset)}
-    action={~p"/projects"}
-    method="post"
-    class="space-y-4"
-  >
-    <.input name="project[name]" value="" label="Name" />
-    <div class="flex items-center gap-2 mt-4">
-      <.sw_button>
-        Create
-      </.sw_button>
-    </div>
-  </.form>
-</div>
+<%!-- Form Card --%>
+<.sw_project_form
+  changeset={Ecto.Changeset.change(@changeset)}
+  action={~p"/projects"}
+  method="post"
+  cancel_href={~p"/projects/new"}
+/>
