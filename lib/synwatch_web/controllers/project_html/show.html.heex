@@ -33,10 +33,10 @@
   >
     <.input name="project[name]" value={@project.name} label="Name" />
     <div class="flex items-center gap-2 mt-4">
+      <.sw_button>Save</.sw_button>
       <.sw_button style="ghost" color="gray" href={~p"/projects/#{@project.id}"}>
         Cancel
       </.sw_button>
-      <.sw_button>Save</.sw_button>
     </div>
   </.form>
 </.sw_card>

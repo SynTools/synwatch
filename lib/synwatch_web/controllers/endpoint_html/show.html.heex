@@ -7,7 +7,7 @@
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">{@endpoint.name}</h1>
   <div class="flex items-center gap-2">
-    <.sw_button href={~p"/projects"} color="gray" style="outlined">
+    <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
       Back
     </.sw_button>
     <.sw_button
@@ -68,14 +68,20 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <.sw_button>Save</.sw_button>
-      <.sw_button
-        style="ghost"
-        color="gray"
-        href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"}
+      <.form
+        for={Ecto.Changeset.change(@endpoint)}
+        action={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"}
+        method="patch"
       >
-        Cancel
-      </.sw_button>
+        <.sw_button>Save</.sw_button>
+        <.sw_button
+          style="ghost"
+          color="gray"
+          href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"}
+        >
+          Cancel
+        </.sw_button>
+      </.form>
     </div>
   </.form>
 </.sw_card>
