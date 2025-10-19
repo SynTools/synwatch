@@ -29,9 +29,12 @@ defmodule SynwatchWeb.EndpointController do
         |> render(:not_found, page_title: "Endpoint not found", project_id: project_id)
 
       %Endpoint{} = endpoint ->
+        changeset = Ecto.Changeset.change(endpoint)
+
         render(conn, :show,
           page_title: endpoint.name,
           endpoint: endpoint,
+          changeset: changeset,
           project: endpoint.project
         )
     end
