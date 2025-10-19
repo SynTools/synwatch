@@ -17,7 +17,7 @@
 
 <%!-- Form Card --%>
 <.sw_endpoint_form
-  changeset={@changeset}
+  changeset={Ecto.Changeset.change(@changeset)}
   action={~p"/projects/#{@project.id}/endpoints"}
   method="post"
   cancel_href={~p"/projects/#{@project.id}/endpoints/new"}
