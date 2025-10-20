@@ -35,7 +35,8 @@ defmodule SynwatchWeb.EndpointController do
           page_title: endpoint.name,
           endpoint: endpoint,
           changeset: changeset,
-          project: endpoint.project
+          project: endpoint.project,
+          tests: endpoint.tests
         )
     end
   end

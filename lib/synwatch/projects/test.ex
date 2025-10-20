@@ -14,6 +14,7 @@ defmodule Synwatch.Projects.Test do
     field :response_http_code, :integer
     field :response_body, :map, default: %{}
     field :response_headers, :map, default: %{}
+    field :last_run_at, :utc_datetime
 
     belongs_to :endpoint, Endpoint
 
@@ -37,6 +38,7 @@ defmodule Synwatch.Projects.Test do
       :response_http_code,
       :response_body,
       :response_headers,
+      :last_run_at,
       :endpoint_id
     ])
     |> validate_required([:name, :response_http_code, :endpoint_id])

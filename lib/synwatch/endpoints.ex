@@ -13,7 +13,7 @@ defmodule Synwatch.Endpoints do
         e.project_id == ^project_id and
         p.user_id == ^user_id
     )
-    |> preload(:project)
+    |> preload([:project, :tests])
     |> Repo.one()
   end
 
@@ -26,7 +26,7 @@ defmodule Synwatch.Endpoints do
         e.project_id == ^project_id and
         p.user_id == ^user_id
     )
-    |> preload(:project)
+    |> preload([:project, :tests])
     |> Repo.one!()
   end
 

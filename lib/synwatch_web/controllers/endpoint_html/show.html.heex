@@ -52,3 +52,83 @@
     </.sw_button>
   </:actions>
 </.sw_modal>
+
+<%!-- Tests Card --%>
+<.sw_card class="mb-8">
+  <:header>
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Tests</h2>
+      <.sw_button
+        :if={!Enum.empty?(@tests)}
+        navigate={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/new"}
+      >
+        <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
+        New Test
+      </.sw_button>
+    </div>
+  </:header>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500 border-b border-gray-200">
+          <th class="py-4 pl-4 pr-3">Name</th>
+          <th class="py-4 pr-3">Expected Status</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Request Params</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Request Headers</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Last Run At</th>
+          <th class="py-4 pr-3"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%= for t <- @tests do %>
+          <tr class="border-t border-gray-200 even:bg-gray-50">
+            <td class="py-4 pr-3 pl-4">
+              {t.name}
+            </td>
+            <td class="py-4 pr-3">
+              <span class={"rounded px-2 py-0.5 text-xs font-semibold " <> status_chip_class(t.response_http_code)}>
+                {t.response_http_code}
+              </span>
+            </td>
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {if is_map(t.request_params), do: map_size(t.request_params), else: 0}
+            </td>
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {if is_map(t.request_headers), do: map_size(t.request_headers), else: 0}
+            </td>
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {format_dt(t.last_run_at)}
+            </td>
+            <td class="py-4 pr-4 text-right">
+              <.sw_button
+                style="outlined"
+                color="gray"
+                size="sm"
+                navigate={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{t.id}"}
+              >
+                <:icon><.icon name="hero-eye" class="h-4 w-4" /></:icon>
+                View
+              </.sw_button>
+            </td>
+          </tr>
+        <% end %>
+
+        <tr :if={Enum.empty?(@tests)}>
+          <td colspan="5" class="py-10 text-center text-gray-600">
+            <.icon name="hero-beaker" class="h-8 w-8 mx-auto text-gray-400" />
+            <p class="mt-2">No tests yet.</p>
+            <.sw_button
+              class="mt-3"
+              navigate={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/new"}
+            >
+              <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
+              Create your first test
+            </.sw_button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</.sw_card>
