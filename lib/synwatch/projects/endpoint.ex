@@ -4,6 +4,7 @@ defmodule Synwatch.Projects.Endpoint do
   import Ecto.Changeset
 
   alias Synwatch.Projects.Project
+  alias Synwatch.Projects.Test
 
   @type t :: %__MODULE__{}
 
@@ -22,6 +23,7 @@ defmodule Synwatch.Projects.Endpoint do
     field :last_tested_at, :utc_datetime
 
     belongs_to :project, Project, type: :binary_id
+    has_many :tests, Test, on_delete: :delete_all, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
