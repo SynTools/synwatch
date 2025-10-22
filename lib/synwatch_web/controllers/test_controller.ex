@@ -67,6 +67,31 @@ defmodule SynwatchWeb.TestController do
     end
   end
 
+  def delete(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "project_id" => project_id, "endpoint_id" => endpoint_id} = _params
+      ) do
+    stored_test = Tests.get_one!(id, endpoint_id, project_id, user.id)
+
+    with {:ok, %Test{} = _test} <- Tests.delete(stored_test) do
+      conn
+      |> put_flash(:info, "Test successfully deleted")
+      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the endpoint")
+        |> render(:show,
+          page_title: stored_test.name,
+          test: stored_test,
+          changeset: changeset,
+          endpoint: stored_test.endpoint,
+          project: stored_test.endpoint.project
+        )
+    end
+  end
+
   defp normalize_test_params(attrs) do
     attrs
     |> stringify_keys()

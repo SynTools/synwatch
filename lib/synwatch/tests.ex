@@ -38,4 +38,6 @@ defmodule Synwatch.Tests do
     |> Test.changeset(attrs)
     |> Repo.update()
   end
+
+  def delete(%Test{} = test), do: Repo.delete(test)
 end
