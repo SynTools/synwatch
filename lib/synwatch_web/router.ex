@@ -79,6 +79,7 @@ defmodule SynwatchWeb.Router do
       scope "/endpoints/:endpoint_id" do
         get "/tests/new", TestController, :new
         get "/tests/:id", TestController, :show
+        patch "/tests/:id", TestController, :update
       end
     end
   end

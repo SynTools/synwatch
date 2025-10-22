@@ -23,12 +23,6 @@ defmodule Synwatch.Projects.Test do
 
   @doc false
   def changeset(test, attrs) do
-    attrs =
-      normalize_maps(
-        attrs,
-        ~w(request_body request_headers request_params response_body response_headers)a
-      )
-
     test
     |> cast(attrs, [
       :name,
@@ -52,16 +46,5 @@ defmodule Synwatch.Projects.Test do
       name: :tests_endpoint_id_name_index,
       message: "can only have one test with the same name"
     )
-  end
-
-  defp normalize_maps(attrs, keys) when is_map(attrs) do
-    Enum.reduce(keys, attrs, fn key, acc ->
-      case Map.get(acc, Atom.to_string(key)) || Map.get(acc, key) do
-        "" -> Map.put(acc, key, %{})
-        v when is_map(v) -> Map.put(acc, key, v)
-        nil -> acc
-        _ -> acc
-      end
-    end)
   end
 end

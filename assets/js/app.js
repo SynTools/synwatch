@@ -81,3 +81,37 @@ if (process.env.NODE_ENV === "development") {
   })
 }
 
+document.addEventListener('click', (e) => {
+  const addBtn = e.target.closest('[data-kv-add]');
+  if (addBtn) {
+    const field = addBtn.getAttribute('data-kv-add');
+    const group = addBtn.closest('form').querySelector(`[data-kv-group="${field}"]`);
+    const tpl = addBtn.closest('form').querySelector(`template[data-kv-template="${field}"]`);
+    if (!group || !tpl) return;
+
+    const idx = group.querySelectorAll('[data-kv-row]').length;
+    const html = tpl.innerHTML.replaceAll('__INDEX__', String(idx));
+    group.insertAdjacentHTML('beforeend', html);
+    return;
+  }
+
+  const removeBtn = e.target.closest('[data-kv-remove]');
+  if (removeBtn) {
+    const row = removeBtn.closest('[data-kv-row]');
+    const group = removeBtn.closest('[data-kv-group]');
+    if (!row || !group) return;
+
+    row.remove();
+    reindexGroup(group);
+    return;
+  }
+});
+
+function reindexGroup(group) {
+  const rows = Array.from(group.querySelectorAll('[data-kv-row]'));
+  rows.forEach((row, idx) => {
+    row.querySelectorAll('input[name]').forEach((inp) => {
+      inp.name = inp.name.replace(/\[\d+\]/, `[${idx}]`);
+    });
+  });
+}
