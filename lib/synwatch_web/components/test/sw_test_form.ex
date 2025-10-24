@@ -260,8 +260,28 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
   defp kv_rows_indexed(map) when map == %{}, do: []
 
   defp kv_rows_indexed(map) when is_map(map) do
-    map |> Enum.with_index() |> Enum.map(fn {{k, v}, idx} -> {idx, k, v} end)
+    cond do
+      Enum.all?(map, fn {_k, v} -> is_binary(v) or is_nil(v) end) ->
+        map
+        |> Enum.with_index()
+        |> Enum.map(fn {{k, v}, idx} -> {idx, to_string(k), to_string(v || "")} end)
+
+      Enum.all?(map, fn {_k, v} -> is_map(v) end) ->
+        map
+        |> Enum.sort_by(fn {k, _} -> parse_int(k) end)
+        |> Enum.with_index()
+        |> Enum.map(fn {{_idx, %{"key" => k, "value" => v}}, idx} ->
+          {idx, to_string(k || ""), to_string(v || "")}
+        end)
+
+      true ->
+        []
+    end
   end
+
+  defp parse_int(k) when is_binary(k), do: String.to_integer(k)
+  defp parse_int(k) when is_integer(k), do: k
+  defp parse_int(_), do: 0
 
   defp pretty_json(nil), do: ""
   defp pretty_json(map) when is_map(map), do: Jason.encode!(map, pretty: true)

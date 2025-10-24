@@ -1,1 +1,29 @@
-CREATE NEW TEST
+<%!-- Breadcrumbs Nav --%>
+<.sw_breadcrumbs items={[
+  %{label: "Projects", to: ~p"/projects"},
+  %{label: @project.name, to: ~p"/projects/#{@project.id}"},
+  %{label: @endpoint.name, to: ~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"},
+  %{label: "Create Test", to: nil}
+]} />
+
+<%!-- Header Row --%>
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">Create Test</h1>
+  <div class="flex items-center gap-2">
+    <.sw_button
+      href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}"}
+      color="gray"
+      style="outlined"
+    >
+      Back
+    </.sw_button>
+  </div>
+</div>
+
+<%!-- Form Card --%>
+<.sw_test_form
+  changeset={Ecto.Changeset.change(@changeset)}
+  action={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests"}
+  method="post"
+  cancel_href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/new"}
+/>

@@ -40,4 +40,10 @@ defmodule Synwatch.Tests do
   end
 
   def delete(%Test{} = test), do: Repo.delete(test)
+
+  def create(attrs \\ %{}) do
+    %Test{}
+    |> Test.changeset(attrs)
+    |> Repo.insert()
+  end
 end

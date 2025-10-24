@@ -33,6 +33,13 @@ defmodule SynwatchWeb.Router do
     plug RequireAuth
   end
 
+  # Public routes
+  scope "/", SynwatchWeb do
+    pipe_through [:browser]
+
+    get "/auth/login", AuthController, :login
+  end
+
   # Auth routes
   scope "/auth", SynwatchWeb do
     pipe_through [:browser, :auth]
@@ -40,13 +47,6 @@ defmodule SynwatchWeb.Router do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
     delete "/logout", AuthController, :logout
-  end
-
-  # Public routes
-  scope "/", SynwatchWeb do
-    pipe_through [:browser]
-
-    get "/auth/login", AuthController, :login
   end
 
   # Protected routes
@@ -78,6 +78,7 @@ defmodule SynwatchWeb.Router do
 
       scope "/endpoints/:endpoint_id" do
         get "/tests/new", TestController, :new
+        post "/tests", TestController, :create
         get "/tests/:id", TestController, :show
         patch "/tests/:id", TestController, :update
         delete "/tests/:id", TestController, :delete

@@ -5,13 +5,25 @@ defmodule SynwatchWeb.TestController do
 
   alias Synwatch.Accounts.User
   alias Synwatch.Projects.Test
+  alias Synwatch.Endpoints
+  alias Synwatch.Projects
   alias Synwatch.Tests
 
   def new(
-        %Plug.Conn{assigns: %{current_user: %User{} = _user}} = conn,
-        %{"project_id" => _project_id, "endpoint_id" => _endpoint_id} = _params
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
-    render(conn, :new, page_title: "Create Test")
+    project = Projects.get_by_id_and_user_id!(project_id, user.id)
+    endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
+
+    changeset = Ecto.Changeset.change(%Test{endpoint_id: endpoint_id})
+
+    render(conn, :new,
+      page_title: "Create Test",
+      project: project,
+      endpoint: endpoint,
+      changeset: changeset
+    )
   end
 
   def show(
@@ -88,6 +100,33 @@ defmodule SynwatchWeb.TestController do
           changeset: changeset,
           endpoint: stored_test.endpoint,
           project: stored_test.endpoint.project
+        )
+    end
+  end
+
+  def create(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs} =
+          _params
+      ) do
+    project = Projects.get_by_id_and_user_id!(project_id, user.id)
+    endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
+    attrs = Map.put(attrs, "endpoint_id", endpoint.id)
+
+    with {:ok, %Test{} = test} <- Tests.create(attrs) do
+      conn
+      |> put_flash(:info, "Test successfully created")
+      |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+      |> halt()
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> flash_changeset_errors(changeset)
+        |> render(:new,
+          page_title: "Create Test",
+          project: project,
+          endpoint: endpoint,
+          changeset: changeset
         )
     end
   end
