@@ -26,39 +26,51 @@ defmodule SynwatchWeb.Components.Endpoint.SwEndpointForm do
         class="space-y-6"
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CC.input name="endpoint[name]" field={@form[:name]} label="Name" />
+          <div>
+            <label class="text-sm font-medium block">Name*</label>
+            <CC.input name="endpoint[name]" field={@form[:name]} required />
+          </div>
 
-          <CC.input
-            name="endpoint[method]"
-            type="select"
-            label="Method"
-            options={~w(GET POST PUT PATCH DELETE HEAD OPTIONS)}
-            field={@form[:method]}
-          />
+          <div>
+            <label class="text-sm font-medium block">Method*</label>
+            <CC.input
+              name="endpoint[method]"
+              type="select"
+              options={~w(GET POST PUT PATCH DELETE HEAD OPTIONS)}
+              field={@form[:method]}
+              required
+            />
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CC.input
-            name="endpoint[base_url]"
-            field={@form[:base_url]}
-            label="Base URL"
-            placeholder="https://api.example.com"
-          />
-          <CC.input
-            name="endpoint[path]"
-            field={@form[:path]}
-            label="Path"
-            placeholder="/v1/users/:id"
-          />
+          <div>
+            <label class="text-sm font-medium block">Base URL*</label>
+            <CC.input
+              name="endpoint[base_url]"
+              field={@form[:base_url]}
+              required
+            />
+          </div>
+
+          <div>
+            <label class="text-sm font-medium block">Path*</label>
+            <CC.input
+              name="endpoint[path]"
+              field={@form[:path]}
+              required
+            />
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CC.input
-            name="endpoint[description]"
-            field={@form[:description]}
-            label="Description"
-            placeholder="Fetches a user by it's id"
-          />
+          <div>
+            <label class="text-sm font-medium block">Description</label>
+            <CC.input
+              name="endpoint[description]"
+              field={@form[:description]}
+            />
+          </div>
         </div>
 
         <div class="flex items-center gap-2">
