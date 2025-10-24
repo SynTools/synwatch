@@ -25,7 +25,11 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
         method={@method}
         class="space-y-6"
       >
-        <CC.input name="project[name]" field={@form[:name]} label="Name" />
+        <div>
+          <label class="text-sm font-medium block">Name*</label>
+          <CC.input name="project[name]" field={@form[:name]} required />
+        </div>
+
         <div class="flex items-center gap-2 mt-4">
           <SWB.sw_button>Save</SWB.sw_button>
           <SWB.sw_button style="ghost" color="gray" href={@cancel_href}>
