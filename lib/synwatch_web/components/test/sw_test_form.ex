@@ -19,8 +19,9 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
           <:header>
             <h2 class="text-xl font-semibold">Test Settings</h2>
           </:header>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <CC.input field={@form[:name]} label="Name" />
+          <div>
+            <label class="text-sm font-medium block">Name*</label>
+            <CC.input field={@form[:name]} required />
           </div>
         </SWC.sw_card>
 
@@ -232,8 +233,8 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
           </div>
 
           <div class="mt-6">
-            <label class="text-sm font-medium block">HTTP Status</label>
-            <CC.input field={@form[:response_http_code]} type="number" />
+            <label class="text-sm font-medium block">HTTP Status*</label>
+            <CC.input field={@form[:response_http_code]} type="number" required />
           </div>
 
           <div class="mt-6">
