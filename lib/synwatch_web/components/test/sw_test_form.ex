@@ -50,7 +50,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
                   <button
                     type="button"
                     data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
                   >
                     -
                   </button>
@@ -62,7 +62,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
               <button
                 type="button"
                 data-kv-add="request_headers"
-                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
               >
                 +
               </button>
@@ -112,7 +112,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
                   <button
                     type="button"
                     data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
                   >
                     -
                   </button>
@@ -124,7 +124,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
               <button
                 type="button"
                 data-kv-add="request_params"
-                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
               >
                 +
               </button>
@@ -190,7 +190,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
                   <button
                     type="button"
                     data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
                   >
                     -
                   </button>
@@ -202,7 +202,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
               <button
                 type="button"
                 data-kv-add="response_headers"
-                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
               >
                 +
               </button>
@@ -223,7 +223,7 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
                 <button
                   type="button"
                   data-kv-remove
-                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
                 >
                   -
                 </button>
