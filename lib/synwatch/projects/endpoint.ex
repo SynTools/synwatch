@@ -13,6 +13,7 @@ defmodule Synwatch.Projects.Endpoint do
   schema "endpoints" do
     field :name, :string
 
+    # TODO: Add to global ENUM
     field :method, Ecto.Enum,
       values: [:GET, :POST, :PUT, :PATCH, :DELETE, :HEAD, :OPTIONS],
       default: :GET
