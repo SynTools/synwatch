@@ -15,6 +15,7 @@ defmodule Synwatch.Tests do
         p.user_id == ^user_id
     )
     |> preload([_t, _e, _p], endpoint: [:project])
+    |> preload(:test_runs)
     |> Repo.one()
   end
 
@@ -30,6 +31,7 @@ defmodule Synwatch.Tests do
         p.user_id == ^user_id
     )
     |> preload([_t, _e, _p], endpoint: [:project])
+    |> preload(:test_runs)
     |> Repo.one!()
   end
 

@@ -3,6 +3,7 @@ defmodule Synwatch.Projects.Test do
   import Ecto.Changeset
 
   alias Synwatch.Projects.Endpoint
+  alias Synwatch.Projects.TestRun
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -17,6 +18,7 @@ defmodule Synwatch.Projects.Test do
     field :last_run_at, :utc_datetime
 
     belongs_to :endpoint, Endpoint
+    has_many :test_runs, TestRun, on_delete: :delete_all, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

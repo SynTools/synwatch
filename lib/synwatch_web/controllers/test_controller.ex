@@ -48,7 +48,8 @@ defmodule SynwatchWeb.TestController do
           test: test,
           changeset: changeset,
           endpoint: test.endpoint,
-          project: test.endpoint.project
+          project: test.endpoint.project,
+          runs: test.test_runs
         )
     end
   end

@@ -57,3 +57,88 @@
     </.sw_button>
   </:actions>
 </.sw_modal>
+
+<%!-- Test Runs Card --%>
+<.sw_card class="mt-8">
+  <:header>
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Test Runs</h2>
+      <.sw_button
+        :if={!Enum.empty?(@runs)}
+        color="primary"
+        style="outlined"
+        phx-click="run_test"
+        phx-value-id={@test.id}
+      >
+        <:icon><.icon name="hero-play" class="h-5 w-5" /></:icon>
+        Run Test
+      </.sw_button>
+    </div>
+  </:header>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500 border-b border-gray-200">
+          <th class="py-4 pl-4 pr-3">Started</th>
+          <th class="py-4 pr-3">Status</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Duration (ms)</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Response</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Error</th>
+          <th class="py-4 pr-3"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%= for run <- @runs do %>
+          <tr class="border-t border-gray-200 even:bg-gray-50">
+            <td class="py-4 pr-3 pl-4">{format_dt(run.started_at)}</td>
+
+            <td class="py-4 pr-3">
+              <span class={"rounded px-2 py-0.5 text-xs font-semibold " <> run_status_chip_class(run.status)}>
+                {run.status}
+              </span>
+            </td>
+
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {run.duration_ms || "–"}
+            </td>
+
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {if run.response_status, do: run.response_status, else: "–"}
+            </td>
+
+            <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[200px]">
+              {run.error_message || "–"}
+            </td>
+
+            <td class="py-4 pr-4 text-right">
+              <.sw_button
+                style="outlined"
+                color="gray"
+                size="sm"
+                navigate={
+                  ~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/runs/#{run.id}"
+                }
+              >
+                <:icon><.icon name="hero-eye" class="h-4 w-4" /></:icon>
+                View
+              </.sw_button>
+            </td>
+          </tr>
+        <% end %>
+
+        <tr :if={Enum.empty?(@runs)}>
+          <td colspan="6" class="py-10 text-center text-gray-600">
+            <.icon name="hero-rocket-launch" class="h-8 w-8 mx-auto text-gray-400" />
+            <p class="mt-2">No test runs yet.</p>
+            <.sw_button class="mt-3" color="primary" phx-click="run_test" phx-value-id={@test.id}>
+              <:icon><.icon name="hero-play" class="h-5 w-5" /></:icon>
+              Run this test
+            </.sw_button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</.sw_card>
