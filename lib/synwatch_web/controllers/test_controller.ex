@@ -132,6 +132,31 @@ defmodule SynwatchWeb.TestController do
     end
   end
 
+  def run(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "endpoint_id" => endpoint_id, "id" => id}
+      ) do
+    case Tests.get_one(id, endpoint_id, project_id, user.id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_flash(:error, "Test not found")
+        |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
+
+      %Test{} = test ->
+        case Tests.run_now(test) do
+          {:ok, _run} ->
+            conn
+            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+
+          {:error, reason} ->
+            conn
+            |> put_flash(:error, "Couldn't start test: #{inspect(reason)}")
+            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+        end
+    end
+  end
+
   defp normalize_test_params(attrs) do
     attrs
     |> stringify_keys()

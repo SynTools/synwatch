@@ -82,6 +82,7 @@ defmodule SynwatchWeb.Router do
         get "/tests/:id", TestController, :show
         patch "/tests/:id", TestController, :update
         delete "/tests/:id", TestController, :delete
+        post "/tests/:id/run", TestController, :run
       end
     end
   end

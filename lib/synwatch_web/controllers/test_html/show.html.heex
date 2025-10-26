@@ -67,8 +67,8 @@
         :if={!Enum.empty?(@runs)}
         color="primary"
         style="outlined"
-        phx-click="run_test"
-        phx-value-id={@test.id}
+        method="post"
+        href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/run"}
       >
         <:icon><.icon name="hero-play" class="h-5 w-5" /></:icon>
         Run Test
@@ -131,10 +131,16 @@
         <tr :if={Enum.empty?(@runs)}>
           <td colspan="6" class="py-10 text-center text-gray-600">
             <.icon name="hero-rocket-launch" class="h-8 w-8 mx-auto text-gray-400" />
-            <p class="mt-2">No test runs yet.</p>
-            <.sw_button class="mt-3" color="primary" phx-click="run_test" phx-value-id={@test.id}>
+            <p class="my-2">No test runs yet.</p>
+            <.sw_button
+              :if={Enum.empty?(@runs)}
+              color="primary"
+              style="filled"
+              method="post"
+              href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/run"}
+            >
               <:icon><.icon name="hero-play" class="h-5 w-5" /></:icon>
-              Run this test
+              Run this Test
             </.sw_button>
           </td>
         </tr>

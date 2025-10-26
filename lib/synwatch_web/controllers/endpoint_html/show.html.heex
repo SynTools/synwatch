@@ -74,8 +74,7 @@
         <tr class="text-left text-gray-500 border-b border-gray-200">
           <th class="py-4 pl-4 pr-3">Name</th>
           <th class="py-4 pr-3">Expected Status</th>
-          <th class="py-4 pr-3 hidden lg:table-cell">Request Params</th>
-          <th class="py-4 pr-3 hidden lg:table-cell">Request Headers</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Last Run</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Last Run At</th>
           <th class="py-4 pr-3"></th>
         </tr>
@@ -92,12 +91,23 @@
                 {t.response_http_code}
               </span>
             </td>
-            <td class="py-4 pr-3 hidden lg:table-cell">
-              {if is_map(t.request_params), do: map_size(t.request_params), else: 0}
+            <td class="py-4 pr-3 text-lg">
+              ✅
             </td>
-            <td class="py-4 pr-3 hidden lg:table-cell">
-              {if is_map(t.request_headers), do: map_size(t.request_headers), else: 0}
-            </td>
+            <%!-- <td class="py-4 pr-3 text-lg">
+              <%= case t.last_run_status do %>
+                <% :passed -> %>
+                  ✅
+                <% :failed -> %>
+                  ❌
+                <% :errored -> %>
+                  ⚠️
+                <% :running -> %>
+                  🔄
+                <% _ -> %>
+                  –
+              <% end %>
+            </td> --%>
             <td class="py-4 pr-3 hidden lg:table-cell">
               {format_dt(t.last_run_at)}
             </td>
