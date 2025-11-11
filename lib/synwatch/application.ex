@@ -10,6 +10,7 @@ defmodule Synwatch.Application do
     children = [
       SynwatchWeb.Telemetry,
       Synwatch.Repo,
+      {Finch, name: SynwatchFinch},
       {DNSCluster, query: Application.get_env(:synwatch, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Synwatch.PubSub},
       # Start a worker by calling: Synwatch.Worker.start_link(arg)

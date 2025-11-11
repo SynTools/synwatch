@@ -8,6 +8,7 @@ defmodule SynwatchWeb.TestController do
   alias Synwatch.Endpoints
   alias Synwatch.Projects
   alias Synwatch.Tests
+  alias Synwatch.TestRunner
 
   def new(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
@@ -144,14 +145,20 @@ defmodule SynwatchWeb.TestController do
         |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
 
       %Test{} = test ->
-        case Tests.run_now(test) do
-          {:ok, _run} ->
+        case TestRunner.run_now(test) do
+          :ok ->
             conn
+            |> put_flash(:info, "Test passed")
             |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
 
-          {:error, reason} ->
+          :failed ->
             conn
-            |> put_flash(:error, "Couldn't start test: #{inspect(reason)}")
+            |> put_flash(:error, "Test failed")
+            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+
+          :error ->
+            conn
+            |> put_flash(:error, "Couldn't start test")
             |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
         end
     end

@@ -68,7 +68,7 @@ defmodule Synwatch.Projects.TestRun do
       less_than_or_equal_to: 599
     )
     |> validate_number(:duration_ms, greater_than_or_equal_to: 0)
-    |> validate_timestamps_order()
+    # |> validate_timestamps_order()
     |> compute_duration()
     |> foreign_key_constraint(:test_id)
   end

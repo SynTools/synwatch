@@ -171,80 +171,8 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
           </:header>
 
           <div>
-            <label class="text-sm font-medium mb-2 block">Headers</label>
-
-            <div class="space-y-2" data-kv-group="response_headers">
-              <%= for {idx, k, v} <- kv_rows_indexed(@form[:response_headers].value) do %>
-                <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
-                  <input
-                    name={"test[response_headers][#{idx}][key]"}
-                    value={k}
-                    placeholder="Key"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                  <input
-                    name={"test[response_headers][#{idx}][value]"}
-                    value={v}
-                    placeholder="Value"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                  <button
-                    type="button"
-                    data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
-                  >
-                    -
-                  </button>
-                </div>
-              <% end %>
-            </div>
-
-            <div class="mt-3">
-              <button
-                type="button"
-                data-kv-add="response_headers"
-                class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
-              >
-                +
-              </button>
-            </div>
-
-            <template data-kv-template="response_headers">
-              <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
-                <input
-                  name="test[response_headers][__INDEX__][key]"
-                  placeholder="Key"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
-                <input
-                  name="test[response_headers][__INDEX__][value]"
-                  placeholder="Value"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
-                <button
-                  type="button"
-                  data-kv-remove
-                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
-                >
-                  -
-                </button>
-              </div>
-            </template>
-          </div>
-
-          <div class="mt-6">
-            <label class="text-sm font-medium block">HTTP Status*</label>
+            <label class="text-sm font-medium block">Expected HTTP Status*</label>
             <CC.input field={@form[:response_http_code]} type="number" required />
-          </div>
-
-          <div class="mt-6">
-            <label class="text-sm font-medium mb-2 block">Body (JSON)</label>
-            <CC.input
-              name="test[response_body_json]"
-              type="textarea"
-              value={pretty_json(@form[:response_body].value)}
-              class="input-code"
-            />
           </div>
         </SWC.sw_card>
       </div>

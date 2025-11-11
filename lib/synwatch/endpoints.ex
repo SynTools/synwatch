@@ -43,4 +43,11 @@ defmodule Synwatch.Endpoints do
     |> Endpoint.changeset(attrs)
     |> Repo.insert()
   end
+
+  def build_url(%Endpoint{} = endpoint) do
+    endpoint.base_url <> endpoint.path
+
+    # TODO: Also receive %Test{} as parameter
+    # TODO: Check request params of the test and add them to url if not empty
+  end
 end
