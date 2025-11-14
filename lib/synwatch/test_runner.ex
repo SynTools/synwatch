@@ -5,6 +5,8 @@ defmodule Synwatch.TestRunner do
   alias Synwatch.HttpClient
 
   def run_now(%Test{} = test) do
+    started_at = DateTime.utc_now()
+
     run = init_run!(test)
     req = build_request(test)
 
@@ -12,15 +14,15 @@ defmodule Synwatch.TestRunner do
 
     with {:ok, %Finch.Response{status: status}} <- HttpClient.request(req),
          :ok <- evaluate_http_status(req.expected_status, status),
-         :ok <- pass!(run, status) do
+         :ok <- pass!(run, status, started_at) do
       :ok
     else
       {:unexpected_status, reason, received} ->
-        fail!(run, reason, received)
+        fail!(run, reason, received, started_at)
         :failed
 
       {:error, reason} ->
-        errored!(run, reason)
+        errored!(run, reason, started_at)
         :error
     end
   end
@@ -37,39 +39,41 @@ defmodule Synwatch.TestRunner do
     TestRuns.create!(%{
       test_id: test_id,
       status: :queued,
-      trigger: :manual,
-      started_at: DateTime.utc_now()
+      trigger: :manual
     })
   end
 
-  defp pass!(run, status) do
+  defp pass!(run, status, started_at) do
     _ =
       TestRuns.update!(run, %{
         status: :passed,
         response_status: status,
+        started_at: started_at,
         finished_at: DateTime.utc_now()
       })
 
     :ok
   end
 
-  defp fail!(run, reason, status) do
+  defp fail!(run, reason, status, started_at) do
     _ =
       TestRuns.update!(run, %{
         status: :failed,
         response_status: status,
         error_message: reason,
+        started_at: started_at,
         finished_at: DateTime.utc_now()
       })
 
     :ok
   end
 
-  defp errored!(run, reason) do
+  defp errored!(run, reason, started_at) do
     _ =
       TestRuns.update!(run, %{
         status: :errored,
         error_message: transform_error_reason(reason),
+        started_at: started_at,
         finished_at: DateTime.utc_now()
       })
 

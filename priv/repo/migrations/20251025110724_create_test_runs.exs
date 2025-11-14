@@ -9,8 +9,8 @@ defmodule Synwatch.Repo.Migrations.CreateTestRuns do
       add :status, :string, null: false, default: "queued"
       add :trigger, :string, null: false, default: "manual"
 
-      add :started_at, :utc_datetime
-      add :finished_at, :utc_datetime
+      add :started_at, :utc_datetime_usec
+      add :finished_at, :utc_datetime_usec
       add :duration_ms, :integer
 
       add :request_method, :string

@@ -17,8 +17,8 @@ defmodule Synwatch.Projects.TestRun do
       values: [:manual],
       default: :manual
 
-    field :started_at, :utc_datetime
-    field :finished_at, :utc_datetime
+    field :started_at, :utc_datetime_usec
+    field :finished_at, :utc_datetime_usec
     field :duration_ms, :integer
 
     # TODO: Add to global ENUM
@@ -68,28 +68,28 @@ defmodule Synwatch.Projects.TestRun do
       less_than_or_equal_to: 599
     )
     |> validate_number(:duration_ms, greater_than_or_equal_to: 0)
-    # |> validate_timestamps_order()
     |> compute_duration()
     |> foreign_key_constraint(:test_id)
   end
 
-  defp compute_duration(
-         %Ecto.Changeset{changes: %{started_at: started_at, finished_at: finished_at}} = cs
-       )
-       when not is_nil(started_at) and not is_nil(finished_at) do
-    ms = DateTime.diff(finished_at, started_at, :millisecond)
-    put_change(cs, :duration_ms, max(ms, 0))
-  end
+  defp compute_duration(cs) do
+    started_at = get_field(cs, :started_at)
+    finished_at = get_field(cs, :finished_at)
 
-  defp compute_duration(cs), do: cs
+    cond do
+      is_nil(started_at) or is_nil(finished_at) ->
+        cs
 
-  defp validate_timestamps_order(%Ecto.Changeset{} = cs) do
-    with {:ok, started_at} <- fetch_change(cs, :started_at),
-         {:ok, finished_at} <- fetch_change(cs, :finished_at),
-         true <- DateTime.compare(finished_at, started_at) in [:gt, :eq] do
-      cs
-    else
-      _ -> add_error(cs, :finished_at, "must be after or equal to started_at")
+      match?(%DateTime{}, started_at) ->
+        ms = DateTime.diff(finished_at, started_at, :millisecond)
+        put_change(cs, :duration_ms, max(ms, 0))
+
+      match?(%NaiveDateTime{}, started_at) ->
+        ms = NaiveDateTime.diff(finished_at, started_at, :millisecond)
+        put_change(cs, :duration_ms, max(ms, 0))
+
+      true ->
+        cs
     end
   end
 end
