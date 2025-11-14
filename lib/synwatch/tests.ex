@@ -52,4 +52,27 @@ defmodule Synwatch.Tests do
     |> Test.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_latest_run!(id) do
+    %Test{}
+    |> Repo.get!(id)
+    |> preload(:test_runs)
+  end
+
+  def map_latest_test_run(tests) when is_list(tests) do
+    Enum.map(tests, fn test ->
+      case test.test_runs do
+        [latest | _] ->
+          latest_test_run = %{
+            status: latest.status,
+            finished_at: latest.finished_at
+          }
+
+          %Synwatch.Projects.Test{test | latest_test_run: latest_test_run}
+
+        _ ->
+          %Synwatch.Projects.Test{test | latest_test_run: nil}
+      end
+    end)
+  end
 end

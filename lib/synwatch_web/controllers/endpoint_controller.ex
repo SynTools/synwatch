@@ -30,14 +30,14 @@ defmodule SynwatchWeb.EndpointController do
 
       %Endpoint{} = endpoint ->
         changeset = Ecto.Changeset.change(endpoint)
+        endpoint = Endpoints.with_latest_test_run(endpoint)
 
         render(conn, :show,
           page_title: endpoint.name,
           endpoint: endpoint,
           changeset: changeset,
           project: endpoint.project,
-          tests: endpoint.tests,
-          latest_test_runs: []
+          tests: endpoint.tests
         )
     end
   end

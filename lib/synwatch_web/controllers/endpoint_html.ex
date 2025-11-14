@@ -5,6 +5,16 @@ defmodule SynwatchWeb.EndpointHTML do
 
   embed_templates "endpoint_html/*"
 
+  defp last_test_run_status_icon(:passed), do: "✅"
+
+  defp last_test_run_status_icon(:failed), do: "❌"
+
+  defp last_test_run_status_icon(:errored), do: "⚠️"
+
+  defp last_test_run_status_icon(:errored), do: "🔄"
+
+  defp last_test_run_status_icon(nil), do: "-"
+
   defp status_chip_class(code) when is_integer(code) and code >= 100 and code < 200,
     do: "bg-gray-100 text-gray-700"
 

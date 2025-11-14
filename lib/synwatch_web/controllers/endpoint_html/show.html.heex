@@ -92,24 +92,17 @@
               </span>
             </td>
             <td class="py-4 pr-3 text-lg">
-              ✅
+              {case t.latest_test_run do
+                nil -> "-"
+                run -> last_test_run_status_icon(run.status)
+              end}
             </td>
-            <%!-- <td class="py-4 pr-3 text-lg">
-              <%= case t.last_run_status do %>
-                <% :passed -> %>
-                  ✅
-                <% :failed -> %>
-                  ❌
-                <% :errored -> %>
-                  ⚠️
-                <% :running -> %>
-                  🔄
-                <% _ -> %>
-                  –
-              <% end %>
-            </td> --%>
+
             <td class="py-4 pr-3 hidden lg:table-cell">
-              {format_dt(t.last_run_at)}
+              {case t.latest_test_run do
+                nil -> "-"
+                run -> format_dt(run.finished_at)
+              end}
             </td>
             <td class="py-4 pr-4 text-right">
               <.sw_button

@@ -17,6 +17,8 @@ defmodule Synwatch.Projects.Test do
     field :response_headers, :map, default: %{}
     field :last_run_at, :utc_datetime
 
+    field :latest_test_run, :map, virtual: true
+
     belongs_to :endpoint, Endpoint
     has_many :test_runs, TestRun, on_delete: :delete_all, on_replace: :delete
 

@@ -3,8 +3,15 @@ defmodule Synwatch.Endpoints do
 
   alias Synwatch.Repo
   alias Synwatch.Projects.Endpoint
+  alias Synwatch.Projects.TestRun
+  alias Synwatch.Tests
 
   def get_one(id, project_id, user_id) do
+    latest_run_query =
+      from tr in TestRun,
+        order_by: [desc: tr.inserted_at],
+        limit: 1
+
     Endpoint
     |> join(:inner, [e], p in assoc(e, :project))
     |> where(
@@ -13,7 +20,10 @@ defmodule Synwatch.Endpoints do
         e.project_id == ^project_id and
         p.user_id == ^user_id
     )
-    |> preload([:project, :tests])
+    |> preload([e, p],
+      project: p,
+      tests: [test_runs: ^latest_run_query]
+    )
     |> Repo.one()
   end
 
@@ -28,6 +38,10 @@ defmodule Synwatch.Endpoints do
     )
     |> preload([:project, :tests])
     |> Repo.one!()
+  end
+
+  def with_latest_test_run(%Endpoint{tests: tests} = endpoint) do
+    %Endpoint{endpoint | tests: Tests.map_latest_test_run(tests)}
   end
 
   def update(%Endpoint{} = endpoint, attrs) do

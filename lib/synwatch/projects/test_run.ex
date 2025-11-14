@@ -2,15 +2,15 @@ defmodule Synwatch.Projects.TestRun do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Synwatch.Enums.TestRunStatus
   alias Synwatch.Projects.Test
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "test_runs" do
-    # TODO: Add to global ENUM
     field :status, Ecto.Enum,
-      values: [:queued, :running, :passed, :failed, :errored],
-      default: :queued
+      values: TestRunStatus.values(),
+      default: :passed
 
     # TODO: Add to global ENUM
     field :trigger, Ecto.Enum,
