@@ -71,7 +71,6 @@
           <th class="py-4 pr-3">Method</th>
           <th class="py-4 pr-3">Base URL</th>
           <th class="py-4 pr-3">Path</th>
-          <th class="py-4 pr-3 hidden lg:table-cell">Last Tested At</th>
           <th class="py-4 pr-3"></th>
         </tr>
       </thead>
@@ -92,9 +91,6 @@
             </td>
             <td class="py-4 pr-3 font-mono">
               {ep.path}
-            </td>
-            <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[30ch]">
-              {format_dt(ep.last_tested_at)}
             </td>
             <td class="py-4 pr-4 text-right">
               <.sw_button
