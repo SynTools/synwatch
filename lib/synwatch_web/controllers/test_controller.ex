@@ -95,7 +95,7 @@ defmodule SynwatchWeb.TestController do
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Something went wrong deleting the endpoint")
+        |> put_flash(:error, "Something went wrong deleting the Test")
         |> render(:show,
           page_title: stored_test.name,
           test: stored_test,

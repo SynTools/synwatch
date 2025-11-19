@@ -59,6 +59,7 @@ defmodule SynwatchWeb.Router do
     get "/settings", PageController, :settings
   end
 
+  # TODO: Add all API routes to a "/api" scope
   scope "/projects", SynwatchWeb do
     pipe_through [:browser, :require_auth, :main_layout]
 
@@ -83,6 +84,10 @@ defmodule SynwatchWeb.Router do
         patch "/tests/:id", TestController, :update
         delete "/tests/:id", TestController, :delete
         post "/tests/:id/run", TestController, :run
+
+        scope "/tests/:test_id" do
+          delete "/runs/:id", TestRunController, :delete
+        end
       end
     end
   end

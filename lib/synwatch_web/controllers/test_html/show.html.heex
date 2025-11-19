@@ -115,15 +115,13 @@
 
             <td class="py-4 pr-4 text-right">
               <.sw_button
-                style="outlined"
-                color="gray"
-                size="sm"
-                navigate={
+                color="red"
+                method="delete"
+                href={
                   ~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/runs/#{run.id}"
                 }
               >
-                <:icon><.icon name="hero-eye" class="h-4 w-4" /></:icon>
-                View
+                Delete
               </.sw_button>
             </td>
           </tr>
