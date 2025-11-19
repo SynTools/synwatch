@@ -67,7 +67,7 @@
       <.sw_button
         :if={!Enum.empty?(@runs)}
         color="primary"
-        style="outlined"
+        style="filled"
         method="post"
         href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/run"}
       >
@@ -117,6 +117,7 @@
               <.sw_button
                 color="red"
                 method="delete"
+                style="outlined"
                 href={
                   ~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/#{@test.id}/runs/#{run.id}"
                 }
