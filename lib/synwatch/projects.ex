@@ -4,7 +4,7 @@ defmodule Synwatch.Projects do
   alias Synwatch.Repo
   alias Synwatch.Projects.Project
 
-  def get_all_by_user_id(user_id), do: Repo.all_by(Project, user_id: user_id)
+  def get_all(user_id), do: Repo.all_by(Project, user_id: user_id)
 
   import Ecto.Query
 
@@ -15,7 +15,7 @@ defmodule Synwatch.Projects do
     |> Repo.one()
   end
 
-  def get_by_id_and_user_id!(id, user_id), do: Repo.get_by!(Project, id: id, user_id: user_id)
+  def get_one!(id, user_id), do: Repo.get_by!(Project, id: id, user_id: user_id)
 
   def update(%Project{} = project, attrs) do
     project

@@ -8,7 +8,7 @@ defmodule SynwatchWeb.ProjectController do
   alias Synwatch.Accounts.User
 
   def index(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
-    projects = Projects.get_all_by_user_id(user.id)
+    projects = Projects.get_all(user.id)
 
     render(conn, :index, page_title: "Projects", projects: projects)
   end
@@ -20,21 +20,19 @@ defmodule SynwatchWeb.ProjectController do
   end
 
   def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    case Projects.get_by_id_and_user_id(id, user.id) do
-      nil ->
+    with %Project{} = project <- Projects.get_one(id, user.id),
+         changeset = Ecto.Changeset.change(project) do
+      render(conn, :show,
+        page_title: project.name,
+        project: project,
+        endpoints: project.endpoints,
+        changeset: changeset
+      )
+    else
+      _ ->
         conn
         |> put_status(:not_found)
         |> render(:not_found, page_title: "Project not found")
-
-      %Project{} = project ->
-        changeset = Ecto.Changeset.change(project)
-
-        render(conn, :show,
-          page_title: project.name,
-          project: project,
-          endpoints: project.endpoints,
-          changeset: changeset
-        )
     end
   end
 
@@ -42,13 +40,12 @@ defmodule SynwatchWeb.ProjectController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"id" => id, "project" => updates}
       ) do
-    stored_project = Projects.get_by_id_and_user_id!(id, user.id)
+    stored_project = Projects.get_one!(id, user.id)
 
     with {:ok, %Project{} = project} <- Projects.update(stored_project, updates) do
       conn
       |> put_flash(:info, "Project successfully updated")
       |> redirect(to: ~p"/projects/#{project.id}")
-      |> halt()
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -61,38 +58,40 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def create(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"project" => attrs}) do
-    new_project = Map.put(attrs, "user_id", user.id)
+  def create(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project" => attrs}
+      ) do
+    attrs = Map.put(attrs, "user_id", user.id)
 
-    with {:ok, %Project{} = project} <- Projects.create(new_project) do
-      conn
-      |> put_flash(:info, "Project successfully created")
-      |> redirect(to: ~p"/projects/#{project.id}")
-      |> halt()
-    else
+    case Projects.create(attrs) do
+      {:ok, %Project{} = project} ->
+        conn
+        |> put_flash(:info, "Project successfully created")
+        |> redirect(to: ~p"/projects/#{project.id}")
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> flash_changeset_errors(changeset)
-        |> render(:new, page_title: "Create Project", changeset: changeset)
+        |> render(:new,
+          page_title: "Create Project",
+          changeset: changeset
+        )
     end
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    stored_project = Projects.get_by_id_and_user_id!(id, user.id)
-
-    with {:ok, %Project{} = _project} <- Projects.delete(stored_project) do
+    with %Project{} = project <- Projects.get_one!(id, user.id),
+         {:ok, %Project{} = _project} <- Projects.delete(project) do
       conn
       |> put_flash(:info, "Project successfully deleted")
       |> redirect(to: ~p"/projects")
       |> halt()
     else
-      {:error, %Ecto.Changeset{} = _changeset} ->
+      _ ->
         conn
-        |> put_flash(:error, "Something went wrong deleting the project")
-        |> render(:show,
-          page_title: stored_project.name,
-          project: stored_project
-        )
+        |> put_flash(:error, "Something went wrong deleting the Project")
+        |> redirect(to: ~p"/projects/#{id}")
     end
   end
 end
