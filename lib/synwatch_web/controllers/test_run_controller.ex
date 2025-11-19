@@ -15,7 +15,7 @@ defmodule SynwatchWeb.TestRunController do
         }
       ) do
     with %TestRun{} = run <- TestRuns.get_one(id, test_id, endpoint_id, project_id, user.id),
-         {:ok, _test_run} <- TestRuns.delete(run) do
+         {:ok, _run} <- TestRuns.delete(run) do
       conn
       |> put_flash(:info, "Test Run successfully deleted")
       |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test_id}")
