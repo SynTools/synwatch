@@ -8,7 +8,7 @@ defmodule Synwatch.Projects do
 
   import Ecto.Query
 
-  def get_by_id_and_user_id(id, user_id) do
+  def get_one(id, user_id) do
     Project
     |> where([p], p.id == ^id and p.user_id == ^user_id)
     |> preload(:endpoints)

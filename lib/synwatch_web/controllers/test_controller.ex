@@ -4,6 +4,8 @@ defmodule SynwatchWeb.TestController do
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
 
   alias Synwatch.Accounts.User
+  alias Synwatch.Projects.Endpoint
+  alias Synwatch.Projects.Project
   alias Synwatch.Projects.Test
   alias Synwatch.Endpoints
   alias Synwatch.Projects
@@ -14,25 +16,36 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
-    project = Projects.get_by_id_and_user_id!(project_id, user.id)
-    endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
-
-    changeset = Ecto.Changeset.change(%Test{endpoint_id: endpoint_id})
-
-    render(conn, :new,
-      page_title: "Create Test",
-      project: project,
-      endpoint: endpoint,
-      changeset: changeset
-    )
+    with %Project{} = project <- Projects.get_one(project_id, user.id),
+         %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user.id),
+         changeset = Ecto.Changeset.change(%Test{endpoint_id: endpoint_id}) do
+      render(conn, :new,
+        page_title: "Create Test",
+        project: project,
+        endpoint: endpoint,
+        changeset: changeset
+      )
+    else
+      _ -> redirect(conn, to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
+    end
   end
 
   def show(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"id" => id, "project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
-    case Tests.get_one(id, endpoint_id, project_id, user.id) do
-      nil ->
+    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user.id),
+         changeset = Ecto.Changeset.change(test) do
+      render(conn, :show,
+        page_title: test.name,
+        test: test,
+        changeset: changeset,
+        endpoint: test.endpoint,
+        project: test.endpoint.project,
+        runs: test.test_runs
+      )
+    else
+      _ ->
         conn
         |> put_status(:not_found)
         |> render(:not_found,
@@ -40,34 +53,26 @@ defmodule SynwatchWeb.TestController do
           project_id: project_id,
           endpoint_id: endpoint_id
         )
-
-      %Test{} = test ->
-        changeset = Ecto.Changeset.change(test)
-
-        render(conn, :show,
-          page_title: test.name,
-          test: test,
-          changeset: changeset,
-          endpoint: test.endpoint,
-          project: test.endpoint.project,
-          runs: test.test_runs
-        )
     end
   end
 
   def update(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
-        %{"id" => id, "project_id" => project_id, "endpoint_id" => endpoint_id, "test" => updates} =
-          _params
+        %{
+          "id" => id,
+          "project_id" => project_id,
+          "endpoint_id" => endpoint_id,
+          "test" => updates
+        }
       ) do
-    stored_test = Tests.get_one!(id, endpoint_id, project_id, user.id)
+    stored_test = Tests.get_one(id, endpoint_id, project_id, user.id)
 
-    with {:ok, %Test{} = test} <- Tests.update(stored_test, normalize_test_params(updates)) do
-      conn
-      |> put_flash(:info, "Test successfully updated")
-      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
-      |> halt()
-    else
+    case Tests.update(stored_test, normalize_test_params(updates)) do
+      {:ok, %Test{} = test} ->
+        conn
+        |> put_flash(:info, "Test successfully updated")
+        |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> flash_changeset_errors(changeset)
@@ -76,7 +81,8 @@ defmodule SynwatchWeb.TestController do
           test: stored_test,
           changeset: changeset,
           endpoint: stored_test.endpoint,
-          project: stored_test.endpoint.project
+          project: stored_test.endpoint.project,
+          runs: stored_test.test_runs
         )
     end
   end
@@ -85,42 +91,35 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"id" => id, "project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
-    stored_test = Tests.get_one!(id, endpoint_id, project_id, user.id)
-
-    with {:ok, %Test{} = _test} <- Tests.delete(stored_test) do
+    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user.id),
+         {:ok, %Test{} = _test} <- Tests.delete(test) do
       conn
       |> put_flash(:info, "Test successfully deleted")
       |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
       |> halt()
     else
-      {:error, %Ecto.Changeset{} = changeset} ->
+      _ ->
         conn
         |> put_flash(:error, "Something went wrong deleting the Test")
-        |> render(:show,
-          page_title: stored_test.name,
-          test: stored_test,
-          changeset: changeset,
-          endpoint: stored_test.endpoint,
-          project: stored_test.endpoint.project
-        )
+        |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
     end
   end
 
   def create(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
-        %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs} =
-          _params
+        %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs}
       ) do
     project = Projects.get_by_id_and_user_id!(project_id, user.id)
     endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
+
     attrs = Map.put(attrs, "endpoint_id", endpoint.id)
 
-    with {:ok, %Test{} = test} <- Tests.create(attrs) do
-      conn
-      |> put_flash(:info, "Test successfully created")
-      |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
-      |> halt()
-    else
+    case Tests.create(attrs) do
+      {:ok, %Test{} = test} ->
+        conn
+        |> put_flash(:info, "Test successfully created")
+        |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> flash_changeset_errors(changeset)
@@ -137,30 +136,30 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id, "id" => id}
       ) do
-    case Tests.get_one(id, endpoint_id, project_id, user.id) do
+    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user.id),
+         result <- TestRunner.run_now(test) do
+      case result do
+        :ok ->
+          conn
+          |> put_flash(:info, "Test passed")
+          |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+
+        :failed ->
+          conn
+          |> put_flash(:error, "Test failed")
+          |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+
+        :error ->
+          conn
+          |> put_flash(:error, "Couldn't start test")
+          |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
+      end
+    else
       nil ->
         conn
         |> put_status(:not_found)
         |> put_flash(:error, "Test not found")
         |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
-
-      %Test{} = test ->
-        case TestRunner.run_now(test) do
-          :ok ->
-            conn
-            |> put_flash(:info, "Test passed")
-            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
-
-          :failed ->
-            conn
-            |> put_flash(:error, "Test failed")
-            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
-
-          :error ->
-            conn
-            |> put_flash(:error, "Couldn't start test")
-            |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{id}")
-        end
     end
   end
 
