@@ -109,7 +109,7 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs}
       ) do
-    project = Projects.get_by_id_and_user_id!(project_id, user.id)
+    project = Projects.get_one!(project_id, user.id)
     endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
 
     attrs = Map.put(attrs, "endpoint_id", endpoint.id)
