@@ -1,11 +1,56 @@
-<div class="flex justify-center items-center w-screen h-screen bg-base-200">
-  <div class="bg-white p-6 rounded-xl shadow-md text-center">
-    <h2 class="text-xl font-semibold mb-4 text-base-200">Welcome to SynWatch!</h2>
-    <.link href={~p"/auth/github"} class="btn btn-neutral w-full">
-      <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 0.5C5.37 0.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.387.6.111.82-.26.82-.577v-2.234c-3.338.726-4.043-1.61-4.043-1.61-.546-1.387-1.334-1.756-1.334-1.756-1.09-.744.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.807 1.305 3.492.998.108-.776.418-1.305.76-1.606-2.665-.305-5.466-1.333-5.466-5.933 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.527.117-3.183 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.552 3.297-1.23 3.297-1.23.653 1.656.242 2.88.118 3.183.77.84 1.235 1.911 1.235 3.221 0 4.61-2.804 5.625-5.475 5.922.43.37.812 1.103.812 2.222v3.293c0 .32.218.694.825.576A12.013 12.013 0 0 0 24 12.5C24 5.87 18.63 0.5 12 0.5z"/>
-      </svg>
-      Sign in with GitHub
-    </.link>
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-base-200">
+  <div class="hidden lg:block relative">
+    <img
+      src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=90"
+      alt="Hero image"
+      class="w-full h-full object-cover"
+    />
+
+    <div class="absolute bottom-4 left-4 text-white text-xs opacity-80">
+      Photo by
+      <a href="https://unsplash.com/@tvick" class="underline" target="blank">Taylor Vick</a>
+      on Unsplash
+    </div>
+  </div>
+
+  <div class="flex items-center justify-center p-6 lg:p-10">
+    <div class="bg-white/90 backdrop-blur-sm border border-base-200 shadow-xl rounded-2xl p-8 lg:p-10 w-full max-w-md space-y-8">
+      <div class="space-y-3 text-left">
+        <span class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          API Testing, simplified
+        </span>
+
+        <h1 class="text-3xl font-bold text-gray-900">
+          Welcome to <span class="text-primary">SynWatch</span>
+        </h1>
+
+        <p class="text-sm text-gray-500 leading-relaxed">
+          Test your endpoints, get notified of errors, and keep an eye on your APIs—all without additional scripts.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <.link
+          href={~p"/auth/github"}
+          class="btn btn-primary btn-lg w-full flex items-center justify-center gap-2"
+        >
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0.5C5.37 0.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.387.6.111.82-.26.82-.577v-2.234c-3.338.726-4.043-1.61-4.043-1.61-.546-1.387-1.334-1.756-1.334-1.756-1.09-.744.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.807 1.305 3.492.998.108-.776.418-1.305.76-1.606-2.665-.305-5.466-1.333-5.466-5.933 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.527.117-3.183 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.552 3.297-1.23 3.297-1.23.653 1.656.242 2.88.118 3.183.77.84 1.235 1.911 1.235 3.221 0 4.61-2.804 5.625-5.475 5.922.43.37.812 1.103.812 2.222v3.293c0 .32.218.694.825.576A12.013 12.013 0 0 0 24 12.5C24 5.87 18.63 0.5 12 0.5z" />
+          </svg>
+          Sign in with GitHub
+        </.link>
+      </div>
+
+      <div class="space-y-2 text-xs text-gray-400">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          <span>Set up tests in just a few minutes.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          <span>Keep a centralised overview of endpoint health and errors.</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
