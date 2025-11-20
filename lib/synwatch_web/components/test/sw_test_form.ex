@@ -35,23 +35,26 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
 
             <div class="space-y-2" data-kv-group="request_headers">
               <%= for {idx, k, v} <- kv_rows_indexed(@form[:request_headers].value) do %>
-                <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
+                <div
+                  class="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_auto] gap-2 items-start"
+                  data-kv-row
+                >
                   <input
                     name={"test[request_headers][#{idx}][key]"}
                     value={k}
                     placeholder="Key"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                   <input
                     name={"test[request_headers][#{idx}][value]"}
                     value={v}
                     placeholder="Value"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                   <button
                     type="button"
                     data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
+                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer sm:justify-self-end"
                   >
                     -
                   </button>
@@ -70,21 +73,24 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
             </div>
 
             <template data-kv-template="request_headers">
-              <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
+              <div
+                class="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_auto] gap-2 items-start"
+                data-kv-row
+              >
                 <input
                   name="test[request_headers][__INDEX__][key]"
                   placeholder="Key"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <input
                   name="test[request_headers][__INDEX__][value]"
                   placeholder="Value"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <button
                   type="button"
                   data-kv-remove
-                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer sm:justify-self-end"
                 >
                   -
                 </button>
@@ -97,23 +103,26 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
 
             <div class="space-y-2" data-kv-group="request_params">
               <%= for {idx, k, v} <- kv_rows_indexed(@form[:request_params].value) do %>
-                <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
+                <div
+                  class="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_auto] gap-2 items-start"
+                  data-kv-row
+                >
                   <input
                     name={"test[request_params][#{idx}][key]"}
                     value={k}
                     placeholder="Key"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                   <input
                     name={"test[request_params][#{idx}][value]"}
                     value={v}
                     placeholder="Value"
-                    class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                   <button
                     type="button"
                     data-kv-remove
-                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer"
+                    class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer sm:justify-self-end"
                   >
                     -
                   </button>
@@ -132,21 +141,24 @@ defmodule SynwatchWeb.Components.Test.SwTestForm do
             </div>
 
             <template data-kv-template="request_params">
-              <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-start" data-kv-row>
+              <div
+                class="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_auto] gap-2 items-start"
+                data-kv-row
+              >
                 <input
                   name="test[request_params][__INDEX__][key]"
                   placeholder="Key"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <input
                   name="test[request_params][__INDEX__][value]"
                   placeholder="Value"
-                  class="rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  class="w-full rounded-lg border border-base-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <button
                   type="button"
                   data-kv-remove
-                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50"
+                  class="px-3 py-2 text-sm rounded-lg border border-base-300 hover:bg-gray-50 cursor-pointer sm:justify-self-end"
                 >
                   -
                 </button>
