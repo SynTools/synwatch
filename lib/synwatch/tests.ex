@@ -39,6 +39,20 @@ defmodule Synwatch.Tests do
     |> Repo.one!()
   end
 
+  def get_all(endpoint_id, project_id, user_id) do
+    Test
+    |> join(:inner, [t], e in assoc(t, :endpoint))
+    |> join(:inner, [t, e], p in assoc(e, :project))
+    |> where(
+      [t, e, p],
+      e.id == ^endpoint_id and
+        p.id == ^project_id and
+        p.user_id == ^user_id
+    )
+    |> preload([_t, _e, _p], endpoint: [:project])
+    |> Repo.all()
+  end
+
   def update(%Test{} = test, attrs) do
     test
     |> Test.changeset(attrs)

@@ -27,6 +27,21 @@ defmodule Synwatch.TestRunner do
     end
   end
 
+  def run_many(tests, opts \\ []) when is_list(tests) do
+    max_concurrency = Keyword.get(opts, :max_concurrency, System.schedulers_online())
+    timeout = Keyword.get(opts, :timeout, :infinity)
+
+    tests
+    |> Task.async_stream(&run_now/1,
+      max_concurrency: max_concurrency,
+      timeout: timeout
+    )
+    |> Enum.map(fn
+      {:ok, result} -> result
+      {:exit, reason} -> {:crash, reason}
+    end)
+  end
+
   defp evaluate_http_status(expected, received) do
     if expected == received do
       :ok

@@ -84,6 +84,7 @@ defmodule SynwatchWeb.Router do
         patch "/tests/:id", TestController, :update
         delete "/tests/:id", TestController, :delete
         post "/tests/:id/run", TestController, :run
+        post "/tests/run", TestController, :bulk_run
 
         scope "/tests/:test_id" do
           delete "/runs/:id", TestRunController, :delete

@@ -9,8 +9,7 @@ defmodule Synwatch.Endpoints do
   def get_one(id, project_id, user_id) do
     latest_run_query =
       from tr in TestRun,
-        order_by: [desc: tr.inserted_at],
-        limit: 1
+        order_by: [desc: tr.inserted_at]
 
     Endpoint
     |> join(:inner, [e], p in assoc(e, :project))
