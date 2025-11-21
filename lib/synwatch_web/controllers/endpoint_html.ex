@@ -11,8 +11,6 @@ defmodule SynwatchWeb.EndpointHTML do
 
   defp last_test_run_status_icon(:errored), do: "⚠️"
 
-  defp last_test_run_status_icon(:errored), do: "🔄"
-
   defp last_test_run_status_icon(nil), do: "-"
 
   defp status_chip_class(code) when is_integer(code) and code >= 100 and code < 200,
