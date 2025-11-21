@@ -167,12 +167,12 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id}
       ) do
-    tests = Tests.get_all(endpoint_id, project_id, user.id)
-    result = TestRunner.run_many(tests)
-
-    conn
-    |> put_flash(:info, "#{length(result)} of #{length(tests)} Tests were executed")
-    |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
+    with tests <- Tests.get_all(endpoint_id, project_id, user.id),
+         result <- TestRunner.run_many(tests) do
+      conn
+      |> put_flash(:info, "#{length(result)} of #{length(tests)} Tests were executed")
+      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
+    end
   end
 
   defp normalize_test_params(attrs) do
