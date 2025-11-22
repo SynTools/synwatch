@@ -25,5 +25,6 @@ defmodule Synwatch.Accounts.Team do
     team
     |> cast(attrs, [:name, :owner_id])
     |> validate_required([:name])
+    |> foreign_key_constraint(:owner_id)
   end
 end
