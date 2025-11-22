@@ -1,0 +1,67 @@
+<h1 class="text-3xl font-semibold mb-6">Settings</h1>
+
+<%!-- Team Settings --%>
+<div class="w-full max-w-4xl">
+  <.sw_card class="p-6 shadow-sm transition-shadow duration-200">
+    <:header>
+      <div>
+        <h2 class="text-xl font-semibold">Team Settings</h2>
+        <p class="mt-1 text-sm text-gray-500">
+          Manage your team, ownership, and membership options.
+        </p>
+      </div>
+    </:header>
+
+    <div class="mb-6">
+      <h3 class="text-lg font-medium mb-3">Create new Team</h3>
+
+      <.form for={%{}} action="#" method="post" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium block">Name*</label>
+          <.input name="team[name]" value="" required />
+        </div>
+
+        <div class="flex justify-start">
+          <.sw_button>
+            Save
+          </.sw_button>
+        </div>
+      </.form>
+    </div>
+
+    <div class="border-t border-base-300 my-6"></div>
+
+    <% dummy_teams = [
+      %{id: 1, name: "Engineering", members: 8},
+      %{id: 1, name: "Product", members: 5},
+      %{id: 1, name: "Marketing", members: 3}
+    ] %>
+
+    <h3 class="text-lg font-medium mb-3">Your Teams</h3>
+
+    <ul class="divide-y divide-gray-200 border border-base-300 rounded-xl overflow-hidden">
+      <%= for t <- dummy_teams do %>
+        <li class="px-4 py-3 flex items-center justify-between">
+          <div class="flex flex-col">
+            <span class="font-medium text-gray-800">
+              {t.name}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center rounded-full border border-base-300 px-3 py-1 text-xs text-gray-600">
+              {t.members} members
+            </span>
+
+            <.sw_button style="ghost" color="gray" href={"#team/#{t.id}"}>
+              <:icon>
+                <.icon name="hero-eye" class="h-5 w-5" />
+              </:icon>
+              View
+            </.sw_button>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </.sw_card>
+</div>

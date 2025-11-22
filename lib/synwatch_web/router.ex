@@ -56,7 +56,6 @@ defmodule SynwatchWeb.Router do
     get "/", PageController, :home
     get "/dashboard", PageController, :dashboard
     get "/runs", PageController, :runs
-    get "/settings", PageController, :settings
   end
 
   # TODO: Add all API routes to a "/api" scope
@@ -91,6 +90,12 @@ defmodule SynwatchWeb.Router do
         end
       end
     end
+  end
+
+  scope "/settings", SynwatchWeb do
+    pipe_through [:browser, :require_auth, :main_layout]
+
+    get "/", SettingsController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
