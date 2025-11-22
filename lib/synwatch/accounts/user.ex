@@ -15,6 +15,10 @@ defmodule Synwatch.Accounts.User do
     field :refresh_token, :string
     field :token_expires_at, :utc_datetime
 
+    many_to_many :teams, Synwatch.Accounts.Team,
+      join_through: "team_memberships",
+      join_keys: [user_id: :id, team_id: :id]
+
     timestamps(type: :utc_datetime)
   end
 
