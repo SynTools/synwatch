@@ -37,9 +37,15 @@
           </div>
 
           <%!-- TODO: Add "No Teams" Layout --%>
-          <%!-- TODO: Add chip "owner" or "member" --%>
 
           <div class="flex items-center gap-3">
+            <span class={
+              "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium " <>
+              team_role_chip_class(t.owner_id, @user_id)
+            }>
+              {team_role_label(t.owner_id, @user_id)}
+            </span>
+
             <span class="inline-flex items-center rounded-full border border-base-300 px-3 py-1 text-xs text-gray-600">
               {length(t.members)} {if length(t.members) == 1, do: "member", else: "members"}
             </span>

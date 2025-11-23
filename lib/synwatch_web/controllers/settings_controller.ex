@@ -9,6 +9,11 @@ defmodule SynwatchWeb.SettingsController do
     teams = Teams.get_all_for_user(user.id)
     changeset = Ecto.Changeset.change(%Team{})
 
-    render(conn, :index, page_title: "Settings", teams: teams, changeset: changeset)
+    render(conn, :index,
+      page_title: "Settings",
+      teams: teams,
+      changeset: changeset,
+      user_id: user.id
+    )
   end
 end
