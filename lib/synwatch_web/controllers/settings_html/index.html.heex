@@ -27,38 +27,43 @@
 
     <h3 class="text-lg font-medium mb-3">Your Teams</h3>
 
-    <ul class="divide-y divide-gray-200 border border-base-300 rounded-xl overflow-hidden">
-      <%= for t <- @teams do %>
-        <li class="px-4 py-3 flex items-center justify-between">
-          <div class="flex flex-col">
-            <span class="font-medium text-gray-800">
-              {t.name}
-            </span>
-          </div>
+    <%= if Enum.empty?(@teams) do %>
+      <div class="text-sm text-gray-600 bg-gray-50 border border-dashed border-base-300 p-6 rounded-xl">
+        You are not part of a team yet. Create one above.
+      </div>
+    <% else %>
+      <ul class="divide-y divide-gray-200 border border-base-300 rounded-xl overflow-hidden">
+        <%= for t <- @teams do %>
+          <li class="px-4 py-3 flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-medium text-gray-800">
+                {t.name}
+              </span>
+            </div>
 
-          <%!-- TODO: Add "No Teams" Layout --%>
+            <div class="flex items-center gap-3">
+              <span class={
+                "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium " <>
+                team_role_chip_class(t.owner_id, @user_id)
+              }>
+                {team_role_label(t.owner_id, @user_id)}
+              </span>
 
-          <div class="flex items-center gap-3">
-            <span class={
-              "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium " <>
-              team_role_chip_class(t.owner_id, @user_id)
-            }>
-              {team_role_label(t.owner_id, @user_id)}
-            </span>
+              <span class="inline-flex items-center rounded-full border border-base-300 px-3 py-1 text-xs text-gray-600">
+                {length(t.members)}
+                {if length(t.members) == 1, do: "member", else: "members"}
+              </span>
 
-            <span class="inline-flex items-center rounded-full border border-base-300 px-3 py-1 text-xs text-gray-600">
-              {length(t.members)} {if length(t.members) == 1, do: "member", else: "members"}
-            </span>
-
-            <.sw_button style="ghost" color="gray" href={"#team/#{t.id}"}>
-              <:icon>
-                <.icon name="hero-eye" class="h-5 w-5" />
-              </:icon>
-              View
-            </.sw_button>
-          </div>
-        </li>
-      <% end %>
-    </ul>
+              <.sw_button style="ghost" color="gray" href={"#team/#{t.id}"}>
+                <:icon>
+                  <.icon name="hero-eye" class="h-5 w-5" />
+                </:icon>
+                View
+              </.sw_button>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   </.sw_card>
 </div>
