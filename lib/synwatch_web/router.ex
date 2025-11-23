@@ -92,6 +92,12 @@ defmodule SynwatchWeb.Router do
     end
   end
 
+  scope "/teams", SynwatchWeb do
+    pipe_through [:browser, :require_auth, :main_layout]
+
+    post "/", TeamController, :create
+  end
+
   scope "/settings", SynwatchWeb do
     pipe_through [:browser, :require_auth, :main_layout]
 

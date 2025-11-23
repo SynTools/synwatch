@@ -15,18 +15,12 @@
     <div class="mb-6">
       <h3 class="text-lg font-medium mb-3">Create new Team</h3>
 
-      <.form for={%{}} action="#" method="post" class="space-y-4">
-        <div>
-          <label class="text-sm font-medium block">Name*</label>
-          <.input name="team[name]" value="" required />
-        </div>
-
-        <div class="flex justify-start">
-          <.sw_button>
-            Save
-          </.sw_button>
-        </div>
-      </.form>
+      <.sw_team_form
+        changeset={Ecto.Changeset.change(@changeset)}
+        action={~p"/teams"}
+        method="post"
+        cancel_href={~p"/settings"}
+      />
     </div>
 
     <div class="border-t border-base-300 my-6"></div>
@@ -42,6 +36,7 @@
             </span>
           </div>
 
+          <%!-- TODO: Add "No Teams" Layout --%>
           <%!-- TODO: Add chip "owner" or "member" --%>
 
           <div class="flex items-center gap-3">

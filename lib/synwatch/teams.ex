@@ -13,4 +13,10 @@ defmodule Synwatch.Teams do
     )
     |> Repo.all()
   end
+
+  def create_for_user(attrs \\ %{}) do
+    %Team{}
+    |> Team.changeset(attrs)
+    |> Repo.insert()
+  end
 end

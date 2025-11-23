@@ -103,6 +103,9 @@ defmodule SynwatchWeb do
       # Custom Project Components
       import SynwatchWeb.Components.Project.SwProjectForm
 
+      # Custom Team Components
+      import SynwatchWeb.Components.Team.SwTeamForm
+
       # Custom Test Components
       import SynwatchWeb.Components.Test.SwTestForm
 
