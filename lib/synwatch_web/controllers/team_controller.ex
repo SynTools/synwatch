@@ -14,9 +14,14 @@ defmodule SynwatchWeb.TeamController do
         |> put_flash(:info, "Team successfully created")
         |> redirect(to: ~p"/settings")
 
-      {:error, {_error, %Ecto.Changeset{} = changeset}} ->
+      {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> flash_changeset_errors(changeset)
+        |> redirect(to: ~p"/settings")
+
+      {:error, {_error, %Ecto.Changeset{} = _changeset}} ->
+        conn
+        |> put_flash(:error, "Failed to create team")
         |> redirect(to: ~p"/settings")
     end
   end

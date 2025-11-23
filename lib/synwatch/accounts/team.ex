@@ -25,6 +25,10 @@ defmodule Synwatch.Accounts.Team do
     team
     |> cast(attrs, [:name, :owner_id])
     |> validate_required([:name])
+    |> unique_constraint([:owner_id, :name],
+      name: :teams_owner_id_name_index,
+      message: "can only own one team with the same name"
+    )
     |> foreign_key_constraint(:owner_id)
   end
 end
