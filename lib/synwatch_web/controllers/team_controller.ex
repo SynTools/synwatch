@@ -8,15 +8,13 @@ defmodule SynwatchWeb.TeamController do
   alias Synwatch.Teams
 
   def create(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"team" => attrs}) do
-    attrs = Map.put(attrs, "owner_id", user.id)
-
-    case Teams.create_for_user(attrs) do
+    case Teams.create_for_user(user.id, attrs) do
       {:ok, %Team{} = _team} ->
         conn
         |> put_flash(:info, "Team successfully created")
         |> redirect(to: ~p"/settings")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, {_error, %Ecto.Changeset{} = changeset}} ->
         conn
         |> flash_changeset_errors(changeset)
         |> redirect(to: ~p"/settings")
