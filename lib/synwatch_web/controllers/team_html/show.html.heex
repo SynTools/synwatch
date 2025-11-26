@@ -10,6 +10,7 @@
       Back
     </.sw_button>
     <.sw_button
+      :if={@is_owner}
       color="red"
       style="outlined"
       phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete")}
@@ -21,6 +22,7 @@
 
 <%!-- Form Card --%>
 <.sw_team_form
+  :if={@is_owner}
   changeset={Ecto.Changeset.change(@changeset)}
   action={~p"/teams/:id"}
   method="patch"

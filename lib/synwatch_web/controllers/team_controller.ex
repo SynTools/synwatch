@@ -8,8 +8,6 @@ defmodule SynwatchWeb.TeamController do
   alias Synwatch.Teams
 
   def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    IO.inspect(Teams.list_members_with_joined_at(id))
-
     with %Team{} = team <- Teams.get_for_user(id, user.id),
          members <- Teams.list_members_with_joined_at(team.id),
          changeset = Ecto.Changeset.change(team) do
@@ -17,7 +15,8 @@ defmodule SynwatchWeb.TeamController do
         page_title: team.name,
         team: team,
         changeset: changeset,
-        members: members
+        members: members,
+        is_owner: Teams.owner?(team, user.id)
       )
     else
       _ ->

@@ -77,4 +77,6 @@ defmodule Synwatch.Teams do
       }
     end)
   end
+
+  def owner?(team, user_id), do: team.owner_id == user_id
 end
