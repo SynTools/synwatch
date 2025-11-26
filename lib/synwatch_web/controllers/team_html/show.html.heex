@@ -1,0 +1,95 @@
+<%!-- Header Row --%>
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">{@team.name}</h1>
+  <div class="flex items-center gap-2">
+    <.sw_button
+      href={~p"/settings"}
+      color="gray"
+      style="outlined"
+    >
+      Back
+    </.sw_button>
+    <.sw_button
+      color="red"
+      style="outlined"
+      phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete")}
+    >
+      Delete
+    </.sw_button>
+  </div>
+</div>
+
+<%!-- Form Card --%>
+<.sw_team_form
+  changeset={Ecto.Changeset.change(@changeset)}
+  action={~p"/teams/:id"}
+  method="patch"
+  cancel_href={~p"/settings/teams/#{@team.id}"}
+/>
+
+<%!-- Delete Team Modal --%>
+<.sw_modal id="confirm-delete" size="md">
+  <:title>Delete Team?</:title>
+  This action cannot be undone. All related data may be removed.
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete")}
+    >
+      Cancel
+    </.sw_button>
+
+    <.sw_button
+      color="red"
+      method="delete"
+      href={~p"/teams/#{@team.id}"}
+    >
+      Delete
+    </.sw_button>
+  </:actions>
+</.sw_modal>
+
+<%!-- Tests Card --%>
+<.sw_card class="my-8">
+  <:header>
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Members</h2>
+    </div>
+  </:header>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500 border-b border-gray-200">
+          <th class="py-4 pl-4 pr-3">Name</th>
+          <th class="py-4 pr-3">Email</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Member Since</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Role</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%= for m <- @members do %>
+          <tr class="border-t border-gray-200 even:bg-gray-50">
+            <td class="py-4 pr-3 pl-4">
+              {m.user.name}
+            </td>
+
+            <td class="py-4 pr-3">
+              {m.user.email}
+            </td>
+
+            <td class="py-4 pr-3">
+              {format_dt(m.joined_at)}
+            </td>
+
+            <td class="py-4 pr-3">
+              {if @team.owner_id == m.user.id, do: "Owner", else: "Member"}
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</.sw_card>

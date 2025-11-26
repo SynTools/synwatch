@@ -7,6 +7,28 @@ defmodule SynwatchWeb.TeamController do
   alias Synwatch.Accounts.Team
   alias Synwatch.Teams
 
+  def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
+    IO.inspect(Teams.list_members_with_joined_at(id))
+
+    with %Team{} = team <- Teams.get_for_user(id, user.id),
+         members <- Teams.list_members_with_joined_at(team.id),
+         changeset = Ecto.Changeset.change(team) do
+      render(conn, :show,
+        page_title: team.name,
+        team: team,
+        changeset: changeset,
+        members: members
+      )
+    else
+      _ ->
+        conn
+        |> put_status(:not_found)
+        |> render(:not_found,
+          page_title: "Team not found"
+        )
+    end
+  end
+
   def create(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"team" => attrs}) do
     case Teams.create_for_user(user.id, attrs) do
       {:ok, %Team{} = _team} ->

@@ -102,6 +102,7 @@ defmodule SynwatchWeb.Router do
     pipe_through [:browser, :require_auth, :main_layout]
 
     get "/", SettingsController, :index
+    get "/teams/:id", TeamController, :show
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
