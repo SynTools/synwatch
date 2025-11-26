@@ -87,4 +87,20 @@ defmodule SynwatchWeb.TeamController do
         |> redirect(to: ~p"/settings")
     end
   end
+
+  def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
+    with %Team{} = team <- Teams.get_for_user(id, user.id),
+         Teams.owner?(team, user.id),
+         {:ok, %Team{} = _team} <- Teams.delete(team) do
+      conn
+      |> put_flash(:info, "Team successfully deleted")
+      |> redirect(to: ~p"/settings")
+      |> halt()
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the Team")
+        |> redirect(to: ~p"/settings/teams/#{id}")
+    end
+  end
 end

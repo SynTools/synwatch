@@ -97,6 +97,7 @@ defmodule SynwatchWeb.Router do
 
     post "/", TeamController, :create
     patch "/:id", TeamController, :update
+    delete "/:id", TeamController, :delete
   end
 
   scope "/settings", SynwatchWeb do

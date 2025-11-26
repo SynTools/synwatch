@@ -85,4 +85,6 @@ defmodule Synwatch.Teams do
     |> Team.changeset(attrs)
     |> Repo.update()
   end
+
+  def delete(%Team{} = team), do: Repo.delete(team)
 end
