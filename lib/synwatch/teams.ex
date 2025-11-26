@@ -79,4 +79,10 @@ defmodule Synwatch.Teams do
   end
 
   def owner?(team, user_id), do: team.owner_id == user_id
+
+  def update(%Team{} = team, attrs) do
+    team
+    |> Team.changeset(attrs)
+    |> Repo.update()
+  end
 end

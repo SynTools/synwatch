@@ -24,9 +24,9 @@
 <.sw_team_form
   :if={@is_owner}
   changeset={Ecto.Changeset.change(@changeset)}
-  action={~p"/teams/:id"}
+  action={~p"/teams/#{@team.id}"}
   method="patch"
-  cancel_href={~p"/settings/teams/#{@team.id}"}
+  cancel_href={~p"/teams/#{@team.id}"}
 />
 
 <%!-- Delete Team Modal --%>
