@@ -27,9 +27,19 @@
         <.sw_card class="shadow-sm hover:shadow-md hover:scale-[1.02] transition-transform duration-200 ease-out cursor-pointer">
           <.link href={~p"/projects/#{p.id}"}>
             <div class="flex items-start justify-between">
-              <h3 class="text-base font-semibold leading-tight truncate">
-                {p.name}
-              </h3>
+              <div class="min-w-0">
+                <h3 class="text-base font-semibold leading-tight truncate">
+                  {p.name}
+                </h3>
+
+                <div class="mt-2">
+                  <span class="inline-flex items-center rounded-full bg-indigo-100 text-indigo-800 px-3 py-1 text-xs font-medium">
+                    <.icon name="hero-user-group" class="mr-1.5 h-4 w-4" />
+                    {p.team && p.team.name}
+                  </span>
+                </div>
+              </div>
+
               <span class="ml-3 whitespace-nowrap text-xs text-gray-500">
                 {format_relative(p.updated_at || p.inserted_at)}
               </span>
