@@ -2,6 +2,7 @@ defmodule Synwatch.Endpoints do
   import Ecto.Query, warn: false
 
   alias Synwatch.Repo
+  alias Synwatch.Accounts.TeamMembership
   alias Synwatch.Projects.Endpoint
   alias Synwatch.Projects.TestRun
   alias Synwatch.Tests
@@ -13,30 +14,19 @@ defmodule Synwatch.Endpoints do
 
     Endpoint
     |> join(:inner, [e], p in assoc(e, :project))
+    |> join(:inner, [_e, p], t in assoc(p, :team))
+    |> join(:inner, [_e, _p, t], tm in TeamMembership, on: tm.team_id == t.id)
     |> where(
-      [e, p],
+      [e, p, _t, tm],
       e.id == ^id and
         e.project_id == ^project_id and
-        p.user_id == ^user_id
+        tm.user_id == ^user_id
     )
-    |> preload([e, p],
-      project: p,
+    |> preload([e, p, t, _tm],
+      project: {p, team: t},
       tests: [test_runs: ^latest_run_query]
     )
     |> Repo.one()
-  end
-
-  def get_one!(id, project_id, user_id) do
-    Endpoint
-    |> join(:inner, [e], p in assoc(e, :project))
-    |> where(
-      [e, p],
-      e.id == ^id and
-        e.project_id == ^project_id and
-        p.user_id == ^user_id
-    )
-    |> preload([:project, :tests])
-    |> Repo.one!()
   end
 
   def with_latest_test_run(%Endpoint{tests: tests} = endpoint) do

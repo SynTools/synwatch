@@ -13,7 +13,7 @@ defmodule SynwatchWeb.EndpointController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id} = _params
       ) do
-    with %Project{} = project <- Projects.get_one(project_id, user.id),
+    with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
          changeset = Ecto.Changeset.change(%Endpoint{project_id: project_id}) do
       render(conn, :new, page_title: "Create Endpoint", changeset: changeset, project: project)
     else
@@ -44,24 +44,29 @@ defmodule SynwatchWeb.EndpointController do
   end
 
   def update(
-        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
         %{"id" => id, "project_id" => project_id, "endpoint" => updates}
       ) do
-    stored_endpoint = Endpoints.get_one!(id, project_id, user.id)
-
-    case Endpoints.update(stored_endpoint, updates) do
-      {:ok, %Endpoint{} = endpoint} ->
+    with %Endpoint{} = endpoint <- Endpoints.get_one(id, project_id, user_id),
+         {:ok, %Endpoint{} = endpoint} <- Endpoints.update(endpoint, updates) do
+      conn
+      |> put_flash(:info, "Endpoint successfully updated")
+      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint.id}")
+    else
+      nil ->
         conn
-        |> put_flash(:info, "Endpoint successfully updated")
-        |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint.id}")
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Endpoint not found")
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        endpoint = changeset.data
+
         conn
         |> flash_changeset_errors(changeset)
         |> render(:show,
-          page_title: stored_endpoint.name,
-          endpoint: stored_endpoint,
-          project: stored_endpoint.project
+          page_title: endpoint.name,
+          endpoint: endpoint,
+          project: endpoint.project
         )
     end
   end
@@ -88,23 +93,30 @@ defmodule SynwatchWeb.EndpointController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint" => attrs}
       ) do
-    project = Projects.get_one!(project_id, user.id)
-    attrs = Map.put(attrs, "project_id", project.id)
-
-    case Endpoints.create(attrs) do
-      {:ok, %Endpoint{} = endpoint} ->
+    case Projects.get_one_for_user(project_id, user.id) do
+      nil ->
         conn
-        |> put_flash(:info, "Endpoint successfully created")
-        |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}")
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Project not found")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> flash_changeset_errors(changeset)
-        |> render(:new,
-          page_title: "Create Endpoint",
-          project: project,
-          changeset: changeset
-        )
+      %Project{} = project ->
+        attrs = Map.put(attrs, "project_id", project.id)
+
+        case Endpoints.create(attrs) do
+          {:ok, %Endpoint{} = endpoint} ->
+            conn
+            |> put_flash(:info, "Endpoint successfully created")
+            |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn
+            |> flash_changeset_errors(changeset)
+            |> render(:new,
+              page_title: "Create Endpoint",
+              project: project,
+              changeset: changeset
+            )
+        end
     end
   end
 end
