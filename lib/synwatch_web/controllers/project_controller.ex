@@ -93,18 +93,22 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    with %Project{} = project <- Projects.get_one_for_user(id, user.id),
-         {:ok, %Project{} = _project} <- Projects.delete(project) do
+  def delete(%Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn, %{"id" => id}) do
+    with %Project{} = project <- Projects.get_one_for_user(id, user_id),
+         {:ok, %Project{}} <- Projects.delete(project) do
       conn
       |> put_flash(:info, "Project successfully deleted")
       |> redirect(to: ~p"/projects")
-      |> halt()
     else
-      _ ->
+      nil ->
         conn
-        |> put_flash(:error, "Something went wrong deleting the Project")
-        |> redirect(to: ~p"/projects/#{id}")
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Project not found")
+
+      {:error, _reason} ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the project")
+        |> redirect(to: ~p"/projects")
     end
   end
 end
