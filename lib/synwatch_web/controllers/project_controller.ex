@@ -42,22 +42,28 @@ defmodule SynwatchWeb.ProjectController do
   end
 
   def update(
-        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
         %{"id" => id, "project" => updates}
       ) do
-    stored_project = Projects.get_one!(id, user.id)
-
-    with {:ok, %Project{} = project} <- Projects.update(stored_project, updates) do
+    with %Project{} = project <- Projects.get_one_for_user(id, user_id),
+         {:ok, %Project{} = project} <- Projects.update(project, updates) do
       conn
       |> put_flash(:info, "Project successfully updated")
       |> redirect(to: ~p"/projects/#{project.id}")
     else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Project not found")
+
       {:error, %Ecto.Changeset{} = changeset} ->
+        project = changeset.data
+
         conn
         |> flash_changeset_errors(changeset)
         |> render(:show,
-          page_title: stored_project.name,
-          project: stored_project,
+          page_title: project.name,
+          project: project,
           changeset: changeset
         )
     end
@@ -88,7 +94,7 @@ defmodule SynwatchWeb.ProjectController do
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    with %Project{} = project <- Projects.get_one!(id, user.id),
+    with %Project{} = project <- Projects.get_one_for_user(id, user.id),
          {:ok, %Project{} = _project} <- Projects.delete(project) do
       conn
       |> put_flash(:info, "Project successfully deleted")

@@ -20,8 +20,6 @@ defmodule Synwatch.Projects do
     |> Repo.one()
   end
 
-  def get_one!(id, user_id), do: Repo.get_by!(Project, id: id, user_id: user_id)
-
   def update(%Project{} = project, attrs) do
     project
     |> Project.changeset(attrs)
