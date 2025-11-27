@@ -13,10 +13,14 @@ defmodule SynwatchWeb.ProjectController do
     render(conn, :index, page_title: "Projects", projects: projects)
   end
 
-  def new(%Plug.Conn{} = conn, _params) do
+  def new(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
     changeset = Ecto.Changeset.change(%Project{})
 
-    render(conn, :new, page_title: "Create Project", changeset: changeset)
+    render(conn, :new,
+      page_title: "Create Project",
+      changeset: changeset,
+      teams: user.teams
+    )
   end
 
   def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
@@ -58,17 +62,19 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def create(
-        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
-        %{"project" => attrs}
-      ) do
-    attrs = Map.put(attrs, "user_id", user.id)
-
-    case Projects.create(attrs) do
-      {:ok, %Project{} = project} ->
+  def create(conn, %{"project" => attrs}) do
+    with team_id when not is_nil(team_id) <- Map.get(attrs, "team_id"),
+         {:ok, %Project{} = project} <- Projects.create(attrs) do
+      conn
+      |> put_flash(:info, "Project successfully created")
+      |> redirect(to: ~p"/projects/#{project.id}")
+    else
+      nil ->
         conn
-        |> put_flash(:info, "Project successfully created")
-        |> redirect(to: ~p"/projects/#{project.id}")
+        |> put_flash(:error, "User has to be in a team")
+        |> put_status(:forbidden)
+        |> redirect(to: ~p"/projects")
+        |> halt()
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

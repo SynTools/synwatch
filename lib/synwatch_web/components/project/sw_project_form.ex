@@ -9,9 +9,18 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
   attr :action, :string, required: true
   attr :method, :string, default: "post"
   attr :cancel_href, :string, default: nil
+  attr :teams, :list, required: true
 
   def sw_project_form(assigns) do
-    assigns = assign(assigns, :form, to_form(assigns.changeset))
+    form = to_form(assigns.changeset)
+    single_team? = length(assigns.teams) == 1
+    selected_team_id = pick_selected_team(form, assigns.teams)
+
+    assigns =
+      assigns
+      |> assign(:form, form)
+      |> assign(:single_team?, single_team?)
+      |> assign(:selected_team_id, selected_team_id)
 
     ~H"""
     <SWC.sw_card class="mb-8 max-w-md">
@@ -20,14 +29,43 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
       </:header>
 
       <.form
-        for={@changeset}
+        for={@form}
         action={@action}
         method={@method}
         class="space-y-6"
       >
         <div>
           <label class="text-sm font-medium block">Name*</label>
-          <CC.input name="project[name]" field={@form[:name]} required />
+          <CC.input field={@form[:name]} required />
+        </div>
+
+        <div>
+          <label class="text-sm font-medium block">Team*</label>
+
+          <select
+            name="project[team_id]"
+            disabled={@single_team?}
+            class="w-full rounded-lg border border-base-300 px-3 py-2 bg-white
+                   focus:outline-none focus:ring-2 focus:ring-primary/30
+                   disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer"
+            required
+          >
+            <%= if !@single_team? and is_nil(@selected_team_id) do %>
+              <option disabled selected value="">
+                Select a team
+              </option>
+            <% end %>
+
+            <%= for team <- @teams do %>
+              <option value={team.id} selected={@selected_team_id == team.id}>
+                {team.name}
+              </option>
+            <% end %>
+          </select>
+
+          <%= if @single_team? do %>
+            <input type="hidden" name="project[team_id]" value={@selected_team_id} />
+          <% end %>
         </div>
 
         <div class="flex items-center gap-2 mt-4">
@@ -39,5 +77,18 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
       </.form>
     </SWC.sw_card>
     """
+  end
+
+  defp pick_selected_team(form, teams) do
+    cond do
+      form[:team_id].value ->
+        form[:team_id].value
+
+      length(teams) == 1 ->
+        List.first(teams).id
+
+      true ->
+        nil
+    end
   end
 end
