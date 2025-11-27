@@ -45,9 +45,9 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
           <select
             name="project[team_id]"
             disabled={@single_team?}
-            class="w-full rounded-lg border border-base-300 px-3 py-2 bg-white
-                   focus:outline-none focus:ring-2 focus:ring-primary/30
-                   disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer"
+            class="w-full rounded-lg border border-base-300 px-3 pr-10 py-2 bg-white text-sm
+         focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
+         disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer"
             required
           >
             <%= if !@single_team? and is_nil(@selected_team_id) do %>
