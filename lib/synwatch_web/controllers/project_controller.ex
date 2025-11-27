@@ -24,13 +24,14 @@ defmodule SynwatchWeb.ProjectController do
   end
 
   def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
-    with %Project{} = project <- Projects.get_one(id, user.id),
+    with %Project{} = project <- Projects.get_one_for_user(id, user.id),
          changeset = Ecto.Changeset.change(project) do
       render(conn, :show,
         page_title: project.name,
         project: project,
         endpoints: project.endpoints,
-        changeset: changeset
+        changeset: changeset,
+        teams: user.teams
       )
     else
       _ ->

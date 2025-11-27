@@ -2,16 +2,21 @@ defmodule Synwatch.Projects do
   import Ecto.Query, warn: false
 
   alias Synwatch.Repo
+  alias Synwatch.Accounts.TeamMembership
   alias Synwatch.Projects.Project
-
-  def get_all(user_id), do: Repo.all_by(Project, user_id: user_id)
 
   import Ecto.Query
 
-  def get_one(id, user_id) do
-    Project
-    |> where([p], p.id == ^id and p.user_id == ^user_id)
-    |> preload(:endpoints)
+  def get_all(user_id), do: Repo.all_by(Project, user_id: user_id)
+
+  def get_one_for_user(project_id, user_id) do
+    from(p in Project,
+      join: t in assoc(p, :team),
+      join: tm in TeamMembership,
+      on: tm.team_id == t.id,
+      where: p.id == ^project_id and tm.user_id == ^user_id,
+      preload: [:endpoints, :team]
+    )
     |> Repo.one()
   end
 
