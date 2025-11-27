@@ -1,55 +1,44 @@
 defmodule Synwatch.Tests do
   import Ecto.Query, warn: false
   alias Synwatch.Repo
+  alias Synwatch.Accounts.TeamMembership
   alias Synwatch.Projects.Test
 
   def get_one(id, endpoint_id, project_id, user_id) do
-    Test
-    |> join(:inner, [t], e in assoc(t, :endpoint))
-    |> join(:inner, [t, e], p in assoc(e, :project))
-    |> where(
-      [t, e, p],
-      t.id == ^id and
-        e.id == ^endpoint_id and
-        p.id == ^project_id and
-        p.user_id == ^user_id
-    )
-    |> preload([_t, _e, _p], endpoint: [:project])
-    |> preload(
-      test_runs: ^from(tr in Synwatch.Projects.TestRun, order_by: [desc: tr.inserted_at])
-    )
-    |> Repo.one()
-  end
+    latest_run_query =
+      from tr in Synwatch.Projects.TestRun,
+        order_by: [desc: tr.inserted_at]
 
-  def get_one!(id, endpoint_id, project_id, user_id) do
     Test
     |> join(:inner, [t], e in assoc(t, :endpoint))
-    |> join(:inner, [t, e], p in assoc(e, :project))
+    |> join(:inner, [_t, e], p in assoc(e, :project))
+    |> join(:inner, [_t, _e, p], team in assoc(p, :team))
+    |> join(:inner, [_t, _e, _p, team], tm in TeamMembership, on: tm.team_id == team.id)
     |> where(
-      [t, e, p],
+      [t, e, p, _team, tm],
       t.id == ^id and
         e.id == ^endpoint_id and
         p.id == ^project_id and
-        p.user_id == ^user_id
+        tm.user_id == ^user_id
     )
-    |> preload([_t, _e, _p], endpoint: [:project])
-    |> preload(
-      test_runs: ^from(tr in Synwatch.Projects.TestRun, order_by: [desc: tr.inserted_at])
-    )
-    |> Repo.one!()
+    |> preload([_t, e, p, _team, _tm], endpoint: {e, project: p})
+    |> preload(test_runs: ^latest_run_query)
+    |> Repo.one()
   end
 
   def get_all(endpoint_id, project_id, user_id) do
     Test
     |> join(:inner, [t], e in assoc(t, :endpoint))
-    |> join(:inner, [t, e], p in assoc(e, :project))
+    |> join(:inner, [_t, e], p in assoc(e, :project))
+    |> join(:inner, [_t, _e, p], team in assoc(p, :team))
+    |> join(:inner, [_t, _e, _p, team], tm in TeamMembership, on: tm.team_id == team.id)
     |> where(
-      [t, e, p],
+      [_t, e, p, _team, tm],
       e.id == ^endpoint_id and
         p.id == ^project_id and
-        p.user_id == ^user_id
+        tm.user_id == ^user_id
     )
-    |> preload([_t, _e, _p], endpoint: [:project])
+    |> preload([_t, e, p, _team, _tm], endpoint: {e, project: p})
     |> Repo.all()
   end
 

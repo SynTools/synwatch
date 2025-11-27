@@ -16,7 +16,7 @@ defmodule SynwatchWeb.TestController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
-    with %Project{} = project <- Projects.get_one(project_id, user.id),
+    with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
          %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user.id),
          changeset = Ecto.Changeset.change(%Test{endpoint_id: endpoint_id}) do
       render(conn, :new,
@@ -57,7 +57,7 @@ defmodule SynwatchWeb.TestController do
   end
 
   def update(
-        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
         %{
           "id" => id,
           "project_id" => project_id,
@@ -65,24 +65,29 @@ defmodule SynwatchWeb.TestController do
           "test" => updates
         }
       ) do
-    stored_test = Tests.get_one(id, endpoint_id, project_id, user.id)
-
-    case Tests.update(stored_test, normalize_test_params(updates)) do
-      {:ok, %Test{} = test} ->
+    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user_id),
+         {:ok, %Test{} = test} <- Tests.update(test, normalize_test_params(updates)) do
+      conn
+      |> put_flash(:info, "Test successfully updated")
+      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
+    else
+      nil ->
         conn
-        |> put_flash(:info, "Test successfully updated")
-        |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Test not found")
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        test = changeset.data
+
         conn
         |> flash_changeset_errors(changeset)
         |> render(:show,
-          page_title: stored_test.name,
-          test: stored_test,
+          page_title: test.name,
+          test: test,
           changeset: changeset,
-          endpoint: stored_test.endpoint,
-          project: stored_test.endpoint.project,
-          runs: stored_test.test_runs
+          endpoint: test.endpoint,
+          project: test.endpoint.project,
+          runs: test.test_runs
         )
     end
   end
@@ -106,21 +111,26 @@ defmodule SynwatchWeb.TestController do
   end
 
   def create(
-        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs}
       ) do
-    project = Projects.get_one!(project_id, user.id)
-    endpoint = Endpoints.get_one!(endpoint_id, project_id, user.id)
-
-    attrs = Map.put(attrs, "endpoint_id", endpoint.id)
-
-    case Tests.create(attrs) do
-      {:ok, %Test{} = test} ->
+    with %Project{} = project <- Projects.get_one_for_user(project_id, user_id),
+         %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user_id),
+         attrs <- Map.put(attrs, "endpoint_id", endpoint.id),
+         {:ok, %Test{} = test} <- Tests.create(attrs) do
+      conn
+      |> put_flash(:info, "Test successfully created")
+      |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+    else
+      nil ->
         conn
-        |> put_flash(:info, "Test successfully created")
-        |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Resource not found")
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        project = Projects.get_one_for_user(project_id, user_id)
+        endpoint = Endpoints.get_one(endpoint_id, project_id, user_id)
+
         conn
         |> flash_changeset_errors(changeset)
         |> render(:new,
