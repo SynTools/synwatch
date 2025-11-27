@@ -6,7 +6,18 @@
 
 <%!-- Header Row --%>
 <div class="flex justify-between mb-4">
-  <h1 class="text-3xl font-semibold">{@project.name}</h1>
+  <div>
+    <h1 class="text-3xl font-semibold">{@project.name}</h1>
+
+    <div class="mt-2">
+      <span class="inline-flex items-center rounded-full bg-indigo-100 text-indigo-800
+                   px-3 py-1 text-xs font-medium">
+        <.icon name="hero-user-group" class="mr-1.5 h-4 w-4" />
+        {@project.team && @project.team.name}
+      </span>
+    </div>
+  </div>
+
   <div class="flex items-center gap-2">
     <.sw_button href={~p"/projects"} color="gray" style="outlined">
       Back

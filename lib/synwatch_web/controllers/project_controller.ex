@@ -10,8 +10,6 @@ defmodule SynwatchWeb.ProjectController do
   def index(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
     projects = Projects.get_all_for_user(user.id)
 
-    IO.inspect(projects)
-
     render(conn, :index, page_title: "Projects", projects: projects)
   end
 
