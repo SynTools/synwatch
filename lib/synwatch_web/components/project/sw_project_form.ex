@@ -42,26 +42,17 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
         <div>
           <label class="text-sm font-medium block">Team*</label>
 
-          <select
+          <CC.input
+            type="select"
+            field={@form[:team_id]}
             name="project[team_id]"
-            disabled={@single_team?}
-            class="w-full rounded-lg border border-base-300 px-3 pr-10 py-2 bg-white text-sm
-         focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
-         disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer"
-            required
-          >
-            <%= if !@single_team? and is_nil(@selected_team_id) do %>
-              <option disabled selected value="">
-                Select a team
-              </option>
-            <% end %>
-
-            <%= for team <- @teams do %>
-              <option value={team.id} selected={@selected_team_id == team.id}>
-                {team.name}
-              </option>
-            <% end %>
-          </select>
+            options={
+              for team <- @teams do
+                {team.name, team.id}
+              end
+            }
+            prompt={if @single_team?, do: nil, else: "Select a team"}
+          />
 
           <%= if @single_team? do %>
             <input type="hidden" name="project[team_id]" value={@selected_team_id} />
