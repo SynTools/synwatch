@@ -18,7 +18,8 @@ defmodule SynwatchWeb.TeamController do
         team: team,
         changeset: changeset,
         members: members,
-        is_owner: Teams.owner?(team, user.id)
+        is_owner: Teams.owner?(team, user.id),
+        user: user
       )
     else
       _ ->
@@ -120,11 +121,11 @@ defmodule SynwatchWeb.TeamController do
 
   def add_member(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
-        %{"id" => id, "team" => %{"member_email" => member_email}}
+        %{"id" => id, "team" => %{"member_email" => member_email}} = _params
       ) do
     with %Team{} = team <- Teams.get_for_user(id, user.id),
          true <- Teams.owner?(team, user.id),
-         %User{} = member <- Accounts.get_user_by_email(member_email) do
+         {:member, %User{} = member} <- {:member, Accounts.get_user_by_email(member_email)} do
       case Teams.add_member(team, member) do
         {:ok, %TeamMembership{} = _team_membership} ->
           conn
@@ -141,7 +142,13 @@ defmodule SynwatchWeb.TeamController do
     else
       nil ->
         conn
-        |> put_flash(:error, "User not found")
+        |> put_status(:not_found)
+        |> put_flash(:error, "Team not found.")
+        |> redirect(to: ~p"/settings")
+
+      {:member, nil} ->
+        conn
+        |> put_flash(:error, "User not found.")
         |> redirect(to: ~p"/settings/teams/#{id}")
 
       false ->
@@ -153,6 +160,48 @@ defmodule SynwatchWeb.TeamController do
       _ ->
         conn
         |> put_flash(:error, "Something went wrong adding the member.")
+        |> redirect(to: ~p"/settings/teams/#{id}")
+    end
+  end
+
+  def remove_member(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "member_id" => member_id}
+      ) do
+    with %Team{} = team <- Teams.get_for_user(id, user.id),
+         true <- Teams.owner?(team, user.id),
+         {:member, %User{} = member} <- {:member, Accounts.get_user(member_id)},
+         {:ok, %TeamMembership{}} <- Teams.remove_member(team, member) do
+      conn
+      |> put_flash(:info, "Member successfully removed")
+      |> redirect(to: ~p"/settings/teams/#{id}")
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_flash(:error, "Team not found.")
+        |> redirect(to: ~p"/settings")
+
+      false ->
+        conn
+        |> put_status(:forbidden)
+        |> put_flash(:error, "You are not allowed to edit this team.")
+        |> redirect(to: ~p"/settings/teams/#{id}")
+
+      {:member, nil} ->
+        conn
+        |> put_flash(:error, "User not found.")
+        |> redirect(to: ~p"/settings/teams/#{id}")
+
+      {:error, :cannot_remove_owner} ->
+        conn
+        |> put_status(:forbidden)
+        |> put_flash(:error, "You cannot remove the owner. Transfer ownership first.")
+        |> redirect(to: ~p"/settings/teams/#{id}")
+
+      {:error, _reason} ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the member.")
         |> redirect(to: ~p"/settings/teams/#{id}")
     end
   end

@@ -97,4 +97,19 @@ defmodule Synwatch.Teams do
     })
     |> Repo.insert()
   end
+
+  def remove_member(%Team{} = team, %User{} = member) do
+    if team.owner_id == member.id do
+      {:error, :cannot_remove_owner}
+    else
+      from(tm in TeamMembership,
+        where: tm.team_id == ^team.id and tm.user_id == ^member.id
+      )
+      |> Repo.one()
+      |> case do
+        nil -> {:error, :not_found}
+        membership -> Repo.delete(membership)
+      end
+    end
+  end
 end

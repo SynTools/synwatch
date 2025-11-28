@@ -78,6 +78,7 @@
           <th class="py-4 pr-3">Email</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Member Since</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Role</th>
+          <th :if={@is_owner} class="py-4 pr-3"></th>
         </tr>
       </thead>
 
@@ -98,6 +99,17 @@
 
             <td class="py-4 pr-3">
               {if @team.owner_id == m.user.id, do: "Owner", else: "Member"}
+            </td>
+
+            <td :if={@is_owner && @user.id != m.user.id} class="py-4 pr-4 text-right">
+              <.sw_button
+                color="red"
+                method="delete"
+                style="outlined"
+                href={~p"/teams/#{@team.id}/members/#{m.user.id}"}
+              >
+                Delete
+              </.sw_button>
             </td>
           </tr>
         <% end %>
