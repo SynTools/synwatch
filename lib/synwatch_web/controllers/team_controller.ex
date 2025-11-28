@@ -13,13 +13,19 @@ defmodule SynwatchWeb.TeamController do
     with %Team{} = team <- Teams.get_for_user(id, user.id),
          members <- Teams.list_members_with_joined_at(team.id),
          changeset = Ecto.Changeset.change(team) do
+      filtered_members =
+        members
+        |> Enum.filter(fn m -> user.id != m.user.id end)
+        |> Enum.map(fn m -> {"#{m.user.name} (#{m.user.email})", m.user.id} end)
+
       render(conn, :show,
         page_title: team.name,
         team: team,
         changeset: changeset,
         members: members,
         is_owner: Teams.owner?(team, user.id),
-        user: user
+        user: user,
+        filtered_members: filtered_members
       )
     else
       _ ->

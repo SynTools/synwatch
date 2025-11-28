@@ -1,6 +1,7 @@
 <%!-- Header Row --%>
 <div class="flex justify-between mb-4">
   <h1 class="text-3xl font-semibold">{@team.name}</h1>
+
   <div class="flex items-center gap-2">
     <.sw_button
       href={~p"/settings"}
@@ -9,6 +10,16 @@
     >
       Back
     </.sw_button>
+
+    <.sw_button
+      :if={@is_owner}
+      color="primary"
+      style="outlined"
+      phx-click={SynwatchWeb.Components.SWModal.open("transfer-ownership")}
+    >
+      Transfer ownership
+    </.sw_button>
+
     <.sw_button
       :if={@is_owner}
       color="red"
@@ -108,7 +119,7 @@
                 style="outlined"
                 href={~p"/teams/#{@team.id}/members/#{m.user.id}"}
               >
-                Delete
+                Remove
               </.sw_button>
             </td>
           </tr>
@@ -118,9 +129,11 @@
   </div>
 </.sw_card>
 
-<%!-- Add member Modal --%>
+<%!-- Add Member Modal --%>
 <.sw_modal id="add-member" size="md">
   <:title>Add new member to "{@team.name}"</:title>
+
+  <p class="mt-4 mb-6">The person has to have an account.</p>
 
   <.form
     for={%{}}
@@ -156,6 +169,53 @@
       form={"add-member-form-#{@team.id}"}
     >
       Add
+    </.sw_button>
+  </:actions>
+</.sw_modal>
+
+<%!-- Transfer Ownership Modal --%>
+<.sw_modal id="transfer-ownership" size="md">
+  <:title>Transfer ownership of "{@team.name}"</:title>
+
+  <p class="mt-4 mb-6">
+    Are you sure to transfer ownership? This step can't be changed afterwards.
+  </p>
+
+  <.form
+    for={%{}}
+    as={:team}
+    id={"transfer-ownership-form-#{@team.id}"}
+    action={~p"/teams/#{@team.id}"}
+    method="patch"
+    class="space-y-4"
+  >
+    <div>
+      <label class="text-sm font-medium block">Member*</label>
+      <.input
+        type="select"
+        name="team[owner_id]"
+        options={@filtered_members}
+        value=""
+        required
+      />
+    </div>
+  </.form>
+
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("transfer-ownership")}
+    >
+      Cancel
+    </.sw_button>
+
+    <.sw_button
+      color="primary"
+      type="submit"
+      form={"transfer-ownership-form-#{@team.id}"}
+    >
+      Transfer
     </.sw_button>
   </:actions>
 </.sw_modal>
