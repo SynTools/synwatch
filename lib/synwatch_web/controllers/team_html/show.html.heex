@@ -57,6 +57,16 @@
   <:header>
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">Members</h2>
+
+      <.sw_button
+        :if={@is_owner}
+        color="primary"
+        style="filled"
+        phx-click={SynwatchWeb.Components.SWModal.open("add-member")}
+      >
+        <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
+        Add member
+      </.sw_button>
     </div>
   </:header>
 
@@ -95,3 +105,45 @@
     </table>
   </div>
 </.sw_card>
+
+<%!-- Add member Modal --%>
+<.sw_modal id="add-member" size="md">
+  <:title>Add new member to "{@team.name}"</:title>
+
+  <.form
+    for={%{}}
+    as={:team}
+    id={"add-member-form-#{@team.id}"}
+    action={~p"/teams/#{@team.id}/members"}
+    method="post"
+    class="space-y-4"
+  >
+    <div>
+      <label class="text-sm font-medium block">Email Address*</label>
+      <.input
+        type="email"
+        name="team[member_email]"
+        value=""
+        required
+      />
+    </div>
+  </.form>
+
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("add-member")}
+    >
+      Cancel
+    </.sw_button>
+
+    <.sw_button
+      color="primary"
+      type="submit"
+      form={"add-member-form-#{@team.id}"}
+    >
+      Add
+    </.sw_button>
+  </:actions>
+</.sw_modal>

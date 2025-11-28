@@ -38,11 +38,17 @@ defmodule SynwatchWeb.Components.SWModal do
       class="fixed inset-0 z-50 hidden opacity-0"
       phx-window-keydown={close(@id, @on_close)}
       phx-key="escape"
-      phx-click={close(@id, @on_close)}
     >
-      <div class="absolute inset-0 bg-black/40"></div>
+      <div
+        class="absolute inset-0 bg-black/40"
+        phx-click={close(@id, @on_close)}
+      >
+      </div>
 
-      <div class={"absolute left-1/2 top-1/2 w-[92vw] #{@panel_w} -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl"}>
+      <div class={
+          "absolute left-1/2 top-1/2 w-[92vw] #{@panel_w} " <>
+            "-translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl"
+        }>
         <div class="flex items-start justify-between gap-4">
           <h3 class="text-base font-semibold">
             <%= if @title != [] do %>

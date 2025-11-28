@@ -36,4 +36,10 @@ defmodule Synwatch.Accounts do
     |> Repo.get(id)
     |> Repo.preload(:teams)
   end
+
+  def get_user_by_email(email) do
+    User
+    |> Repo.get_by(email: email)
+    |> Repo.preload(:teams)
+  end
 end

@@ -4,6 +4,7 @@ defmodule Synwatch.Teams do
   alias Synwatch.Repo
   alias Synwatch.Accounts.Team
   alias Synwatch.Accounts.TeamMembership
+  alias Synwatch.Accounts.User
 
   def get_all_for_user(user_id) do
     from(t in Team,
@@ -87,4 +88,13 @@ defmodule Synwatch.Teams do
   end
 
   def delete(%Team{} = team), do: Repo.delete(team)
+
+  def add_member(%Team{} = team, %User{} = member) do
+    %TeamMembership{}
+    |> TeamMembership.changeset(%{
+      team_id: team.id,
+      user_id: member.id
+    })
+    |> Repo.insert()
+  end
 end

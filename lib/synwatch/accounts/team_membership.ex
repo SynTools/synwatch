@@ -16,5 +16,9 @@ defmodule Synwatch.Accounts.TeamMembership do
     membership
     |> cast(attrs, [:team_id, :user_id])
     |> validate_required([:team_id, :user_id])
+    |> unique_constraint([:team, :user],
+      name: :team_memberships_team_id_user_id_index,
+      message: "already has this user as a member"
+    )
   end
 end
