@@ -14,11 +14,13 @@
   </div>
 </div>
 
-<%!-- Form Card --%>
-<.sw_project_form
-  changeset={Ecto.Changeset.change(@changeset)}
-  teams={@teams}
-  action={~p"/projects"}
-  method="post"
-  cancel_href={~p"/projects/new"}
-/>
+<div class="max-w-lg">
+  <%!-- Form Card --%>
+  <.sw_project_form
+    changeset={Ecto.Changeset.change(@changeset)}
+    teams={@teams}
+    action={~p"/projects"}
+    method="post"
+    cancel_href={~p"/projects/new"}
+  />
+</div>
