@@ -47,7 +47,7 @@
     <:header>
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">Environments</h2>
-        <.sw_button navigate="#">
+        <.sw_button :if={!Enum.empty?(@environments)} navigate="#">
           <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
           New Environment
         </.sw_button>
