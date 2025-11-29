@@ -4,6 +4,7 @@ defmodule Synwatch.Projects.Project do
   import Ecto.Changeset
 
   alias Synwatch.Accounts.Team
+  alias Synwatch.Environments.Environment
   alias Synwatch.Projects.Endpoint
 
   @type t :: %__MODULE__{}
@@ -15,6 +16,7 @@ defmodule Synwatch.Projects.Project do
     belongs_to :team, Team
 
     has_many :endpoints, Endpoint, on_delete: :delete_all, on_replace: :delete
+    has_many :environments, Environment, on_delete: :delete_all, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
