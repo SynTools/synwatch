@@ -23,7 +23,7 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
       |> assign(:selected_team_id, selected_team_id)
 
     ~H"""
-    <SWC.sw_card class="mb-8 max-w-md">
+    <SWC.sw_card class="py-2">
       <:header>
         <h2 class="text-xl font-semibold">Project Settings</h2>
       </:header>

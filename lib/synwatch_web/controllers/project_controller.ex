@@ -30,6 +30,7 @@ defmodule SynwatchWeb.ProjectController do
         page_title: project.name,
         project: project,
         endpoints: project.endpoints,
+        environments: project.environments,
         changeset: changeset,
         teams: user.teams
       )

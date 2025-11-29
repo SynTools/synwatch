@@ -25,7 +25,7 @@ defmodule Synwatch.Projects do
       join: tm in TeamMembership,
       on: tm.team_id == t.id,
       where: p.id == ^project_id and tm.user_id == ^user_id,
-      preload: [:endpoints, :team]
+      preload: [:endpoints, :team, :environments]
     )
     |> Repo.one()
   end
