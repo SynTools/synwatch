@@ -1,0 +1,25 @@
+<%!-- Breadcrumbs Nav --%>
+<.sw_breadcrumbs items={[
+  %{label: "Projects", to: ~p"/projects"},
+  %{label: @project.name, to: ~p"/projects/#{@project.id}"},
+  %{label: "Create Environment", to: nil}
+]} />
+
+<%!-- Header Row --%>
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">Create Environment</h1>
+  <div class="flex items-center gap-2">
+    <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
+      Back
+    </.sw_button>
+  </div>
+</div>
+
+<%!-- Form Card --%>
+<.sw_environment_form
+  changeset={Ecto.Changeset.change(@changeset)}
+  action={~p"/projects/#{@project.id}/environments"}
+  method="post"
+  cancel_href={~p"/projects/#{@project.id}/environments/new"}
+  projects={@projects}
+/>

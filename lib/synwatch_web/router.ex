@@ -76,6 +76,7 @@ defmodule SynwatchWeb.Router do
       patch "/endpoints/:id", EndpointController, :update
       delete "/endpoints/:id", EndpointController, :delete
 
+      get "/environments/new", EnvironmentController, :new
       get "/environments/:id", EnvironmentController, :show
       patch "/environments/:id", EnvironmentController, :update
       delete "/environments/:id", EnvironmentController, :delete
