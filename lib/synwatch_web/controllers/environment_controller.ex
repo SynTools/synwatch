@@ -14,13 +14,11 @@ defmodule SynwatchWeb.EnvironmentController do
         %{"project_id" => project_id} = _params
       ) do
     with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
-         projects <- Projects.get_all_for_user(user.id),
          changeset = Ecto.Changeset.change(%Environment{project_id: project_id}) do
       render(conn, :new,
         page_title: "Create Environment",
         changeset: changeset,
-        project: project,
-        projects: projects
+        project: project
       )
     else
       _ -> redirect(conn, to: ~p"/projects/#{project_id}")
@@ -32,14 +30,12 @@ defmodule SynwatchWeb.EnvironmentController do
         %{"project_id" => project_id, "id" => id} = _params
       ) do
     with %Environment{} = environment <- Environments.get_one(id, project_id, user.id),
-         projects <- Projects.get_all_for_user(user.id),
          changeset = Ecto.Changeset.change(environment) do
       render(conn, :show,
         page_title: environment.name,
         environment: environment,
         changeset: changeset,
-        project: environment.project,
-        projects: projects
+        project: environment.project
       )
     else
       _ ->
@@ -66,7 +62,6 @@ defmodule SynwatchWeb.EnvironmentController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         environment = changeset.data
-        projects = Projects.get_all_for_user(user.id)
 
         conn
         |> flash_changeset_errors(changeset)
@@ -74,8 +69,7 @@ defmodule SynwatchWeb.EnvironmentController do
           page_title: environment.name,
           environment: environment,
           changeset: changeset,
-          project: environment.project,
-          projects: projects
+          project: environment.project
         )
     end
   end
@@ -118,14 +112,11 @@ defmodule SynwatchWeb.EnvironmentController do
             |> redirect(to: ~p"/projects/#{project.id}/environments/#{environment.id}")
 
           {:error, %Ecto.Changeset{} = changeset} ->
-            projects = Projects.get_all_for_user(user.id)
-
             conn
             |> flash_changeset_errors(changeset)
             |> render(:new,
               page_title: "Create Environment",
               project: project,
-              projects: projects,
               changeset: changeset
             )
         end
