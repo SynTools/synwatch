@@ -1,1 +1,55 @@
-ENVIRONMENT DETAIL
+<%!-- Breadcrumbs Nav --%>
+<.sw_breadcrumbs items={[
+  %{label: "Projects", to: ~p"/projects"},
+  %{label: @project.name, to: ~p"/projects/#{@project.id}"},
+  %{label: @environment.name, to: nil}
+]} />
+
+<%!-- Header Row --%>
+<div class="flex justify-between mb-4">
+  <h1 class="text-3xl font-semibold">{@environment.name}</h1>
+  <div class="flex items-center gap-2">
+    <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
+      Back
+    </.sw_button>
+    <.sw_button
+      color="red"
+      style="outlined"
+      phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete")}
+    >
+      Delete
+    </.sw_button>
+  </div>
+</div>
+
+<%!-- Form Card --%>
+<.sw_environment_form
+  changeset={Ecto.Changeset.change(@changeset)}
+  action={~p"/projects/#{@project.id}/environments/#{@environment.id}"}
+  method="patch"
+  cancel_href={~p"/projects/#{@project.id}/environments/#{@environment.id}"}
+  projects={@projects}
+/>
+
+<%!-- Delete Endpoint Modal --%>
+<.sw_modal id="confirm-delete" size="md">
+  <:title>Delete Environment?</:title>
+  This action cannot be undone. All related data may be removed.
+  <:actions>
+    <.sw_button
+      style="outlined"
+      color="gray"
+      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete")}
+    >
+      Cancel
+    </.sw_button>
+
+    <.sw_button
+      color="red"
+      method="delete"
+      href={~p"/projects/#{@project.id}/environments/#{@environment.id}"}
+    >
+      Delete
+    </.sw_button>
+  </:actions>
+</.sw_modal>

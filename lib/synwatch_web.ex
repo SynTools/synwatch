@@ -100,6 +100,9 @@ defmodule SynwatchWeb do
       # Custom Endpoint Components
       import SynwatchWeb.Components.Endpoint.SwEndpointForm
 
+      # Custom Environment Components
+      import SynwatchWeb.Components.Environment.SwEnvironmentForm
+
       # Custom Project Components
       import SynwatchWeb.Components.Project.SwProjectForm
 

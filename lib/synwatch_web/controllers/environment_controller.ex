@@ -4,17 +4,21 @@ defmodule SynwatchWeb.EnvironmentController do
   alias Synwatch.Accounts.User
   alias Synwatch.Environments
   alias Synwatch.Environments.Environment
+  alias Synwatch.Projects
 
   def show(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "id" => id} = _params
       ) do
     with %Environment{} = environment <- Environments.get_one(id, project_id, user.id),
+         projects <- Projects.get_all_for_user(user.id),
          changeset = Ecto.Changeset.change(environment) do
       render(conn, :show,
         page_title: environment.name,
         environment: environment,
-        changeset: changeset
+        changeset: changeset,
+        project: environment.project,
+        projects: projects
       )
     else
       _ ->
