@@ -29,4 +29,10 @@ defmodule Synwatch.Environments do
   end
 
   def delete(%Environment{} = environment), do: Repo.delete(environment)
+
+  def create(attrs \\ %{}) do
+    %Environment{}
+    |> Environment.changeset(attrs)
+    |> Repo.insert()
+  end
 end

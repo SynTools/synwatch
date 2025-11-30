@@ -97,4 +97,38 @@ defmodule SynwatchWeb.EnvironmentController do
         |> redirect(to: ~p"/projects/#{project_id}/environments/#{id}")
     end
   end
+
+  def create(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "environment" => attrs}
+      ) do
+    case Projects.get_one_for_user(project_id, user.id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Project not found")
+
+      %Project{} = project ->
+        attrs = Map.put(attrs, "project_id", project.id)
+
+        case Environments.create(attrs) do
+          {:ok, %Environment{} = environment} ->
+            conn
+            |> put_flash(:info, "Environment successfully created")
+            |> redirect(to: ~p"/projects/#{project.id}/environments/#{environment.id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            projects = Projects.get_all_for_user(user.id)
+
+            conn
+            |> flash_changeset_errors(changeset)
+            |> render(:new,
+              page_title: "Create Environment",
+              project: project,
+              projects: projects,
+              changeset: changeset
+            )
+        end
+    end
+  end
 end
