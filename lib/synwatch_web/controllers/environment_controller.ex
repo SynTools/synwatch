@@ -60,4 +60,22 @@ defmodule SynwatchWeb.EnvironmentController do
         )
     end
   end
+
+  def delete(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "project_id" => project_id} = _params
+      ) do
+    with %Environment{} = environment <- Environments.get_one(id, project_id, user.id),
+         {:ok, %Environment{} = _endpoint} <- Environments.delete(environment) do
+      conn
+      |> put_flash(:info, "Environment successfully deleted")
+      |> redirect(to: ~p"/projects/#{project_id}")
+      |> halt()
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the Environment")
+        |> redirect(to: ~p"/projects/#{project_id}/environments/#{id}")
+    end
+  end
 end
