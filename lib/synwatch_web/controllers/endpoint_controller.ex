@@ -84,7 +84,7 @@ defmodule SynwatchWeb.EndpointController do
     else
       _ ->
         conn
-        |> put_flash(:error, "Something went wrong deleting the Test")
+        |> put_flash(:error, "Something went wrong deleting the Endpoint")
         |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{id}")
     end
   end
