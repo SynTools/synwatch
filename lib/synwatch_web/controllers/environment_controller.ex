@@ -1,6 +1,8 @@
 defmodule SynwatchWeb.EnvironmentController do
   use SynwatchWeb, :controller
 
+  import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
+
   alias Synwatch.Accounts.User
   alias Synwatch.Environments
   alias Synwatch.Environments.Environment
@@ -25,6 +27,37 @@ defmodule SynwatchWeb.EnvironmentController do
         conn
         |> put_status(:not_found)
         |> render(:not_found, page_title: "Environment not found", project_id: project_id)
+    end
+  end
+
+  def update(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"id" => id, "project_id" => project_id, "environment" => updates}
+      ) do
+    with %Environment{} = environment <- Environments.get_one(id, project_id, user.id),
+         {:ok, %Environment{} = environment} <- Environments.update(environment, updates) do
+      conn
+      |> put_flash(:info, "Environment successfully updated")
+      |> redirect(to: ~p"/projects/#{project_id}/environments/#{environment.id}")
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> render(:not_found, page_title: "Environment not found")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        environment = changeset.data
+        projects = Projects.get_all_for_user(user.id)
+
+        conn
+        |> flash_changeset_errors(changeset)
+        |> render(:show,
+          page_title: environment.name,
+          environment: environment,
+          changeset: changeset,
+          project: environment.project,
+          projects: projects
+        )
     end
   end
 end

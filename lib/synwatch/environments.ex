@@ -21,4 +21,10 @@ defmodule Synwatch.Environments do
     )
     |> Repo.one()
   end
+
+  def update(%Environment{} = environment, attrs) do
+    environment
+    |> Environment.changeset(attrs)
+    |> Repo.update()
+  end
 end
