@@ -7,7 +7,15 @@
 
 <%!-- Header Row --%>
 <div class="flex justify-between mb-4">
-  <h1 class="text-3xl font-semibold">{@endpoint.name}</h1>
+  <div>
+    <h1 class="text-3xl font-semibold mb-2">{@endpoint.name}</h1>
+    <.sw_environment_selector
+      :if={!Enum.empty?(@environments)}
+      environments={@environments}
+      active_environment_id={@active_environment_id}
+      action={~p"/projects/#{@project.id}/active_environment"}
+    />
+  </div>
   <div class="flex items-center gap-2">
     <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
       Back
@@ -57,16 +65,7 @@
 <.sw_card class="mb-8">
   <:header>
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <h2 class="text-xl font-semibold">Tests</h2>
-
-        <.sw_environment_selector
-          :if={!Enum.empty?(@environments)}
-          environments={@environments}
-          active_environment_id={@active_environment_id}
-          action={~p"/projects/#{@project.id}/active_environment"}
-        />
-      </div>
+      <h2 class="text-xl font-semibold">Tests</h2>
 
       <div class="flex items-center gap-4">
         <.sw_button
