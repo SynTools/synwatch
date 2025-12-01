@@ -51,7 +51,6 @@ defmodule SynwatchWeb.Components.Project.SwProjectForm do
                 {team.name, team.id}
               end
             }
-            prompt={if @single_team?, do: nil, else: "Select a team"}
           />
 
           <%= if @single_team? do %>

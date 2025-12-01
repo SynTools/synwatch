@@ -57,15 +57,24 @@
 <.sw_card class="mb-8">
   <:header>
     <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Tests</h2>
-      <div>
+      <div class="flex items-center gap-4">
+        <h2 class="text-xl font-semibold">Tests</h2>
+
+        <.sw_environment_selector
+          :if={!Enum.empty?(@environments)}
+          environments={@environments}
+          active_environment_id={@active_environment_id}
+          action={~p"/projects/#{@project.id}/active_environment"}
+        />
+      </div>
+
+      <div class="flex items-center gap-4">
         <.sw_button
           :if={!Enum.empty?(@tests)}
           color="primary"
           style="filled"
           method="post"
           href={~p"/projects/#{@project.id}/endpoints/#{@endpoint.id}/tests/run"}
-          class="mr-6"
         >
           <:icon><.icon name="hero-play" class="h-5 w-5" /></:icon>
           Run all Tests

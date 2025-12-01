@@ -22,6 +22,19 @@ defmodule Synwatch.Environments do
     |> Repo.one()
   end
 
+  def get_all_for_project(project_id, user_id) do
+    Environment
+    |> join(:inner, [e], p in assoc(e, :project))
+    |> join(:inner, [_e, p], t in assoc(p, :team))
+    |> join(:inner, [_e, _p, t], tm in TeamMembership, on: tm.team_id == t.id)
+    |> where(
+      [e, p, _t, tm],
+      p.id == ^project_id and
+        tm.user_id == ^user_id
+    )
+    |> Repo.all()
+  end
+
   def update(%Environment{} = environment, attrs) do
     environment
     |> Environment.changeset(attrs)
