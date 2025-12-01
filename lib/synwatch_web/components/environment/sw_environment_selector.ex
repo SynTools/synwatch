@@ -10,17 +10,18 @@ defmodule SynwatchWeb.Components.Environment.SwEnvironmentSelector do
   def sw_environment_selector(assigns) do
     ~H"""
     <.form
+      for={%{}}
       action={@action}
       method="post"
       class={["flex items-center", @class]}
     >
-      <div class="fieldset mb-0">
+      <div class="fieldset mb-0 min-w-[12rem]">
         <select
           name="environment[environment_id]"
           class="select w-full"
           onchange="this.form.requestSubmit()"
         >
-          <option value="">
+          <option :if={is_nil(@active_environment_id)} value="">
             Select environment
           </option>
 
