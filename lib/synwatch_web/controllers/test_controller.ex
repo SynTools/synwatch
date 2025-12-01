@@ -2,12 +2,14 @@ defmodule SynwatchWeb.TestController do
   use SynwatchWeb, :controller
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
+  import SynwatchWeb.Helpers.SessionHelpers, only: [get_active_environment: 2]
 
   alias Synwatch.Accounts.User
   alias Synwatch.Projects.Endpoint
   alias Synwatch.Projects.Project
   alias Synwatch.Projects.Test
   alias Synwatch.Endpoints
+  alias Synwatch.Environments
   alias Synwatch.Projects
   alias Synwatch.Tests
   alias Synwatch.TestRunner
@@ -35,14 +37,18 @@ defmodule SynwatchWeb.TestController do
         %{"id" => id, "project_id" => project_id, "endpoint_id" => endpoint_id} = _params
       ) do
     with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user.id),
-         changeset = Ecto.Changeset.change(test) do
+         changeset = Ecto.Changeset.change(test),
+         environments = Environments.get_all_for_project(project_id, user.id),
+         active_environment_id = get_active_environment(conn, project_id) do
       render(conn, :show,
         page_title: test.name,
         test: test,
         changeset: changeset,
         endpoint: test.endpoint,
         project: test.endpoint.project,
-        runs: test.test_runs
+        runs: test.test_runs,
+        environments: environments,
+        active_environment_id: active_environment_id
       )
     else
       _ ->
