@@ -70,6 +70,8 @@ defmodule SynwatchWeb.Router do
     delete "/:id", ProjectController, :delete
 
     scope "/:project_id" do
+      post "/active_environment", ProjectController, :set_active_environment
+
       get "/endpoints/new", EndpointController, :new
       post "/endpoints", EndpointController, :create
       get "/endpoints/:id", EndpointController, :show

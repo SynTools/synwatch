@@ -1,34 +1,37 @@
 defmodule SynwatchWeb.Components.Environment.SwEnvironmentSelector do
   use Phoenix.Component
 
-  alias SynwatchWeb.CoreComponents, as: CC
-
   attr :environments, :list, required: true
   attr :active_environment_id, :string, default: nil
+  attr :action, :string, required: true
+  attr :label, :string, default: nil
   attr :class, :string, default: nil
 
   def sw_environment_selector(assigns) do
-    form =
-      Phoenix.Component.to_form(
-        %{"environment_id" => assigns.active_environment_id},
-        as: :environment
-      )
-
-    assigns = assign(assigns, :form, form)
-
     ~H"""
-    <div class={["min-w-[12rem]", @class]}>
-      <CC.input
-        type="select"
-        field={@form[:environment_id]}
-        options={
-          for env <- @environments do
-            {env.name, env.id}
-          end
-        }
-        prompt="Select environment"
-      />
-    </div>
+    <.form
+      action={@action}
+      method="post"
+      class={["flex items-center", @class]}
+    >
+      <div class="fieldset mb-0">
+        <select
+          name="environment[environment_id]"
+          class="select w-full"
+          onchange="this.form.requestSubmit()"
+        >
+          <option value="">
+            Select environment
+          </option>
+
+          <%= for env <- @environments do %>
+            <option value={env.id} selected={env.id == @active_environment_id}>
+              {env.name}
+            </option>
+          <% end %>
+        </select>
+      </div>
+    </.form>
     """
   end
 end

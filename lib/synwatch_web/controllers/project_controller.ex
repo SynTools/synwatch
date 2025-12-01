@@ -3,6 +3,7 @@ defmodule SynwatchWeb.ProjectController do
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
 
+  alias Synwatch.Environments
   alias Synwatch.Projects
   alias Synwatch.Projects.Project
   alias Synwatch.Accounts.User
@@ -110,6 +111,36 @@ defmodule SynwatchWeb.ProjectController do
         conn
         |> put_flash(:error, "Something went wrong deleting the project")
         |> redirect(to: ~p"/projects")
+    end
+  end
+
+  def set_active_environment(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "environment" => %{"environment_id" => env_id}}
+      ) do
+    project = Projects.get_one_for_user(project_id, user.id)
+    environments = Environments.get_all_for_project(project.id, user.id)
+
+    target =
+      conn
+      |> Plug.Conn.get_req_header("referer")
+      |> List.first() ||
+        conn.request_path
+
+    case Enum.find(environments, fn environment -> environment.id == env_id end) do
+      nil ->
+        conn
+        |> put_flash(:error, "Invalid environment")
+        # external because "target" returns the whole URL and not just the path
+        |> redirect(external: target)
+
+      _env ->
+        session_key = "active_environment_id:#{project.id}"
+
+        conn
+        |> put_session(session_key, env_id)
+        # external because "target" returns the whole URL and not just the path
+        |> redirect(external: target)
     end
   end
 end
