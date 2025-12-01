@@ -2,7 +2,9 @@ defmodule SynwatchWeb.ProjectController do
   use SynwatchWeb, :controller
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
-  import SynwatchWeb.Helpers.SessionHelpers, only: [set_active_environment: 3]
+
+  import SynwatchWeb.Helpers.SessionHelpers,
+    only: [get_active_environment: 2, set_active_environment: 3]
 
   alias Synwatch.Environments
   alias Synwatch.Projects
@@ -27,14 +29,18 @@ defmodule SynwatchWeb.ProjectController do
 
   def show(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{"id" => id} = _params) do
     with %Project{} = project <- Projects.get_one_for_user(id, user.id),
-         changeset = Ecto.Changeset.change(project) do
+         changeset = Ecto.Changeset.change(project),
+         environments = Environments.get_all_for_project(id, user.id),
+         active_environment_id = get_active_environment(conn, id) do
       render(conn, :show,
         page_title: project.name,
         project: project,
         endpoints: project.endpoints,
         environments: project.environments,
         changeset: changeset,
-        teams: user.teams
+        teams: user.teams,
+        environments: environments,
+        active_environment_id: active_environment_id
       )
     else
       _ ->
