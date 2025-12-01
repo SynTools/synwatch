@@ -2,6 +2,7 @@ defmodule SynwatchWeb.ProjectController do
   use SynwatchWeb, :controller
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
+  import SynwatchWeb.Helpers.SessionHelpers, only: [set_active_environment: 3]
 
   alias Synwatch.Environments
   alias Synwatch.Projects
@@ -114,7 +115,7 @@ defmodule SynwatchWeb.ProjectController do
     end
   end
 
-  def set_active_environment(
+  def change_active_environment(
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "environment" => %{"environment_id" => env_id}}
       ) do
@@ -135,10 +136,8 @@ defmodule SynwatchWeb.ProjectController do
         |> redirect(external: target)
 
       _env ->
-        session_key = "active_environment_id:#{project.id}"
-
         conn
-        |> put_session(session_key, env_id)
+        |> set_active_environment(project_id, env_id)
         # external because "target" returns the whole URL and not just the path
         |> redirect(external: target)
     end

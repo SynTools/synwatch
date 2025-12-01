@@ -2,6 +2,7 @@ defmodule SynwatchWeb.EndpointController do
   use SynwatchWeb, :controller
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
+  import SynwatchWeb.Helpers.SessionHelpers, only: [get_active_environment: 2]
 
   alias Synwatch.Accounts.User
   alias Synwatch.Endpoints
@@ -26,13 +27,10 @@ defmodule SynwatchWeb.EndpointController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"id" => id, "project_id" => project_id} = _params
       ) do
-    # TODO: Add to separate helper function
-    session_key = "active_environment_id:#{project_id}"
-    active_environment_id = get_session(conn, session_key)
-
     with %Endpoint{} = endpoint <- Endpoints.get_one(id, project_id, user.id),
          endpoint = Endpoints.with_latest_test_run(endpoint),
          environments = Environments.get_all_for_project(project_id, user.id),
+         active_environment_id = get_active_environment(conn, project_id),
          changeset = Ecto.Changeset.change(endpoint) do
       render(conn, :show,
         page_title: endpoint.name,
