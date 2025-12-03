@@ -19,6 +19,7 @@ defmodule Synwatch.Environments do
     |> preload([e, p, t, _tm],
       project: {p, team: t}
     )
+    |> preload(:variables)
     |> Repo.one()
   end
 

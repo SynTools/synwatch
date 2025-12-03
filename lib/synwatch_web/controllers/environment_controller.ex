@@ -35,7 +35,8 @@ defmodule SynwatchWeb.EnvironmentController do
         page_title: environment.name,
         environment: environment,
         changeset: changeset,
-        project: environment.project
+        project: environment.project,
+        variables: environment.variables
       )
     else
       _ ->

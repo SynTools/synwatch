@@ -3,6 +3,7 @@ defmodule Synwatch.Environments.Environment do
 
   import Ecto.Changeset
 
+  alias Synwatch.Environments.Variable
   alias Synwatch.Projects.Project
 
   @type t :: %__MODULE__{}
@@ -12,7 +13,9 @@ defmodule Synwatch.Environments.Environment do
 
   schema "environments" do
     field :name, :string
+
     belongs_to :project, Project
+    has_many :variables, Variable, on_delete: :delete_all, on_replace: :delete
 
     timestamps()
   end
