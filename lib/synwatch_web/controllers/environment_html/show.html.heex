@@ -60,7 +60,7 @@
       <h2 class="text-xl font-semibold">Variables</h2>
       <.sw_button
         :if={!Enum.empty?(@variables)}
-        navigate={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/new"}
+        phx-click={SynwatchWeb.Components.SWModal.open("confirm-variable-create")}
       >
         <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
         New Variable
@@ -92,6 +92,17 @@
             <td class="py-4 pr-4 text-right">
               <.sw_button
                 style="outlined"
+                color="gray"
+                size="sm"
+                phx-click={
+                  SynwatchWeb.Components.SWModal.open("confirm-variable-update-#{var.id}")
+                }
+              >
+                Update
+              </.sw_button>
+
+              <.sw_button
+                style="outlined"
                 color="red"
                 size="sm"
                 phx-click={
@@ -121,6 +132,54 @@
               <.sw_button
                 color="red"
                 method="delete"
+                href={
+                  ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/#{var.id}"
+                }
+              >
+                Delete
+              </.sw_button>
+            </:actions>
+          </.sw_modal>
+
+          <%!-- Create Variable Modal --%>
+          <.sw_modal id="confirm-variable-create" size="md">
+            <:title>Create new variable</:title>
+            <:actions>
+              <.sw_button
+                style="outlined"
+                color="gray"
+                phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
+              >
+                Cancel
+              </.sw_button>
+
+              <.sw_button
+                color="red"
+                method="post"
+                href={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables"}
+              >
+                Delete
+              </.sw_button>
+            </:actions>
+          </.sw_modal>
+
+          <%!-- Update Variable Modal --%>
+          <.sw_modal id={"confirm-variable-update-#{var.id}"} size="md">
+            <:title>Update variable "{var.name}"</:title>
+            <:actions>
+              <.sw_button
+                style="outlined"
+                color="gray"
+                phx-click={
+                  SynwatchWeb.Components.SWModal.close("confirm-variable-update-#{var.id}")
+                }
+              >
+                Cancel
+              </.sw_button>
+
+              <.sw_button
+                color="red"
+                method="patch"
                 href={
                   ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/#{var.id}"
                 }
