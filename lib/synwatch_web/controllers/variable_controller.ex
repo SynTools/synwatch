@@ -37,4 +37,29 @@ defmodule SynwatchWeb.VariableController do
         |> redirect(to: ~p"/projects/#{project_id}/environments")
     end
   end
+
+  def update(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{
+        "project_id" => project_id,
+        "environment_id" => env_id,
+        "id" => id,
+        "variable" => attrs
+      }) do
+    with %Variable{} = variable <- Variables.get_one(id, env_id, project_id, user.id),
+         {:ok, %Variable{} = _variable} <- Variables.update(variable, attrs) do
+      conn
+      |> put_flash(:info, "Variable successfully updated")
+      |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_flash(:error, "Variable not found")
+        |> redirect(to: ~p"/projects/#{project_id}/environments")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> flash_changeset_errors(changeset)
+        |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
+    end
+  end
 end

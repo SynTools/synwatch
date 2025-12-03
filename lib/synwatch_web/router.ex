@@ -100,6 +100,7 @@ defmodule SynwatchWeb.Router do
 
       scope "/environments/:environment_id" do
         post "/variables", VariableController, :create
+        patch "/variables/:id", VariableController, :update
       end
     end
   end

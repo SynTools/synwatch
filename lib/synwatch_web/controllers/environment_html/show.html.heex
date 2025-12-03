@@ -185,7 +185,7 @@
                   color="primary"
                   type="submit"
                 >
-                  Add
+                  Save
                 </.sw_button>
               </div>
             </.form>
@@ -193,28 +193,56 @@
 
           <%!-- Update Variable Modal --%>
           <.sw_modal id={"confirm-variable-update-#{var.id}"} size="md">
-            <:title>Update variable "{var.name}"</:title>
-            <:actions>
-              <.sw_button
-                style="outlined"
-                color="gray"
-                phx-click={
-                  SynwatchWeb.Components.SWModal.close("confirm-variable-update-#{var.id}")
-                }
-              >
-                Cancel
-              </.sw_button>
+            <:title>Update Variable "{var.name}"</:title>
 
-              <.sw_button
-                color="red"
-                method="patch"
-                href={
-                  ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/#{var.id}"
-                }
-              >
-                Delete
-              </.sw_button>
-            </:actions>
+            <.form
+              for={%{}}
+              as={:variable}
+              id={"add-variable-form-#{@environment.id}"}
+              action={
+                ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/#{var.id}"
+              }
+              method="patch"
+              class="space-y-4"
+            >
+              <div>
+                <label class="text-sm font-medium block">Name*</label>
+                <.input
+                  name="variable[name]"
+                  required
+                  value={var.name}
+                />
+              </div>
+
+              <div>
+                <label class="text-sm font-medium block">Value*</label>
+                <.input
+                  name="variable[value]"
+                  required
+                  value={var.value}
+                />
+              </div>
+
+              <div class="mt-6 flex justify-end gap-2">
+                <.sw_button
+                  type="button"
+                  style="outlined"
+                  color="gray"
+                  phx-click={
+                    SynwatchWeb.Components.SWModal.close("confirm-variable-update-#{var.id}")
+                  }
+                >
+                  Cancel
+                </.sw_button>
+
+                <.sw_button
+                  color="primary"
+                  type="submit"
+                >
+                  Save
+                </.sw_button>
+              </div>
+            </.form>
           </.sw_modal>
         <% end %>
 
