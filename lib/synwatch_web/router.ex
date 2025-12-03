@@ -97,6 +97,10 @@ defmodule SynwatchWeb.Router do
           delete "/runs/:id", TestRunController, :delete
         end
       end
+
+      scope "/environments/:environment_id" do
+        post "/variables", VariableController, :create
+      end
     end
   end
 

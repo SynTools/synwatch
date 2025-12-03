@@ -143,24 +143,52 @@
 
           <%!-- Create Variable Modal --%>
           <.sw_modal id="confirm-variable-create" size="md">
-            <:title>Create new variable</:title>
-            <:actions>
-              <.sw_button
-                style="outlined"
-                color="gray"
-                phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
-              >
-                Cancel
-              </.sw_button>
+            <:title>Add Variable</:title>
 
-              <.sw_button
-                color="red"
-                method="post"
-                href={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables"}
-              >
-                Delete
-              </.sw_button>
-            </:actions>
+            <.form
+              for={%{}}
+              as={:variable}
+              id={"add-variable-form-#{@environment.id}"}
+              action={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables"}
+              method="post"
+              class="space-y-4"
+            >
+              <div>
+                <label class="text-sm font-medium block">Name*</label>
+                <.input
+                  name="variable[name]"
+                  required
+                  value=""
+                />
+              </div>
+
+              <div>
+                <label class="text-sm font-medium block">Value*</label>
+                <.input
+                  name="variable[value]"
+                  required
+                  value=""
+                />
+              </div>
+
+              <div class="mt-6 flex justify-end gap-2">
+                <.sw_button
+                  type="button"
+                  style="outlined"
+                  color="gray"
+                  phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
+                >
+                  Cancel
+                </.sw_button>
+
+                <.sw_button
+                  color="primary"
+                  type="submit"
+                >
+                  Add
+                </.sw_button>
+              </div>
+            </.form>
           </.sw_modal>
 
           <%!-- Update Variable Modal --%>
