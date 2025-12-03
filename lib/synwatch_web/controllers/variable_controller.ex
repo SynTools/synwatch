@@ -62,4 +62,21 @@ defmodule SynwatchWeb.VariableController do
         |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
     end
   end
+
+  def delete(
+        %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
+        %{"project_id" => project_id, "environment_id" => env_id, "id" => id} = _params
+      ) do
+    with %Variable{} = variable <- Variables.get_one(id, env_id, project_id, user.id),
+         {:ok, %Variable{} = _variable} <- Variables.delete(variable) do
+      conn
+      |> put_flash(:info, "Variable successfully deleted")
+      |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Something went wrong deleting the variable")
+        |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
+    end
+  end
 end

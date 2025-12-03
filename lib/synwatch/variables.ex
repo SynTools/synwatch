@@ -37,4 +37,6 @@ defmodule Synwatch.Variables do
     |> Variable.changeset(attrs)
     |> Repo.update()
   end
+
+  def delete(%Variable{} = variable), do: Repo.delete(variable)
 end
