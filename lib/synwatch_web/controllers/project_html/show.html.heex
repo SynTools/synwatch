@@ -68,7 +68,7 @@
         <thead>
           <tr class="text-left text-gray-500 border-b border-gray-200">
             <th class="py-4 pl-4 pr-3">Name</th>
-            <%!-- TODO: Render secrets and variables count --%>
+            <th class="py-4 pr-3">Variables</th>
             <th class="py-4 pr-3"></th>
           </tr>
         </thead>
@@ -78,6 +78,10 @@
             <tr class="border-t border-gray-200 even:bg-gray-50">
               <td class="py-4 pl-4 pr-3 font-medium">
                 {env.name}
+              </td>
+
+              <td class="py-4 pl-4 pr-3 font-medium">
+                {length(env.variables)}
               </td>
 
               <td class="py-4 pr-4 text-right">

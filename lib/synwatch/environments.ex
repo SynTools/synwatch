@@ -33,6 +33,7 @@ defmodule Synwatch.Environments do
       p.id == ^project_id and
         tm.user_id == ^user_id
     )
+    |> preload(:variables)
     |> Repo.all()
   end
 
