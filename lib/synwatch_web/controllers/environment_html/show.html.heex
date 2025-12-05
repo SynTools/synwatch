@@ -12,17 +12,18 @@
     <.sw_button href={~p"/projects/#{@project.id}"} color="gray" style="outlined">
       Back
     </.sw_button>
+
     <.sw_button
       color="red"
       style="outlined"
-      phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete")}
+      phx-click={SynwatchWeb.Components.SWModal.open("confirm-delete-environment")}
     >
       Delete
     </.sw_button>
   </div>
 </div>
 
-<%!-- Form Card --%>
+<%!-- Environment Form Card --%>
 <.sw_environment_form
   changeset={Ecto.Changeset.change(@changeset)}
   action={~p"/projects/#{@project.id}/environments/#{@environment.id}"}
@@ -30,15 +31,15 @@
   cancel_href={~p"/projects/#{@project.id}/environments/#{@environment.id}"}
 />
 
-<%!-- Delete Endpoint Modal --%>
-<.sw_modal id="confirm-delete" size="md">
+<%!-- Delete Environment Modal --%>
+<.sw_modal id="confirm-delete-environment" size="md">
   <:title>Delete Environment?</:title>
   This action cannot be undone. All related data may be removed.
   <:actions>
     <.sw_button
       style="outlined"
       color="gray"
-      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete")}
+      phx-click={SynwatchWeb.Components.SWModal.close("confirm-delete-environment")}
     >
       Cancel
     </.sw_button>
@@ -58,6 +59,7 @@
   <:header>
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">Variables</h2>
+
       <.sw_button
         :if={!Enum.empty?(@variables)}
         phx-click={SynwatchWeb.Components.SWModal.open("confirm-variable-create")}
@@ -89,7 +91,7 @@
               {var.value}
             </td>
 
-            <td class="py-4 pr-4 text-right">
+            <td class="py-4 pr-4 text-right space-x-2">
               <.sw_button
                 style="outlined"
                 color="gray"
@@ -141,56 +143,6 @@
             </:actions>
           </.sw_modal>
 
-          <%!-- Create Variable Modal --%>
-          <.sw_modal id="confirm-variable-create" size="md">
-            <:title>Add Variable</:title>
-
-            <.form
-              for={%{}}
-              as={:variable}
-              id={"add-variable-form-#{@environment.id}"}
-              action={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables"}
-              method="post"
-              class="space-y-4"
-            >
-              <div>
-                <label class="text-sm font-medium block">Name*</label>
-                <.input
-                  name="variable[name]"
-                  required
-                  value=""
-                />
-              </div>
-
-              <div>
-                <label class="text-sm font-medium block">Value*</label>
-                <.input
-                  name="variable[value]"
-                  required
-                  value=""
-                />
-              </div>
-
-              <div class="mt-6 flex justify-end gap-2">
-                <.sw_button
-                  type="button"
-                  style="outlined"
-                  color="gray"
-                  phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
-                >
-                  Cancel
-                </.sw_button>
-
-                <.sw_button
-                  color="primary"
-                  type="submit"
-                >
-                  Save
-                </.sw_button>
-              </div>
-            </.form>
-          </.sw_modal>
-
           <%!-- Update Variable Modal --%>
           <.sw_modal id={"confirm-variable-update-#{var.id}"} size="md">
             <:title>Update Variable "{var.name}"</:title>
@@ -198,7 +150,7 @@
             <.form
               for={%{}}
               as={:variable}
-              id={"add-variable-form-#{@environment.id}"}
+              id={"update-variable-form-#{var.id}"}
               action={
                 ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/#{var.id}"
               }
@@ -235,10 +187,7 @@
                   Cancel
                 </.sw_button>
 
-                <.sw_button
-                  color="primary"
-                  type="submit"
-                >
+                <.sw_button color="primary" type="submit">
                   Save
                 </.sw_button>
               </div>
@@ -250,11 +199,10 @@
           <td colspan="3" class="py-10 text-center text-gray-600">
             <.icon name="hero-swatch" class="h-8 w-8 mx-auto text-gray-400" />
             <p class="mt-2">No variables yet.</p>
+
             <.sw_button
               class="mt-3"
-              navigate={
-                ~p"/projects/#{@project.id}/environments/#{@environment.id}/variables/new"
-              }
+              phx-click={SynwatchWeb.Components.SWModal.open("confirm-variable-create")}
             >
               <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
               Create your first variable
@@ -265,3 +213,50 @@
     </table>
   </div>
 </.sw_card>
+
+<%!-- Create Variable Modal (global, außerhalb der Schleife) --%>
+<.sw_modal id="confirm-variable-create" size="md">
+  <:title>Add Variable</:title>
+
+  <.form
+    for={%{}}
+    as={:variable}
+    id={"add-variable-form-#{@environment.id}"}
+    action={~p"/projects/#{@project.id}/environments/#{@environment.id}/variables"}
+    method="post"
+    class="space-y-4"
+  >
+    <div>
+      <label class="text-sm font-medium block">Name*</label>
+      <.input
+        name="variable[name]"
+        required
+        value=""
+      />
+    </div>
+
+    <div>
+      <label class="text-sm font-medium block">Value*</label>
+      <.input
+        name="variable[value]"
+        required
+        value=""
+      />
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+      <.sw_button
+        type="button"
+        style="outlined"
+        color="gray"
+        phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
+      >
+        Cancel
+      </.sw_button>
+
+      <.sw_button color="primary" type="submit">
+        Save
+      </.sw_button>
+    </div>
+  </.form>
+</.sw_modal>
