@@ -16,8 +16,16 @@ defmodule SynwatchWeb.EndpointController do
         %{"project_id" => project_id} = _params
       ) do
     with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
+         environments = Environments.get_all_for_project(project_id, user.id),
+         active_environment_id = get_active_environment(conn, project_id),
          changeset = Ecto.Changeset.change(%Endpoint{project_id: project_id}) do
-      render(conn, :new, page_title: "Create Endpoint", changeset: changeset, project: project)
+      render(conn, :new,
+        page_title: "Create Endpoint",
+        changeset: changeset,
+        project: project,
+        environments: environments,
+        active_environment_id: active_environment_id
+      )
     else
       _ -> redirect(conn, to: ~p"/projects/#{project_id}")
     end
@@ -99,30 +107,33 @@ defmodule SynwatchWeb.EndpointController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "endpoint" => attrs}
       ) do
-    case Projects.get_one_for_user(project_id, user.id) do
+    with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
+         environments = Environments.get_all_for_project(project_id, user.id),
+         active_environment_id = get_active_environment(conn, project_id) do
+      attrs = Map.put(attrs, "project_id", project.id)
+
+      case Endpoints.create(attrs, active_environment_id) do
+        {:ok, %Endpoint{} = endpoint} ->
+          conn
+          |> put_flash(:info, "Endpoint successfully created")
+          |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}")
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          conn
+          |> flash_changeset_errors(changeset)
+          |> render(:new,
+            page_title: "Create Endpoint",
+            project: project,
+            changeset: changeset,
+            environments: environments,
+            active_environment_id: active_environment_id
+          )
+      end
+    else
       nil ->
         conn
         |> put_status(:not_found)
         |> render(:not_found, page_title: "Project not found")
-
-      %Project{} = project ->
-        attrs = Map.put(attrs, "project_id", project.id)
-
-        case Endpoints.create(attrs) do
-          {:ok, %Endpoint{} = endpoint} ->
-            conn
-            |> put_flash(:info, "Endpoint successfully created")
-            |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}")
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            conn
-            |> flash_changeset_errors(changeset)
-            |> render(:new,
-              page_title: "Create Endpoint",
-              project: project,
-              changeset: changeset
-            )
-        end
     end
   end
 end

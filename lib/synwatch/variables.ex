@@ -39,4 +39,11 @@ defmodule Synwatch.Variables do
   end
 
   def delete(%Variable{} = variable), do: Repo.delete(variable)
+
+  def list_for_environment(environment_id) do
+    Variable
+    |> where([v], v.environment_id == ^environment_id)
+    |> order_by([v], asc: v.name)
+    |> Repo.all()
+  end
 end

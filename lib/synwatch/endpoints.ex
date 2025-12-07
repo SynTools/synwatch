@@ -6,6 +6,7 @@ defmodule Synwatch.Endpoints do
   alias Synwatch.Projects.Endpoint
   alias Synwatch.Projects.TestRun
   alias Synwatch.Tests
+  alias Synwatch.Variables
 
   def get_one(id, project_id, user_id) do
     latest_run_query =
@@ -41,9 +42,11 @@ defmodule Synwatch.Endpoints do
 
   def delete(%Endpoint{} = endpoint), do: Repo.delete(endpoint)
 
-  def create(attrs \\ %{}) do
+  def create(attrs \\ %{}, environment_id) do
+    variables = Variables.list_for_environment(environment_id) |> Enum.map(fn var -> var.name end)
+
     %Endpoint{}
-    |> Endpoint.changeset(attrs)
+    |> Endpoint.changeset(attrs, variables)
     |> Repo.insert()
   end
 
