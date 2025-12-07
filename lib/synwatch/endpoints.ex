@@ -34,9 +34,11 @@ defmodule Synwatch.Endpoints do
     %Endpoint{endpoint | tests: Tests.map_latest_test_run(tests)}
   end
 
-  def update(%Endpoint{} = endpoint, attrs) do
+  def update(%Endpoint{} = endpoint, attrs, environment_id) do
+    variables = Variables.list_for_environment(environment_id) |> Enum.map(fn var -> var.name end)
+
     endpoint
-    |> Endpoint.changeset(attrs)
+    |> Endpoint.changeset(attrs, variables)
     |> Repo.update()
   end
 
