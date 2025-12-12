@@ -20,12 +20,16 @@ defmodule SynwatchWeb.TestController do
       ) do
     with %Project{} = project <- Projects.get_one_for_user(project_id, user.id),
          %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user.id),
+         environments = Environments.get_all_for_project(project_id, user.id),
+         active_environment_id = get_active_environment(conn, project_id),
          changeset = Ecto.Changeset.change(%Test{endpoint_id: endpoint_id}) do
       render(conn, :new,
         page_title: "Create Test",
         project: project,
         endpoint: endpoint,
-        changeset: changeset
+        changeset: changeset,
+        environments: environments,
+        active_environment_id: active_environment_id
       )
     else
       _ -> redirect(conn, to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
@@ -63,7 +67,7 @@ defmodule SynwatchWeb.TestController do
   end
 
   def update(
-        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id} = _user}} = conn,
         %{
           "id" => id,
           "project_id" => project_id,
@@ -71,30 +75,39 @@ defmodule SynwatchWeb.TestController do
           "test" => updates
         }
       ) do
-    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user_id),
-         {:ok, %Test{} = test} <- Tests.update(test, normalize_test_params(updates)) do
-      conn
-      |> put_flash(:info, "Test successfully updated")
-      |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
+    with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user_id) do
+      environments = Environments.get_all_for_project(project_id, user_id)
+      active_env_id = get_active_environment(conn, project_id)
+
+      updates = normalize_test_params(updates)
+
+      case Tests.update(test, updates, active_env_id) do
+        {:ok, %Test{} = test} ->
+          conn
+          |> put_flash(:info, "Test successfully updated")
+          |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}/tests/#{test.id}")
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          test = changeset.data
+
+          conn
+          |> flash_changeset_errors(changeset)
+          |> render(:show,
+            page_title: test.name,
+            test: test,
+            changeset: changeset,
+            endpoint: test.endpoint,
+            project: test.endpoint.project,
+            runs: test.test_runs,
+            environments: environments,
+            active_environment_id: active_env_id
+          )
+      end
     else
       nil ->
         conn
         |> put_status(:not_found)
         |> render(:not_found, page_title: "Test not found")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        test = changeset.data
-
-        conn
-        |> flash_changeset_errors(changeset)
-        |> render(:show,
-          page_title: test.name,
-          test: test,
-          changeset: changeset,
-          endpoint: test.endpoint,
-          project: test.endpoint.project,
-          runs: test.test_runs
-        )
     end
   end
 
@@ -117,34 +130,39 @@ defmodule SynwatchWeb.TestController do
   end
 
   def create(
-        %Plug.Conn{assigns: %{current_user: %User{id: user_id}}} = conn,
+        %Plug.Conn{assigns: %{current_user: %User{id: user_id} = _user}} = conn,
         %{"project_id" => project_id, "endpoint_id" => endpoint_id, "test" => attrs}
       ) do
     with %Project{} = project <- Projects.get_one_for_user(project_id, user_id),
-         %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user_id),
-         attrs <- Map.put(attrs, "endpoint_id", endpoint.id),
-         {:ok, %Test{} = test} <- Tests.create(attrs) do
-      conn
-      |> put_flash(:info, "Test successfully created")
-      |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+         %Endpoint{} = endpoint <- Endpoints.get_one(endpoint_id, project_id, user_id) do
+      environments = Environments.get_all_for_project(project_id, user_id)
+      active_env_id = get_active_environment(conn, project_id)
+
+      attrs = Map.put(attrs, "endpoint_id", endpoint.id)
+
+      case Tests.create(attrs, active_env_id) do
+        {:ok, %Test{} = test} ->
+          conn
+          |> put_flash(:info, "Test successfully created")
+          |> redirect(to: ~p"/projects/#{project.id}/endpoints/#{endpoint.id}/tests/#{test.id}")
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          conn
+          |> flash_changeset_errors(changeset)
+          |> render(:new,
+            page_title: "Create Test",
+            project: project,
+            endpoint: endpoint,
+            changeset: changeset,
+            environments: environments,
+            active_environment_id: active_env_id
+          )
+      end
     else
       nil ->
         conn
         |> put_status(:not_found)
         |> render(:not_found, page_title: "Resource not found")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        project = Projects.get_one_for_user(project_id, user_id)
-        endpoint = Endpoints.get_one(endpoint_id, project_id, user_id)
-
-        conn
-        |> flash_changeset_errors(changeset)
-        |> render(:new,
-          page_title: "Create Test",
-          project: project,
-          endpoint: endpoint,
-          changeset: changeset
-        )
     end
   end
 

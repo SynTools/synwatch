@@ -1,8 +1,10 @@
 defmodule Synwatch.Tests do
   import Ecto.Query, warn: false
+
   alias Synwatch.Repo
   alias Synwatch.Accounts.TeamMembership
   alias Synwatch.Projects.Test
+  alias Synwatch.Variables
 
   def get_one(id, endpoint_id, project_id, user_id) do
     latest_run_query =
@@ -42,17 +44,21 @@ defmodule Synwatch.Tests do
     |> Repo.all()
   end
 
-  def update(%Test{} = test, attrs) do
+  def update(%Test{} = test, attrs, environment_id) do
+    variables = Variables.list_for_environment(environment_id, :name_only)
+
     test
-    |> Test.changeset(attrs)
+    |> Test.changeset(attrs, variables)
     |> Repo.update()
   end
 
   def delete(%Test{} = test), do: Repo.delete(test)
 
-  def create(attrs \\ %{}) do
+  def create(attrs \\ %{}, environment_id) do
+    variables = Variables.list_for_environment(environment_id, :name_only)
+
     %Test{}
-    |> Test.changeset(attrs)
+    |> Test.changeset(attrs, variables)
     |> Repo.insert()
   end
 

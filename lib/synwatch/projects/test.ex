@@ -1,9 +1,13 @@
 defmodule Synwatch.Projects.Test do
   use Ecto.Schema
+
   import Ecto.Changeset
+  import Synwatch.Environments.VariableValidator
 
   alias Synwatch.Projects.Endpoint
   alias Synwatch.Projects.TestRun
+
+  @fields_with_variables [:name, :request_body, :request_headers, :request_params]
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -26,7 +30,7 @@ defmodule Synwatch.Projects.Test do
   end
 
   @doc false
-  def changeset(test, attrs) do
+  def changeset(test, attrs, variables \\ nil) do
     test
     |> cast(attrs, [
       :name,
@@ -45,6 +49,7 @@ defmodule Synwatch.Projects.Test do
       greater_than_or_equal_to: 100,
       less_than_or_equal_to: 599
     )
+    |> validate_variables(@fields_with_variables, variables)
     |> foreign_key_constraint(:endpoint_id)
     |> unique_constraint([:endpoint_id, :name],
       name: :tests_endpoint_id_name_index,

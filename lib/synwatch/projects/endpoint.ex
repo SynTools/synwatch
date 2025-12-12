@@ -33,7 +33,7 @@ defmodule Synwatch.Projects.Endpoint do
   end
 
   @doc false
-  def changeset(endpoint, attrs, variables \\ []) do
+  def changeset(endpoint, attrs, variables \\ nil) do
     endpoint
     |> cast(attrs, [
       :name,
