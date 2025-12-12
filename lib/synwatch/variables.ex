@@ -54,6 +54,20 @@ defmodule Synwatch.Variables do
     end
   end
 
+  def list_for_environment(environment_id, :key_value_map) do
+    case environment_id do
+      nil ->
+        nil
+
+      _ ->
+        Variable
+        |> where([v], v.environment_id == ^environment_id)
+        |> order_by([v], asc: v.name)
+        |> Repo.all()
+        |> Map.new(fn v -> {v.name, v.value} end)
+    end
+  end
+
   def list_for_environment(environment_id) do
     case environment_id do
       nil ->

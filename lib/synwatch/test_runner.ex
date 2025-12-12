@@ -3,12 +3,13 @@ defmodule Synwatch.TestRunner do
   alias Synwatch.Endpoints
   alias Synwatch.TestRuns
   alias Synwatch.HttpClient
+  alias Synwatch.Variables
 
-  def run_now(%Test{} = test) do
+  def run_now(%Test{} = test, environment_id) do
     started_at = DateTime.utc_now()
 
     run = init_run!(test)
-    req = build_request(test)
+    req = build_request(test, environment_id)
 
     run = mark_running(run)
 
@@ -27,12 +28,13 @@ defmodule Synwatch.TestRunner do
     end
   end
 
-  def run_many(tests, opts \\ []) when is_list(tests) do
+  def run_many(tests, opts \\ [], environment_id) when is_list(tests) do
     max_concurrency = Keyword.get(opts, :max_concurrency, System.schedulers_online())
     timeout = Keyword.get(opts, :timeout, :infinity)
 
     tests
-    |> Task.async_stream(&run_now/1,
+    |> Task.async_stream(
+      fn test -> run_now(test, environment_id) end,
       max_concurrency: max_concurrency,
       timeout: timeout
     )
@@ -99,12 +101,31 @@ defmodule Synwatch.TestRunner do
     TestRuns.update!(run, %{status: :running})
   end
 
-  defp build_request(%Test{} = test) do
+  defp build_request(%Test{} = test, environment_id) do
+    variables =
+      Variables.list_for_environment(environment_id)
+      |> Map.new(fn v -> {v.name, v.value} end)
+
+    url_template = Endpoints.build_url(test.endpoint)
+
+    resolved_url =
+      Synwatch.Environments.VariableResolver.resolve(url_template, variables)
+
+    resolved_headers =
+      test.request_headers
+      |> Synwatch.Environments.VariableResolver.resolve(variables)
+      |> normalize_headers()
+
+    resolved_body =
+      test.request_body
+      |> Synwatch.Environments.VariableResolver.resolve(variables)
+      |> normalize_body()
+
     %{
       method: Atom.to_string(test.endpoint.method),
-      url: Endpoints.build_url(test.endpoint),
-      headers: normalize_headers(test.request_headers),
-      body: normalize_body(test.request_body),
+      url: resolved_url,
+      headers: resolved_headers,
+      body: resolved_body,
       expected_status: test.response_http_code
     }
   end
@@ -122,6 +143,5 @@ defmodule Synwatch.TestRunner do
   end
 
   defp transform_error_reason(reason) when is_struct(reason), do: inspect(reason)
-  # defp transform_error_reason(reason) when is_binary(reason), do: reason
   defp transform_error_reason(reason), do: to_string(reason)
 end

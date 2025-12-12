@@ -171,7 +171,8 @@ defmodule SynwatchWeb.TestController do
         %{"project_id" => project_id, "endpoint_id" => endpoint_id, "id" => id}
       ) do
     with %Test{} = test <- Tests.get_one(id, endpoint_id, project_id, user.id),
-         result <- TestRunner.run_now(test) do
+         active_environment_id <- get_active_environment(conn, project_id),
+         result <- TestRunner.run_now(test, active_environment_id) do
       case result do
         :ok ->
           conn
@@ -202,7 +203,8 @@ defmodule SynwatchWeb.TestController do
         %{"project_id" => project_id, "endpoint_id" => endpoint_id}
       ) do
     with tests <- Tests.get_all(endpoint_id, project_id, user.id),
-         result <- TestRunner.run_many(tests) do
+         active_environment_id <- get_active_environment(conn, project_id),
+         result <- TestRunner.run_many(tests, active_environment_id) do
       conn
       |> put_flash(:info, "#{length(result)} of #{length(tests)} Tests were executed")
       |> redirect(to: ~p"/projects/#{project_id}/endpoints/#{endpoint_id}")
