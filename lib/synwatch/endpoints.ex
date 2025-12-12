@@ -35,7 +35,15 @@ defmodule Synwatch.Endpoints do
   end
 
   def update(%Endpoint{} = endpoint, attrs, environment_id) do
-    variables = Variables.list_for_environment(environment_id, :name_only)
+    variables =
+      case environment_id do
+        nil ->
+          nil
+
+        env_id ->
+          Variables.list_for_environment(env_id)
+          |> Enum.map(& &1.name)
+      end
 
     endpoint
     |> Endpoint.changeset(attrs, variables)
@@ -45,7 +53,15 @@ defmodule Synwatch.Endpoints do
   def delete(%Endpoint{} = endpoint), do: Repo.delete(endpoint)
 
   def create(attrs \\ %{}, environment_id) do
-    variables = Variables.list_for_environment(environment_id, :name_only)
+    variables =
+      case environment_id do
+        nil ->
+          nil
+
+        env_id ->
+          Variables.list_for_environment(env_id)
+          |> Enum.map(& &1.name)
+      end
 
     %Endpoint{}
     |> Endpoint.changeset(attrs, variables)

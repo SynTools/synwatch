@@ -21,10 +21,6 @@ defmodule SynwatchWeb.Components.Environment.SwEnvironmentSelector do
           class="select w-full"
           onchange="this.form.requestSubmit()"
         >
-          <option :if={is_nil(@active_environment_id)} value="">
-            Select environment
-          </option>
-
           <%= for env <- @environments do %>
             <option value={env.id} selected={env.id == @active_environment_id}>
               {env.name}
