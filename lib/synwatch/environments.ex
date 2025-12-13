@@ -35,6 +35,7 @@ defmodule Synwatch.Environments do
         tm.user_id == ^user_id
     )
     |> preload(:variables)
+    |> preload(:secrets)
     |> Repo.all()
   end
 
