@@ -3,6 +3,7 @@ defmodule Synwatch.Environments.Environment do
 
   import Ecto.Changeset
 
+  alias Synwatch.Environments.Secret
   alias Synwatch.Environments.Variable
   alias Synwatch.Projects.Project
 
@@ -16,6 +17,7 @@ defmodule Synwatch.Environments.Environment do
 
     belongs_to :project, Project
     has_many :variables, Variable, on_delete: :delete_all, on_replace: :delete
+    has_many :secrets, Secret, on_delete: :delete_all, on_replace: :delete
 
     timestamps()
   end
