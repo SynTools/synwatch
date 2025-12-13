@@ -34,6 +34,15 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: env!("GITHUB_CLIENT_ID"),
   client_secret: env!("GITHUB_CLIENT_SECRET")
 
+# Cloak for encrypting / decrypting values
+config :synwatch, Synwatch.Vault,
+  ciphers: [
+    default: {
+      Cloak.Ciphers.AES.GCM,
+      tag: "AES.GCM.V1", key: Base.decode64!(env!("CLOAK_KEY")), iv_length: 12
+    }
+  ]
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

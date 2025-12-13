@@ -16,7 +16,8 @@ defmodule Synwatch.Application do
       # Start a worker by calling: Synwatch.Worker.start_link(arg)
       # {Synwatch.Worker, arg},
       # Start to serve requests, typically the last entry
-      SynwatchWeb.Endpoint
+      SynwatchWeb.Endpoint,
+      Synwatch.Vault
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

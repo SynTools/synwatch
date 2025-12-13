@@ -69,7 +69,8 @@ defmodule Synwatch.MixProject do
       {:ueberauth, "~> 0.10"},
       {:ueberauth_github, "~> 0.8"},
       {:oauth2, "~> 2.1"},
-      {:dotenvy, "~> 0.8.0", only: [:dev, :test]}
+      {:dotenvy, "~> 0.8.0", only: [:dev, :test]},
+      {:cloak_ecto, "~> 1.3"}
     ]
   end
 
