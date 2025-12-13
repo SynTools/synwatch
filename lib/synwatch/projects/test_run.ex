@@ -3,6 +3,7 @@ defmodule Synwatch.Projects.TestRun do
   import Ecto.Changeset
 
   alias Synwatch.Enums.TestRunStatus
+  alias Synwatch.Environments.Environment
   alias Synwatch.Projects.Test
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -38,6 +39,7 @@ defmodule Synwatch.Projects.TestRun do
     field :error_message, :string
 
     belongs_to :test, Test
+    belongs_to :environment, Environment
 
     timestamps(type: :utc_datetime)
   end
@@ -60,7 +62,8 @@ defmodule Synwatch.Projects.TestRun do
       :response_headers,
       :response_body,
       :error_type,
-      :error_message
+      :error_message,
+      :environment_id
     ])
     |> validate_required([:test_id, :status])
     |> validate_number(:response_status,
@@ -70,6 +73,7 @@ defmodule Synwatch.Projects.TestRun do
     |> validate_number(:duration_ms, greater_than_or_equal_to: 0)
     |> compute_duration()
     |> foreign_key_constraint(:test_id)
+    |> foreign_key_constraint(:environment_id)
   end
 
   defp compute_duration(cs) do
