@@ -25,6 +25,7 @@ defmodule Synwatch.Tests do
     )
     |> preload([_t, e, p, _team, _tm], endpoint: {e, project: p})
     |> preload(test_runs: ^latest_run_query)
+    |> preload(test_runs: [:environment])
     |> Repo.one()
   end
 

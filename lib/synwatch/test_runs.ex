@@ -20,6 +20,7 @@ defmodule Synwatch.TestRuns do
         tm.user_id == ^user_id
     )
     |> preload([_r, t, e, p, _team, _tm], test: {t, endpoint: {e, project: p}})
+    |> preload(:environment)
     |> Repo.one()
   end
 

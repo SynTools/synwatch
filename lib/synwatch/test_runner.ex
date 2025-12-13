@@ -8,7 +8,7 @@ defmodule Synwatch.TestRunner do
   def run_now(%Test{} = test, environment_id) do
     started_at = DateTime.utc_now()
 
-    run = init_run!(test)
+    run = init_run!(test, environment_id)
     req = build_request(test, environment_id)
 
     run = mark_running(run)
@@ -52,11 +52,12 @@ defmodule Synwatch.TestRunner do
     end
   end
 
-  defp init_run!(%Test{id: test_id}) do
+  defp init_run!(%Test{id: test_id}, environment_id) do
     TestRuns.create!(%{
       test_id: test_id,
       status: :queued,
-      trigger: :manual
+      trigger: :manual,
+      environment_id: environment_id
     })
   end
 
