@@ -8,6 +8,7 @@ defmodule Synwatch.Projects.Endpoint do
   alias Synwatch.Projects.Test
 
   @fields_with_variables [:name, :path, :base_url, :description]
+  @fields_with_secrets [:name, :path, :base_url, :description]
 
   @type t :: %__MODULE__{}
 
@@ -33,7 +34,7 @@ defmodule Synwatch.Projects.Endpoint do
   end
 
   @doc false
-  def changeset(endpoint, attrs, variables \\ nil) do
+  def changeset(endpoint, attrs, variables \\ nil, secrets \\ nil) do
     endpoint
     |> cast(attrs, [
       :name,
@@ -53,6 +54,7 @@ defmodule Synwatch.Projects.Endpoint do
       message: "can only have one endpoint with the same name"
     )
     |> validate_variables(@fields_with_variables, variables)
+    |> validate_secrets(@fields_with_secrets, secrets)
     |> foreign_key_constraint(:project_id)
   end
 end

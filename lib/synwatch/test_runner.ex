@@ -4,6 +4,7 @@ defmodule Synwatch.TestRunner do
   alias Synwatch.Placeholders.Resolver
   alias Synwatch.TestRuns
   alias Synwatch.HttpClient
+  alias Synwatch.Secrets
   alias Synwatch.Variables
 
   def run_now(%Test{} = test, environment_id) do
@@ -104,22 +105,21 @@ defmodule Synwatch.TestRunner do
   end
 
   defp build_request(%Test{} = test, environment_id) do
-    variables =
-      Variables.list_for_environment(environment_id)
-      |> Map.new(fn v -> {v.name, v.value} end)
+    variables = Variables.list_for_environment(environment_id, :key_value_map)
+    secrets = Secrets.list_for_environment(environment_id, :key_value_map)
 
     url_template = Endpoints.build_url(test.endpoint)
 
-    resolved_url = Resolver.resolve(url_template, variables)
+    resolved_url = Resolver.resolve(url_template, variables, secrets)
 
     resolved_headers =
       test.request_headers
-      |> Resolver.resolve(variables)
+      |> Resolver.resolve(variables, secrets)
       |> normalize_headers()
 
     resolved_body =
       test.request_body
-      |> Resolver.resolve(variables)
+      |> Resolver.resolve(variables, secrets)
       |> normalize_body()
 
     %{

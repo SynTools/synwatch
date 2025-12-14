@@ -39,4 +39,45 @@ defmodule Synwatch.Secrets do
   end
 
   def delete(%Secret{} = secret), do: Repo.delete(secret)
+
+  def list_for_environment(environment_id, :name_only) do
+    case environment_id do
+      nil ->
+        nil
+
+      _ ->
+        Secret
+        |> where([s], s.environment_id == ^environment_id)
+        |> order_by([s], asc: s.name)
+        |> Repo.all()
+        |> Enum.map(fn secret -> secret.name end)
+    end
+  end
+
+  def list_for_environment(environment_id, :key_value_map) do
+    case environment_id do
+      nil ->
+        nil
+
+      _ ->
+        Secret
+        |> where([s], s.environment_id == ^environment_id)
+        |> order_by([s], asc: s.name)
+        |> Repo.all()
+        |> Map.new(fn s -> {s.name, s.value} end)
+    end
+  end
+
+  def list_for_environment(environment_id) do
+    case environment_id do
+      nil ->
+        nil
+
+      _ ->
+        Secret
+        |> where([s], s.environment_id == ^environment_id)
+        |> order_by([s], asc: s.name)
+        |> Repo.all()
+    end
+  end
 end
