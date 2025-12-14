@@ -253,7 +253,14 @@
               </td>
 
               <td class="py-4 pr-4 text-right space-x-2">
-                <.sw_button style="outlined" color="gray" size="sm">
+                <.sw_button
+                  style="outlined"
+                  color="gray"
+                  size="sm"
+                  phx-click={
+                    SynwatchWeb.Components.SWModal.open("confirm-secret-update-#{secret.id}")
+                  }
+                >
                   Update
                 </.sw_button>
 
@@ -295,6 +302,58 @@
                   Delete
                 </.sw_button>
               </:actions>
+            </.sw_modal>
+
+            <%!-- Update Secret Modal --%>
+            <.sw_modal id={"confirm-secret-update-#{secret.id}"} size="md">
+              <:title>Update Secret "{secret.name}"</:title>
+
+              <.form
+                for={%{}}
+                as={:secret}
+                id={"update-secret-form-#{secret.id}"}
+                action={
+                  ~p"/projects/#{@project.id}/environments/#{@environment.id}/secrets/#{secret.id}"
+                }
+                method="patch"
+                class="space-y-4"
+              >
+                <div>
+                  <label class="text-sm font-medium block">Name*</label>
+                  <.input
+                    name="secret[name]"
+                    required
+                    value={secret.name}
+                  />
+                </div>
+
+                <div>
+                  <label class="text-sm font-medium block">Value*</label>
+                  <.input
+                    name="secret[value]"
+                    required
+                    type="password"
+                    value={secret.value}
+                  />
+                </div>
+
+                <div class="mt-6 flex justify-end gap-2">
+                  <.sw_button
+                    type="button"
+                    style="outlined"
+                    color="gray"
+                    phx-click={
+                      SynwatchWeb.Components.SWModal.close("confirm-secret-update-#{secret.id}")
+                    }
+                  >
+                    Cancel
+                  </.sw_button>
+
+                  <.sw_button color="primary" type="submit">
+                    Save
+                  </.sw_button>
+                </div>
+              </.form>
             </.sw_modal>
           <% end %>
 
