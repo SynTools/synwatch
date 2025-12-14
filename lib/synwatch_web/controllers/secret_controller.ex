@@ -68,7 +68,7 @@ defmodule SynwatchWeb.SecretController do
         %{"project_id" => project_id, "environment_id" => env_id, "id" => id} = _params
       ) do
     with %Secret{} = secret <- Secrets.get_one(id, env_id, project_id, user.id),
-         {:ok, %Secret{} = _variable} <- Secrets.delete(secret) do
+         {:ok, %Secret{} = _secret} <- Secrets.delete(secret) do
       conn
       |> put_flash(:info, "Secret successfully deleted")
       |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")

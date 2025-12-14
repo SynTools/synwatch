@@ -257,11 +257,45 @@
                   Update
                 </.sw_button>
 
-                <.sw_button style="outlined" color="red" size="sm">
+                <.sw_button
+                  style="outlined"
+                  color="red"
+                  size="sm"
+                  phx-click={
+                    SynwatchWeb.Components.SWModal.open("confirm-secret-delete-#{secret.id}")
+                  }
+                >
                   Delete
                 </.sw_button>
               </td>
             </tr>
+
+            <%!-- Delete Secret Modal --%>
+            <.sw_modal id={"confirm-secret-delete-#{secret.id}"} size="md">
+              <:title>Delete Secret "{secret.name}"?</:title>
+              This action cannot be undone.
+              <:actions>
+                <.sw_button
+                  style="outlined"
+                  color="gray"
+                  phx-click={
+                    SynwatchWeb.Components.SWModal.close("confirm-secret-delete-#{secret.id}")
+                  }
+                >
+                  Cancel
+                </.sw_button>
+
+                <.sw_button
+                  color="red"
+                  method="delete"
+                  href={
+                    ~p"/projects/#{@project.id}/environments/#{@environment.id}/secrets/#{secret.id}"
+                  }
+                >
+                  Delete
+                </.sw_button>
+              </:actions>
+            </.sw_modal>
           <% end %>
 
           <tr :if={Enum.empty?(@secrets)}>

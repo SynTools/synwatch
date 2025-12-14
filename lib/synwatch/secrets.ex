@@ -6,7 +6,7 @@ defmodule Synwatch.Secrets do
   alias Synwatch.Environments.Secret
 
   def get_one(id, environment_id, project_id, user_id) do
-    Variable
+    Secret
     |> join(:inner, [s], env in assoc(s, :environment))
     |> join(:inner, [s, env], p in assoc(env, :project))
     |> join(:inner, [s, env, p], t in assoc(p, :team))
