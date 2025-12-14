@@ -1,5 +1,5 @@
 defmodule Synwatch.Environments.VariableResolver do
-  @variable_regex ~r/\$\{\{\s*([A-Z0-9_]+)\s*\}\}/
+  @variable_regex ~r/\$\{\{\s*(var):([A-Z0-9_]+)\s*\}\}/
 
   def resolve(template, vars) when is_map(vars) do
     do_resolve(template, vars)
@@ -8,8 +8,8 @@ defmodule Synwatch.Environments.VariableResolver do
   defp do_resolve(nil, _vars), do: nil
 
   defp do_resolve(value, vars) when is_binary(value) do
-    Regex.replace(@variable_regex, value, fn _match, name ->
-      Map.get(vars, name, "${{#{name}}}")
+    Regex.replace(@variable_regex, value, fn _full, _type, name ->
+      Map.get(vars, name, "${{var:#{name}}}")
     end)
   end
 

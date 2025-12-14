@@ -1,7 +1,7 @@
 defmodule Synwatch.Environments.VariableValidator do
   import Ecto.Changeset
 
-  @variable_regex ~r/\$\{\{\s*([A-Z0-9_]+)\s*\}\}/
+  @variable_regex ~r/\$\{\{\s*(var):([A-Z0-9_]+)\s*\}\}/
 
   def validate_variables(changeset, _fields, nil), do: changeset
 
@@ -49,8 +49,8 @@ defmodule Synwatch.Environments.VariableValidator do
 
   defp extract_variable_names_from_string(value) do
     @variable_regex
-    |> Regex.scan(value, capture: :all_but_first)
-    |> List.flatten()
+    |> Regex.scan(value)
+    |> Enum.map(fn [_full, _type, name] -> name end)
     |> Enum.uniq()
   end
 end
