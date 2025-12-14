@@ -24,8 +24,8 @@ defmodule Synwatch.Environments.Secret do
     variable
     |> cast(attrs, [:name, :value, :environment_id])
     |> validate_required([:name, :value, :environment_id])
-    |> validate_length(:name, min: 1, max: 160)
-    |> validate_length(:value, min: 1, max: 160)
+    |> validate_length(:name, min: 1)
+    |> validate_length(:value, min: 1)
     |> unique_constraint([:environment_id, :name],
       name: :secrets_environment_id_name_index,
       message: "can only have one secret with the same name"
