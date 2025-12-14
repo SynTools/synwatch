@@ -1,6 +1,7 @@
 defmodule Synwatch.TestRunner do
   alias Synwatch.Projects.Test
   alias Synwatch.Endpoints
+  alias Synwatch.Placeholders.Resolver
   alias Synwatch.TestRuns
   alias Synwatch.HttpClient
   alias Synwatch.Variables
@@ -109,17 +110,16 @@ defmodule Synwatch.TestRunner do
 
     url_template = Endpoints.build_url(test.endpoint)
 
-    resolved_url =
-      Synwatch.Environments.VariableResolver.resolve(url_template, variables)
+    resolved_url = Resolver.resolve(url_template, variables)
 
     resolved_headers =
       test.request_headers
-      |> Synwatch.Environments.VariableResolver.resolve(variables)
+      |> Resolver.resolve(variables)
       |> normalize_headers()
 
     resolved_body =
       test.request_body
-      |> Synwatch.Environments.VariableResolver.resolve(variables)
+      |> Resolver.resolve(variables)
       |> normalize_body()
 
     %{

@@ -2,7 +2,7 @@ defmodule Synwatch.Projects.Endpoint do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Synwatch.Environments.VariableValidator
+  import Synwatch.Placeholders.Validator
 
   alias Synwatch.Projects.Project
   alias Synwatch.Projects.Test
