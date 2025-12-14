@@ -221,7 +221,10 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">Secrets</h2>
 
-        <.sw_button :if={!Enum.empty?(@secrets)}>
+        <.sw_button
+          :if={!Enum.empty?(@secrets)}
+          phx-click={SynwatchWeb.Components.SWModal.open("confirm-secret-create")}
+        >
           <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
           New Secret
         </.sw_button>
@@ -266,7 +269,10 @@
               <.icon name="hero-key" class="h-8 w-8 mx-auto text-gray-400" />
               <p class="mt-2">No secrets yet.</p>
 
-              <.sw_button class="mt-3">
+              <.sw_button
+                class="mt-3"
+                phx-click={SynwatchWeb.Components.SWModal.open("confirm-secret-create")}
+              >
                 <:icon><.icon name="hero-plus" class="h-5 w-5" /></:icon>
                 Create your first secret
               </.sw_button>
@@ -278,7 +284,7 @@
   </.sw_card>
 </div>
 
-<%!-- Create Variable Modal (global, außerhalb der Schleife) --%>
+<%!-- Create Variable Modal --%>
 <.sw_modal id="confirm-variable-create" size="md">
   <:title>Add Variable</:title>
 
@@ -314,6 +320,53 @@
         style="outlined"
         color="gray"
         phx-click={SynwatchWeb.Components.SWModal.close("confirm-variable-create")}
+      >
+        Cancel
+      </.sw_button>
+
+      <.sw_button color="primary" type="submit">
+        Save
+      </.sw_button>
+    </div>
+  </.form>
+</.sw_modal>
+
+<%!-- Create Secret Modal --%>
+<.sw_modal id="confirm-secret-create" size="md">
+  <:title>Add Variable</:title>
+
+  <.form
+    for={%{}}
+    as={:secret}
+    id={"add-secret-form-#{@environment.id}"}
+    action={~p"/projects/#{@project.id}/environments/#{@environment.id}/secrets"}
+    method="post"
+    class="space-y-4"
+  >
+    <div>
+      <label class="text-sm font-medium block">Name*</label>
+      <.input
+        name="secret[name]"
+        required
+        value=""
+      />
+    </div>
+
+    <div>
+      <label class="text-sm font-medium block">Value*</label>
+      <.input
+        name="secret[value]"
+        required
+        value=""
+      />
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+      <.sw_button
+        type="button"
+        style="outlined"
+        color="gray"
+        phx-click={SynwatchWeb.Components.SWModal.close("confirm-secret-create")}
       >
         Cancel
       </.sw_button>

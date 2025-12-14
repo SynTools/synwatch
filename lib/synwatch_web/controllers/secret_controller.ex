@@ -1,4 +1,4 @@
-defmodule SynwatchWeb.VariableController do
+defmodule SynwatchWeb.SecretController do
   use SynwatchWeb, :controller
 
   import SynwatchWeb.Helpers.FlashHelpers, only: [flash_changeset_errors: 2]
@@ -6,18 +6,18 @@ defmodule SynwatchWeb.VariableController do
   alias Synwatch.Accounts.User
   alias Synwatch.Environments
   alias Synwatch.Environments.Environment
-  alias Synwatch.Environments.Variable
-  alias Synwatch.Variables
+  alias Synwatch.Environments.Secret
+  alias Synwatch.Secrets
 
   def create(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, %{
         "project_id" => project_id,
         "environment_id" => env_id,
-        "variable" => attrs
+        "secret" => attrs
       }) do
     with %Environment{} = env <- Environments.get_one(env_id, project_id, user.id),
-         {:ok, %Variable{} = _variable} <- Variables.create_for_environment(env.id, attrs) do
+         {:ok, %Secret{} = _secret} <- Secrets.create_for_environment(env.id, attrs) do
       conn
-      |> put_flash(:info, "Variable successfully created")
+      |> put_flash(:info, "Secret successfully created")
       |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
     else
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -27,7 +27,7 @@ defmodule SynwatchWeb.VariableController do
 
       {:error, {_error, %Ecto.Changeset{} = _changeset}} ->
         conn
-        |> put_flash(:error, "Failed to create Variable")
+        |> put_flash(:error, "Failed to create Secret")
         |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
 
       nil ->
@@ -42,18 +42,18 @@ defmodule SynwatchWeb.VariableController do
         "project_id" => project_id,
         "environment_id" => env_id,
         "id" => id,
-        "variable" => attrs
+        "secret" => attrs
       }) do
-    with %Variable{} = variable <- Variables.get_one(id, env_id, project_id, user.id),
-         {:ok, %Variable{} = _variable} <- Variables.update(variable, attrs) do
+    with %Secret{} = secret <- Secrets.get_one(id, env_id, project_id, user.id),
+         {:ok, %Secret{} = _variable} <- Secrets.update(secret, attrs) do
       conn
-      |> put_flash(:info, "Variable successfully updated")
+      |> put_flash(:info, "Secret successfully updated")
       |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
     else
       nil ->
         conn
         |> put_status(:not_found)
-        |> put_flash(:error, "Variable not found")
+        |> put_flash(:error, "Secret not found")
         |> redirect(to: ~p"/projects/#{project_id}/environments")
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -67,15 +67,15 @@ defmodule SynwatchWeb.VariableController do
         %Plug.Conn{assigns: %{current_user: %User{} = user}} = conn,
         %{"project_id" => project_id, "environment_id" => env_id, "id" => id} = _params
       ) do
-    with %Variable{} = variable <- Variables.get_one(id, env_id, project_id, user.id),
-         {:ok, %Variable{} = _variable} <- Variables.delete(variable) do
+    with %Secret{} = secret <- Secrets.get_one(id, env_id, project_id, user.id),
+         {:ok, %Secret{} = _variable} <- Secrets.delete(secret) do
       conn
-      |> put_flash(:info, "Variable successfully deleted")
+      |> put_flash(:info, "Secret successfully deleted")
       |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
     else
       _ ->
         conn
-        |> put_flash(:error, "Something went wrong deleting the Variable")
+        |> put_flash(:error, "Something went wrong deleting the Secret")
         |> redirect(to: ~p"/projects/#{project_id}/environments/#{env_id}")
     end
   end

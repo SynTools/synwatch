@@ -102,6 +102,10 @@ defmodule SynwatchWeb.Router do
         post "/variables", VariableController, :create
         patch "/variables/:id", VariableController, :update
         delete "/variables/:id", VariableController, :delete
+
+        post "/secrets", SecretController, :create
+        patch "/secrets/:id", SecretController, :update
+        delete "/secrets/:id", SecretController, :delete
       end
     end
   end
