@@ -5,7 +5,5 @@ defmodule SynwatchWeb.PageController do
 
   def dashboard(conn, _params), do: render(conn, :home, page_title: "Dashboard")
 
-  def runs(conn, _params), do: render(conn, :runs, page_title: "All Runs")
-
   def settings(conn, _params), do: render(conn, :settings, page_title: "Settings")
 end

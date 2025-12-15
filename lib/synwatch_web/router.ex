@@ -55,7 +55,6 @@ defmodule SynwatchWeb.Router do
 
     get "/", PageController, :home
     get "/dashboard", PageController, :dashboard
-    get "/runs", PageController, :runs
   end
 
   # TODO: Add all API routes to a "/api" scope
