@@ -75,6 +75,12 @@ GITHUB_CLIENT_SECRET=<YOUR_GITHUB_CLIENT_SECRET>
 CLOAK_KEY=<Random 32 Bit String>
 ```
 
+**Start local PostgreSQL database**
+
+```bash
+docker compose up -d
+```
+
 **Start development server**
 
 ```bash
@@ -84,21 +90,6 @@ mix phx.server
 The app will be available at  
 👉 http://localhost:4000
 
----
-
-## 🔧 Configuration
-
-### Database
-
-Configure your database in `config/dev.exs`:
-
-```elixir
-config :synwatch, Synwatch.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "synwatch_dev"
-```
 ---
 
 ## 🧩 Secrets & Variables
