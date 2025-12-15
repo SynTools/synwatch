@@ -101,9 +101,9 @@ config :synwatch, Synwatch.Repo,
 ```
 ---
 
-## 🧩 Placeholders & Variables
+## 🧩 Secrets & Variables
 
-SynWatch supports placeholders inside request URLs, headers, and bodies.
+SynWatch supports Variables inside request URLs, headers, and bodies.
 
 ### Variables
 
@@ -120,7 +120,7 @@ Variables are resolved per environment at runtime.
 ${{secret:API_TOKEN}}
 ```
 
-Secrets are stored encrypted and never rendered in plaintext in the UI.
+Secrets are stored encrypted and never rendered in plaintext in the UI. They are decrypted and resolved at runtime.
 
 ---
 
@@ -144,10 +144,10 @@ Each run creates a **TestRun** record containing:
 
 - ⏱️ Scheduled test runs
 - 🔔 Notifications (Slack, Webhooks, Email)
-- 🔐 Encrypted secrets using Cloak
 - 📈 Basic analytics & trends
 - 🌙 Dark mode
-- 🧩 Configure endpoints and tests via YAML
+- 🧩 Configure tests via YAML
+- 🐳 Provide application as Docker Image
 
 ---
 
