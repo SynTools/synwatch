@@ -4,8 +4,6 @@
 
 Define endpoints, attach tests, run them against different environments, and keep track of failures — all without writing custom scripts.
 
----
-
 ## ✨ Features
 
 - 🔍 **Endpoint monitoring**  
@@ -32,8 +30,6 @@ Define endpoints, attach tests, run them against different environments, and kee
 - 🔑 **GitHub authentication**  
   Simple sign-in via GitHub OAuth.
 
----
-
 ## 🏗️ Tech Stack
 
 - **Elixir** & **Phoenix**
@@ -41,8 +37,6 @@ Define endpoints, attach tests, run them against different environments, and kee
 - **Ecto** & **PostgreSQL**
 - **Tailwind CSS**
 - **Finch** (HTTP client)
-
----
 
 ## 🚀 Getting Started
 
@@ -90,8 +84,6 @@ mix phx.server
 The app will be available at  
 👉 http://localhost:4000
 
----
-
 ## 🧩 Secrets & Variables
 
 SynWatch supports Variables inside request URLs, headers, and bodies.
@@ -113,8 +105,6 @@ ${{secret:API_TOKEN}}
 
 Secrets are stored encrypted and never rendered in plaintext in the UI. They are decrypted and resolved at runtime.
 
----
-
 ## 🧪 Running Tests
 
 Tests can be executed:
@@ -129,8 +119,6 @@ Each run creates a **TestRun** record containing:
 - duration
 - error details (if any)
 
----
-
 ## 🗺️ Roadmap
 
 - ⏱️ Scheduled test runs
@@ -139,8 +127,6 @@ Each run creates a **TestRun** record containing:
 - 🌙 Dark mode
 - 🧩 Configure tests via YAML
 - 🐳 Provide application as Docker Image
-
----
 
 ## 🤝 Contributing
 
@@ -154,13 +140,9 @@ Typical ways to contribute:
 
 Please open an issue before submitting larger changes.
 
----
-
 ## 📄 License
 
 This project is licensed under the **MIT License**.
-
----
 
 ## 💡 Philosophy
 
@@ -169,14 +151,10 @@ SynWatch is built with a simple idea:
 > Monitoring and testing APIs should be **visible, explicit, and boring** —  
 > because surprises belong in production incidents, not in your tooling.
 
----
-
 ## 🧠 Name
 
 **SynWatch** stands for:
 - **Syn** → system, synchronization, signal
 - **Watch** → observe, monitor, keep an eye on
-
----
 
 If you have questions or ideas, feel free to open an issue or start a discussion.
