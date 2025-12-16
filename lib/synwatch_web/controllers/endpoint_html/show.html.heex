@@ -97,8 +97,9 @@
         <tr class="text-left text-gray-500 border-b border-gray-200">
           <th class="py-4 pl-4 pr-3">Name</th>
           <th class="py-4 pr-3">Expected Status</th>
-          <th class="py-4 pr-3 hidden lg:table-cell">Last Run</th>
+          <th class="py-4 pr-3">Last Run</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Last Run At</th>
+          <th class="py-4 pr-3 hidden lg:table-cell">Trigger</th>
           <th class="py-4 pr-3"></th>
         </tr>
       </thead>
@@ -125,6 +126,12 @@
               {case t.latest_test_run do
                 nil -> "-"
                 run -> format_dt(run.finished_at)
+              end}
+            </td>
+            <td class="py-4 pr-3 hidden lg:table-cell">
+              {case t.latest_test_run do
+                nil -> "-"
+                run -> run.trigger
               end}
             </td>
             <td class="py-4 pr-4 text-right">
