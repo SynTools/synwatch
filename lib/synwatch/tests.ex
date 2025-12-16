@@ -75,7 +75,8 @@ defmodule Synwatch.Tests do
         [latest | _] ->
           latest_test_run = %{
             status: latest.status,
-            finished_at: latest.finished_at
+            finished_at: latest.finished_at,
+            trigger: latest.trigger
           }
 
           %Synwatch.Projects.Test{test | latest_test_run: latest_test_run}
