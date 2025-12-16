@@ -17,7 +17,7 @@ config :synwatch, SynwatchWeb.Endpoint,
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: SynwatchWeb.ErrorHTML, json: SynwatchWeb.ErrorJSON],
-    layout: false
+    layout: {SynwatchWeb.Layouts, :root}
   ],
   pubsub_server: Synwatch.PubSub,
   live_view: [signing_salt: "TV6RGnk4"]
