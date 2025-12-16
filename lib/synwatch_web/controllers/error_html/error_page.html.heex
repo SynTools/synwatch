@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-base-200 flex items-center justify-center p-6">
+  <div class="w-full max-w-2xl">
+    <.sw_card class="p-8">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+        <div class="shrink-0">
+          <img
+            src={~p"/images/logo.png"}
+            alt="SynWatch logo"
+            class="h-24 w-auto"
+          />
+        </div>
+
+        <div class="space-y-4">
+          <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <span class="inline-block h-2 w-2 rounded-full bg-primary"></span>
+            {@error_status} — {@error_status_message}
+          </div>
+
+          <h1 class="text-3xl lg:text-4xl font-semibold tracking-tight text-gray-900">
+            {@error_title}
+          </h1>
+
+          <p class="text-gray-600 leading-relaxed">
+            {@error_description}
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <.sw_button href={~p"/dashboard"} color="primary" style="filled">
+              Go to Dashboard
+            </.sw_button>
+
+            <.sw_button href={~p"/projects"} color="gray" style="outlined">
+              View Projects
+            </.sw_button>
+          </div>
+
+          <div class="pt-4 text-sm text-gray-400">
+            If you believe this is a bug, please report it in the
+            <a
+              class="underline hover:no-underline"
+              href="https://github.com/SynTools/synwatch/issues"
+              target="blank"
+            >
+              repository issues.
+            </a>
+          </div>
+        </div>
+      </div>
+    </.sw_card>
+  </div>
+</div>
