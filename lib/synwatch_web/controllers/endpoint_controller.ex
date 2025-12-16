@@ -40,8 +40,6 @@ defmodule SynwatchWeb.EndpointController do
          environments = Environments.get_all_for_project(project_id, user.id),
          active_env_id = get_active_environment(conn, project_id),
          changeset = Ecto.Changeset.change(endpoint) do
-      IO.inspect(endpoint)
-
       render(conn, :show,
         page_title: endpoint.name,
         endpoint: endpoint,
