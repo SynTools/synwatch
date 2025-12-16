@@ -95,6 +95,7 @@
           <th class="py-4 pr-3 hidden lg:table-cell">Duration (ms)</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Response</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Environment</th>
+          <th class="py-4 pr-3">Trigger</th>
           <th class="py-4 pr-3 hidden lg:table-cell">Error</th>
           <th class="py-4 pr-3"></th>
         </tr>
@@ -121,6 +122,10 @@
 
             <td class="py-4 pr-3 hidden lg:table-cell">
               {if run.environment, do: run.environment.name, else: "–"}
+            </td>
+
+            <td class="py-4 pr-3">
+              {if run.trigger, do: run.trigger, else: "–"}
             </td>
 
             <td class="py-4 pr-3 hidden lg:table-cell truncate max-w-[200px]">
